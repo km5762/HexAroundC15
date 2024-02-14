@@ -1,5 +1,7 @@
 package hexaround.game;
 
+import hexaround.game.board.Board;
+import hexaround.game.board.IBoard;
 import hexaround.game.board.MoveResponse;
 import hexaround.game.creature.CreatureFactory;
 import hexaround.game.creature.CreatureName;
@@ -13,7 +15,7 @@ import java.util.Map;
 
 public class HexAroundFirstSubmission implements IHexAround1 {
     protected Collection<Player> players;
-    protected Map<Point, ICreature> board;
+    protected IBoard board;
     protected CreatureFactory creatureFactory;
 
     /**
@@ -31,7 +33,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
         this.players = players;
     }
 
-    public void setBoard(Map<Point, ICreature> board) {
+    public void setBoard(IBoard board) {
         this.board = board;
     }
 
@@ -53,7 +55,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
         if (!isOccupied(x, y)) {
             return null;
         }
-        return board.get(new Point(x, y)).getName();
+        return board.get(x, y).getName();
     }
 
     /**
@@ -69,7 +71,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean hasProperty(int x, int y, CreatureProperty property) {
-        return board.get(new Point(x, y)).hasProperty(property);
+        return board.get(x, y).hasProperty(property);
     }
 
     /**
@@ -82,7 +84,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean isOccupied(int x, int y) {
-        return board.containsKey(new Point(x, y));
+        return board.get(x, y) != null;
     }
 
     /**
@@ -103,7 +105,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean canReach(int x1, int y1, int x2, int y2) {
-        int maxDistance = board.get(new Point(x1, y1)).getMaxDistance();
+        int maxDistance = board.get(x1, y1).getMaxDistance();
         double distance = calculateDistance(x1, y1, x2, y2);
 
         return distance <= maxDistance;
@@ -132,7 +134,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
     public MoveResponse placeCreature(CreatureName creature, int x, int y) {
         ICreature creatureInstance = creatureFactory.makeCreature(creature);
 
-        board.put(new Point(x, y), creatureInstance);
+        board.put(creatureInstance, x, y);
 
         return null;
     }

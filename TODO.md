@@ -18,6 +18,8 @@
 | T  |  X   | canReach when creature cannot reach                                                                                             | 
 | R  |  X   | Change variable maxRange -> maxDistance to be more consistent with CreatureDefinition                                           |
 | T  |  X   | canReach when creature can reach                                                                                                | 
+| R  |  X   | Move basic functionality for getting/putting ICreatures on board into seperate Board class                                      | 
+| R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.get()                                             |
 
 # Design Patterns
 

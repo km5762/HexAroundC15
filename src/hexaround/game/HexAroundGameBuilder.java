@@ -19,6 +19,8 @@
 package hexaround.game;
 
 import hexaround.config.*;
+import hexaround.game.board.Board;
+import hexaround.game.board.IBoard;
 import hexaround.game.creature.CreatureFactory;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.ICreature;
@@ -53,7 +55,7 @@ public class HexAroundGameBuilder {
         CreatureFactory creatureFactory = new CreatureFactory(creatureDefinitions);
         gameManager.setCreatureFactory(creatureFactory);
 
-        Map<Point, ICreature> board = new HashMap<>();
+        IBoard board = new Board();
         gameManager.setBoard(board);
 
         return gameManager;
