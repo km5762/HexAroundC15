@@ -19,18 +19,10 @@ public class Creature implements ICreature {
         this.properties = properties;
     }
 
-    /**
-     * Gets the CreatureName enum for this Creature instance
-     * @return the CreatureName of the Creature
-     */
     public CreatureName getName() {
         return name;
     }
 
-    /**
-     * Gets the maxDistance for this Creature instance's movement
-     * @return the maxDistance of the Creature
-     */
     public int getMaxDistance() {
         return maxDistance;
     }
