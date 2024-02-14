@@ -15,7 +15,6 @@
 
 package hexaround.game;
 
-import hexaround.game.board.MoveResponse;
 import hexaround.game.creature.CreatureName;
 
 /**

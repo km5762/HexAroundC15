@@ -1,8 +1,6 @@
 package hexaround.game;
 
-import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
-import hexaround.game.board.MoveResponse;
 import hexaround.game.creature.CreatureFactory;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
@@ -10,8 +8,6 @@ import hexaround.game.creature.ICreature;
 import hexaround.game.player.Player;
 
 import java.util.Collection;
-import java.awt.Point;
-import java.util.Map;
 
 public class HexAroundFirstSubmission implements IHexAround1 {
     protected Collection<Player> players;
@@ -55,7 +51,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
         if (!isOccupied(x, y)) {
             return null;
         }
-        return board.get(x, y).getName();
+        return board.getTopCreature(x, y).getName();
     }
 
     /**
@@ -71,7 +67,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean hasProperty(int x, int y, CreatureProperty property) {
-        return board.get(x, y).hasProperty(property);
+        return board.getTopCreature(x, y).hasProperty(property);
     }
 
     /**
@@ -84,7 +80,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean isOccupied(int x, int y) {
-        return board.get(x, y) != null;
+        return !board.getAllCreatures(x, y).isEmpty();
     }
 
     /**
@@ -105,7 +101,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean canReach(int x1, int y1, int x2, int y2) {
-        int maxDistance = board.get(x1, y1).getMaxDistance();
+        int maxDistance = board.getTopCreature(x1, y1).getMaxDistance();
         double distance = calculateDistance(x1, y1, x2, y2);
 
         return distance <= maxDistance;
@@ -115,7 +111,7 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      * Source: https://www.redblobgames.com/grids/hexagons/#distances
      */
     private double calculateDistance(int x1, int y1, int x2, int y2) {
-        return (Math.abs(y1 - y2)
+        return (double) (Math.abs(y1 - y2)
                 + Math.abs(y1 + x1 - y2 - x2)
                 + Math.abs(x1 - x2)) / 2;
     }
@@ -134,9 +130,9 @@ public class HexAroundFirstSubmission implements IHexAround1 {
     public MoveResponse placeCreature(CreatureName creature, int x, int y) {
         ICreature creatureInstance = creatureFactory.makeCreature(creature);
 
-        board.put(creatureInstance, x, y);
+        board.placeCreature(creatureInstance, x, y);
 
-        return null;
+        return new MoveResponse(MoveResult.OK, "Legal move");
     }
 
     /**
