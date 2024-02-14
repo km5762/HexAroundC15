@@ -3,8 +3,6 @@ package hexaround.game.board;
 import hexaround.game.creature.ICreature;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
