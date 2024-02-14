@@ -1,0 +1,1 @@
+Hexagonal coordinates distance algorithm used in HexAroundGameManager: https://www.redblobgames.com/grids/hexagons/#distances
