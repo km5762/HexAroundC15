@@ -18,8 +18,33 @@
 | T  |  X   | canReach when creature cannot reach                                                                                             | 
 | R  |  X   | Change variable maxRange -> maxDistance to be more consistent with CreatureDefinition                                           |
 | T  |  X   | canReach when creature can reach                                                                                                | 
-| R  |  X   | Move basic functionality for getting/putting ICreatures on board into seperate Board class                                      | 
-| R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.get()                                             |
+| R  |  X   | Move basic functionality for getting/putting ICreatures on board into seperate Board class                                      |
+| T  |  X   | board.getAllCreatures when no creatures at point                                                                                | 
+| T  |  X   | board.getAllCreatures when creatures at point                                                                                   |
+| T  |  X   | board.getCreatureWithName when no creatures at point                                                                            |
+| T  |  X   | board.getCreatureWithName when no creature with name at point                                                                   |
+| T  |  X   | board.getCreatureWithName when there is a match at the point                                                                    |
+| T  |  X   | board.getTopCreature when there are no creatures at point                                                                       |
+| T  |  X   | board.getTopCreature when there are creatures at point                                                                          |
+| T  |  X   | board.placeCreature when no creatures at point                                                                                  |
+| T  |  X   | board.placeCreature when already creatures at point                                                                             |
+| T  |  X   | board.removeCreature when no creatures at point                                                                                 |
+| T  |  X   | board.removeCreature when no creatures with name at point                                                                       |
+| T  |  X   | board.removeCreature there is a match at the point                                                                              |
+| T  |  X   | board.removeCreature there is a match at the point and removing the creature leaves the point empty                             |
+| T  |  X   | board.moveCreature from an empty point                                                                                          |
+| T  |  X   | board.moveCreature when no creature with name at point                                                                          |
+| T  |  X   | board.moveCreature when there is a match at the point                                                                           |
+
+| R | X | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for
+Board.getAllCreatures()                                 |
+| T | X | placeCreature returns legal MoveResponse |
+| R | X | Prefer Java Optionals vs. null returns to force consumers to deal with null case |
+| T | X | moveCreature returns legal MoveResponse |
+| T | X | Creature is actually moved on board after moveCreature |
+| R | X | Make calculateDistance return type double -> int since distances will always be integers |
+| T | X | isPointConnected when point is not connected |
+| T | X | isPointConnected when point is connected |
 
 # Design Patterns
 

@@ -8,6 +8,7 @@ import hexaround.game.creature.ICreature;
 import hexaround.game.player.Player;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class HexAroundFirstSubmission implements IHexAround1 {
     protected Collection<Player> players;
@@ -48,10 +49,13 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public CreatureName getCreatureAt(int x, int y) {
-        if (!isOccupied(x, y)) {
+        Optional<ICreature> topCreature = board.getTopCreature(x, y);
+
+        if (topCreature.isPresent()) {
+            return topCreature.get().getName();
+        } else {
             return null;
         }
-        return board.getTopCreature(x, y).getName();
     }
 
     /**
@@ -67,7 +71,13 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean hasProperty(int x, int y, CreatureProperty property) {
-        return board.getTopCreature(x, y).hasProperty(property);
+        Optional<ICreature> topCreature = board.getTopCreature(x, y);
+
+        if (topCreature.isPresent()) {
+            return topCreature.get().hasProperty(property);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -101,19 +111,16 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean canReach(int x1, int y1, int x2, int y2) {
-        int maxDistance = board.getTopCreature(x1, y1).getMaxDistance();
-        double distance = calculateDistance(x1, y1, x2, y2);
+        Optional<ICreature> topCreature = board.getTopCreature(x1, y1);
 
-        return distance <= maxDistance;
-    }
+        if (topCreature.isPresent()) {
+            int maxDistance = topCreature.get().getMaxDistance();
+            double distance = board.calculateDistance(x1, y1, x2, y2);
 
-    /**
-     * Source: https://www.redblobgames.com/grids/hexagons/#distances
-     */
-    private double calculateDistance(int x1, int y1, int x2, int y2) {
-        return (double) (Math.abs(y1 - y2)
-                + Math.abs(y1 + x1 - y2 - x2)
-                + Math.abs(x1 - x2)) / 2;
+            return distance <= maxDistance;
+        } else {
+        return false;
+        }
     }
 
     /**
@@ -147,6 +154,8 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public MoveResponse moveCreature(CreatureName creature, int fromX, int fromY, int toX, int toY) {
-        return null;
+        board.moveCreature(creature, fromX, fromY, toX, toY);
+
+        return new MoveResponse(MoveResult.OK, "Legal move");
     }
 }

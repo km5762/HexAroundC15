@@ -84,4 +84,50 @@ public class HexAroundGameManagerTest {
 
         assertTrue(gameManager.canReach(3, 5, 4, 5));
     }
+
+    @Test
+    void legalMoveResponseOnPlaceCreature() throws IOException {
+        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
+
+        MoveResponse actualResponse = gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
+        MoveResponse expectedResponse = new MoveResponse(MoveResult.OK, "Legal move");
+
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    void legalResponseOnMoveCreature() throws IOException {
+        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
+
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
+
+        MoveResponse actualResponse = gameManager.moveCreature(CreatureName.BUTTERFLY, 3, 5, 4, 5);
+        MoveResponse expectedResponse = new MoveResponse(MoveResult.OK, "Legal move");
+
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @Test
+    void creatureIsMoved() throws IOException {
+        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
+
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
+
+        gameManager.moveCreature(CreatureName.BUTTERFLY, 3, 5, 4, 5);
+
+        assertFalse(gameManager.isOccupied(3, 5));
+        assertEquals(CreatureName.BUTTERFLY, gameManager.getCreatureAt(4, 5));
+    }
+
+    @Test
+    void isDisconnectingMove() throws IOException {
+        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
+
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
+
+        gameManager.moveCreature(CreatureName.BUTTERFLY, 3, 5, 4, 5);
+
+        assertFalse(gameManager.isOccupied(3, 5));
+        assertEquals(CreatureName.BUTTERFLY, gameManager.getCreatureAt(4, 5));
+    }
 }
