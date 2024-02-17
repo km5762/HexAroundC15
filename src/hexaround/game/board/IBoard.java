@@ -19,8 +19,9 @@ public interface IBoard {
 
     Optional<ICreature> getTopCreature(int x, int y);
 
-    boolean pointIsConnected(int x, int y);
-
     int calculateDistance(int x1, int y1, int x2, int y2);
 
+    boolean moveIsDisconnecting(CreatureName name, int fromX, int fromY, int toX, int toY);
+
+    boolean placementIsDisconnecting(ICreature creature, int x, int y);
 }

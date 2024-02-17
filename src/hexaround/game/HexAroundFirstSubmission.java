@@ -154,6 +154,10 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public MoveResponse moveCreature(CreatureName creature, int fromX, int fromY, int toX, int toY) {
+        if (board.moveIsDisconnecting(creature, fromX, fromY, toX, toY)) {
+            return new MoveResponse(MoveResult.MOVE_ERROR, "Colony is not connected, try again");
+        }
+
         board.moveCreature(creature, fromX, fromY, toX, toY);
 
         return new MoveResponse(MoveResult.OK, "Legal move");

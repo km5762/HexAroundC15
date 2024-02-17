@@ -120,14 +120,15 @@ public class HexAroundGameManagerTest {
     }
 
     @Test
-    void isDisconnectingMove() throws IOException {
+    void invalidResponseOnDisconnectingMove() throws IOException {
         IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
 
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 0, 1);
 
-        gameManager.moveCreature(CreatureName.BUTTERFLY, 3, 5, 4, 5);
+        MoveResponse actualResponse = gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 1, -1, 2);
+        MoveResponse expectedResponse = new MoveResponse(MoveResult.MOVE_ERROR, "Colony is not connected, try again");
 
-        assertFalse(gameManager.isOccupied(3, 5));
-        assertEquals(CreatureName.BUTTERFLY, gameManager.getCreatureAt(4, 5));
+        assertEquals(expectedResponse, actualResponse);
     }
 }

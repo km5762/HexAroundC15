@@ -26,6 +26,7 @@
 | T  |  X   | board.getCreatureWithName when there is a match at the point                                                                    |
 | T  |  X   | board.getTopCreature when there are no creatures at point                                                                       |
 | T  |  X   | board.getTopCreature when there are creatures at point                                                                          |
+| T  |  X   | Use @BeforeEach directive to make testing more concise                                                                          | 
 | T  |  X   | board.placeCreature when no creatures at point                                                                                  |
 | T  |  X   | board.placeCreature when already creatures at point                                                                             |
 | T  |  X   | board.removeCreature when no creatures at point                                                                                 |
@@ -35,16 +36,18 @@
 | T  |  X   | board.moveCreature from an empty point                                                                                          |
 | T  |  X   | board.moveCreature when no creature with name at point                                                                          |
 | T  |  X   | board.moveCreature when there is a match at the point                                                                           |
-
-| R | X | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for
-Board.getAllCreatures()                                 |
-| T | X | placeCreature returns legal MoveResponse |
-| R | X | Prefer Java Optionals vs. null returns to force consumers to deal with null case |
-| T | X | moveCreature returns legal MoveResponse |
-| T | X | Creature is actually moved on board after moveCreature |
-| R | X | Make calculateDistance return type double -> int since distances will always be integers |
-| T | X | isPointConnected when point is not connected |
-| T | X | isPointConnected when point is connected |
+| R  |  X   | Move calculateDistance helper from GameManager to Board                                                                         |
+| T  |  X   | board.moveIsDisconnecting when move is not disconnecting                                                                        |
+| T  |  X   | board.moveIsDisconnecting when move is disconnecting                                                                            |
+| T  |  X   | board.placementIsDisconnecting when placement is not disconnecting                                                              |
+| T  |  X   | board.placementISDisconnecting when placement is disconnecting                                                                  |
+| R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.getAllCreatures()                                 |
+| T  |  X   | GameManager.placeCreature returns legal MoveResponse                                                                            |
+| R  |  X   | Prefer Java Optionals vs. null returns to force consumers to deal with null case                                                |
+| T  |  X   | GameManager.moveCreature returns legal MoveResponse                                                                             |
+| T  |  X   | Creature is actually moved on board after moveCreature                                                                          |
+| R  |  X   | Make calculateDistance return type double -> int since distances will always be integers                                        |
+| T  |  X   | GameManager.moveCreature returns move error on disconnecting move                                                               |
 
 # Design Patterns
 
