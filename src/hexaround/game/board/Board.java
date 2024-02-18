@@ -10,12 +10,15 @@ import java.util.List;
 public class Board implements IBoard {
     protected Map<Point, List<ICreature>> board;
 
+    protected static final UnitVectors unitVectors = new UnitVectors();
+
     public Board(Map<Point, List<ICreature>> board) {
         this.board = board;
     }
 
     /**
      * Places an instance of ICreature at the specified point
+     *
      * @param creature an instance of ICreature
      * @param x
      * @param y
@@ -32,6 +35,7 @@ public class Board implements IBoard {
 
     /**
      * Removes creature with CreatureName from the specified point
+     *
      * @param name the CreatureName of the creature to remove
      * @param x
      * @param y
@@ -51,11 +55,12 @@ public class Board implements IBoard {
 
     /**
      * Moves creature with CreatureName from one point to another
-     * @param name the CreatureName of the creature to move
+     *
+     * @param name  the CreatureName of the creature to move
      * @param fromX the initial x coordinate of the creature
      * @param fromY the initial y coordinate of the creature
-     * @param toX the x coordinate to move the creature to
-     * @param toY the y coordinate to move the creature to
+     * @param toX   the x coordinate to move the creature to
+     * @param toY   the y coordinate to move the creature to
      */
     public void moveCreature(CreatureName name, int fromX, int fromY, int toX, int toY) {
         Optional<ICreature> specifiedCreature = getCreatureWithName(name, fromX, fromY);
@@ -68,6 +73,7 @@ public class Board implements IBoard {
 
     /**
      * Returns the creature on top of the stack of creatures at the specified point
+     *
      * @param x
      * @param y
      * @return the top ICreature at point (x, y)
@@ -85,6 +91,7 @@ public class Board implements IBoard {
 
     /**
      * Returns all creatures at the specified point
+     *
      * @param x
      * @param y
      * @return all creatures at point (x, y)
@@ -111,6 +118,7 @@ public class Board implements IBoard {
     /**
      * Source: https://www.redblobgames.com/grids/hexagons/#distances
      * Calculates the distance between two points on the board
+     *
      * @param x1 the x coordinate of the first point
      * @param y1 the y coordinate of the first point
      * @param x2 the x coordinate of the second point
@@ -125,11 +133,12 @@ public class Board implements IBoard {
 
     /**
      * Returns true if the specified move disconnects the colony, and false otherwise
-     * @param name the CreatureName of the creature being moved
+     *
+     * @param name  the CreatureName of the creature being moved
      * @param fromX the x coordinate the creature is being moved from
      * @param fromY the y coordinate the creauter is being moved from
-     * @param toX the x coordinate the creature is being moved to
-     * @param toY the y coordinate the creature is being moved to
+     * @param toX   the x coordinate the creature is being moved to
+     * @param toY   the y coordinate the creature is being moved to
      * @return true if the specified move is disconnecting, and false otherwise
      */
     public boolean moveIsDisconnecting(CreatureName name, int fromX, int fromY, int toX, int toY) {
@@ -137,7 +146,9 @@ public class Board implements IBoard {
 
         boardSimulation.moveCreature(name, fromX, fromY, toX, toY);
 
-        return boardSimulation.isDisconnected();
+        List<List<ICreature>> neighbors = boardSimulation.getNeighbors(toX, toY);
+
+        return neighbors.stream().allMatch(List::isEmpty);
     }
 
     private Board createBoardSimulation() {
@@ -153,22 +164,37 @@ public class Board implements IBoard {
         return new Board(copiedBoard);
     }
 
-    private boolean isDisconnected() {
-        for (Point point : board.keySet()) {
-            for (Point otherPoint : board.keySet()) {
-                if (calculateDistance(point.x, point.y, otherPoint.x, otherPoint.y) > 1) {
-                    return true;
-                }
-            }
+    private List<List<ICreature>> getNeighbors(int x, int y) {
+        List<List<ICreature>> neighbors = new ArrayList<>();
+
+        for (Vector unitVector : unitVectors.getVectors()) {
+            List<ICreature> neighboringCreatures = getAllCreatures(x + unitVector.dX(), y + unitVector.dY());
+            neighbors.add(neighboringCreatures);
         }
-        return false;
+
+        return neighbors;
     }
 
+    /**
+     * Returns true if the specified placement disconnects the colony, and false otherwise
+     *
+     * @param creature the creature instance being placed
+     * @param x   the x coordinate the creature is being placed on
+     * @param y   the y coordinate the creature is being placed on
+     * @return true if the specified move is disconnecting, and false otherwise
+     */
     public boolean placementIsDisconnecting(ICreature creature, int x, int y) {
         Board boardSimulation = createBoardSimulation();
 
         boardSimulation.placeCreature(creature, x, y);
 
-        return boardSimulation.isDisconnected();
+        List<List<ICreature>> neighbors = boardSimulation.getNeighbors(x, y);
+
+        return neighbors.stream().allMatch(List::isEmpty);
+    }
+
+    public boolean pieceCanSlide(int x1, int y1, int x2, int y2) {
+
+        return false;
     }
 }

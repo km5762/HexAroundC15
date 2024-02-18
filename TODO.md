@@ -39,6 +39,7 @@
 | R  |  X   | Move calculateDistance helper from GameManager to Board                                                                         |
 | T  |  X   | board.moveIsDisconnecting when move is not disconnecting                                                                        |
 | T  |  X   | board.moveIsDisconnecting when move is disconnecting                                                                            |
+| R  |  X   | Create UnitVector and Vectors classes to allow for easier testing/more semantic access to cardinal directions                   |
 | T  |  X   | board.placementIsDisconnecting when placement is not disconnecting                                                              |
 | T  |  X   | board.placementISDisconnecting when placement is disconnecting                                                                  |
 | R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.getAllCreatures()                                 |
