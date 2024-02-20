@@ -38,9 +38,12 @@
 | T  |  X   | board.moveCreature when there is a match at the point                                                                           |
 | R  |  X   | Move calculateDistance helper from GameManager to Board                                                                         |
 | T  |  X   | board.moveIsDisconnecting when move is not disconnecting                                                                        |
+| T  |  X   | board.moveIsDisconnecting when creature being moved is the only one on board                                                    |
+| R  |  X   | Move getting total creatures operation to private helper                                                                        |
 | T  |  X   | board.moveIsDisconnecting when move is disconnecting                                                                            |
 | R  |  X   | Create UnitVector and Vectors classes to allow for easier testing/more semantic access to cardinal directions                   |
 | T  |  X   | board.placementIsDisconnecting when placement is not disconnecting                                                              |
+| T  |  X   | board.placementIsDisconnecting when placement is the first in the game                                                          |
 | T  |  X   | board.placementISDisconnecting when placement is disconnecting                                                                  |
 | R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.getAllCreatures()                                 |
 | T  |  X   | GameManager.placeCreature returns legal MoveResponse                                                                            |
@@ -49,6 +52,11 @@
 | T  |  X   | Creature is actually moved on board after moveCreature                                                                          |
 | R  |  X   | Make calculateDistance return type double -> int since distances will always be integers                                        |
 | T  |  X   | GameManager.moveCreature returns move error on disconnecting move                                                               |
+| R  |  X   | Move functionality for calculating distances/getting neighbors into HexPoint class                                              | 
+| T  |  X   | getNeighboringPoints of hex point                                                                                               | 
+| T  |  X   | calculateDistanceTo own hex point                                                                                               | 
+| T  |  X   | calculateDistanceTo another hex point                                                                                           | 
+| T  |  X   | clone HexPoint                                                                                                                  | 
 
 # Design Patterns
 

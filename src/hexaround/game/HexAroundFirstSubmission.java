@@ -1,6 +1,8 @@
 package hexaround.game;
 
+import hexaround.game.board.HexPoint;
 import hexaround.game.board.IBoard;
+import hexaround.game.board.IPoint;
 import hexaround.game.creature.CreatureFactory;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
@@ -49,7 +51,8 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public CreatureName getCreatureAt(int x, int y) {
-        Optional<ICreature> topCreature = board.getTopCreature(x, y);
+        IPoint point = new HexPoint(x, y);
+        Optional<ICreature> topCreature = board.getTopCreature(point);
 
         if (topCreature.isPresent()) {
             return topCreature.get().getName();
@@ -71,7 +74,8 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean hasProperty(int x, int y, CreatureProperty property) {
-        Optional<ICreature> topCreature = board.getTopCreature(x, y);
+        IPoint point = new HexPoint(x, y);
+        Optional<ICreature> topCreature = board.getTopCreature(point);
 
         if (topCreature.isPresent()) {
             return topCreature.get().hasProperty(property);
@@ -90,7 +94,8 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean isOccupied(int x, int y) {
-        return !board.getAllCreatures(x, y).isEmpty();
+        IPoint point = new HexPoint(x, y);
+        return !board.getAllCreatures(point).isEmpty();
     }
 
     /**
@@ -111,11 +116,14 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public boolean canReach(int x1, int y1, int x2, int y2) {
-        Optional<ICreature> topCreature = board.getTopCreature(x1, y1);
+        IPoint fromPoint = new HexPoint(x1, y1);
+        IPoint toPoint = new HexPoint(x2, y2);
+
+        Optional<ICreature> topCreature = board.getTopCreature(fromPoint);
 
         if (topCreature.isPresent()) {
             int maxDistance = topCreature.get().getMaxDistance();
-            double distance = board.calculateDistance(x1, y1, x2, y2);
+            int distance = fromPoint.calculateDistanceTo(toPoint);
 
             return distance <= maxDistance;
         } else {
@@ -135,9 +143,10 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public MoveResponse placeCreature(CreatureName creature, int x, int y) {
+        IPoint point = new HexPoint(x, y);
         ICreature creatureInstance = creatureFactory.makeCreature(creature);
 
-        board.placeCreature(creatureInstance, x, y);
+        board.placeCreature(creatureInstance, point);
 
         return new MoveResponse(MoveResult.OK, "Legal move");
     }
@@ -154,11 +163,14 @@ public class HexAroundFirstSubmission implements IHexAround1 {
      */
     @Override
     public MoveResponse moveCreature(CreatureName creature, int fromX, int fromY, int toX, int toY) {
-        if (board.moveIsDisconnecting(creature, fromX, fromY, toX, toY)) {
+        IPoint fromPoint = new HexPoint(fromX, fromY);
+        IPoint toPoint = new HexPoint(toX, toY);
+
+        if (board.moveIsDisconnecting(creature, fromPoint, toPoint)) {
             return new MoveResponse(MoveResult.MOVE_ERROR, "Colony is not connected, try again");
         }
 
-        board.moveCreature(creature, fromX, fromY, toX, toY);
+        board.moveCreature(creature, fromPoint, toPoint);
 
         return new MoveResponse(MoveResult.OK, "Legal move");
     }
