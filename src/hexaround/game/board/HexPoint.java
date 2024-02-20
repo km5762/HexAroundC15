@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record HexPoint(int x, int y) implements IPoint {
-    protected static final UnitVectors unitVectors = new UnitVectors();
+    private static final UnitVectors unitVectors = new UnitVectors();
 
     public List<IPoint> getNeighboringPoints() {
         List<IPoint> neighboringHexPoints = new ArrayList<>();
