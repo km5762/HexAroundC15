@@ -4,9 +4,7 @@ import hexaround.game.creature.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,6 +27,15 @@ public class CreatureStackTest {
     }
 
     @Test
+    void removeCreatureNoMatch() {
+        creatureStack.addCreature(creature1);
+        creatureStack.addCreature(creature2);
+
+        assertTrue(creatureStack.removeCreature(CreatureName.BUTTERFLY) instanceof CreatureStack);
+        assertEquals(2, creatureStack.getSize());
+    }
+
+    @Test
     void removeCreature() {
         creatureStack.addCreature(creature1);
         creatureStack.addCreature(creature2);
@@ -48,11 +55,6 @@ public class CreatureStackTest {
         creatureStack.addCreature(creature2);
 
         assertEquals(creature2, creatureStack.getTopCreature().get());
-    }
-
-    @Test
-    void getCreatureWithNameOfEmptyStack() {
-        assertFalse(creatureStack.getCreatureWithName(CreatureName.CRAB).isPresent());
     }
 
     @Test

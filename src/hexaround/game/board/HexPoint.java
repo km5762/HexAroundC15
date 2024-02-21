@@ -6,6 +6,11 @@ import java.util.List;
 public record HexPoint(int x, int y) implements IPoint {
     private static final UnitVectors unitVectors = new UnitVectors();
 
+    /**
+     * Get all HexPoints neighboring this HexPoint
+     *
+     * @return a List of all neighboring HexPoints
+     */
     public List<IPoint> getNeighboringPoints() {
         List<IPoint> neighboringHexPoints = new ArrayList<>();
 
@@ -16,7 +21,13 @@ public record HexPoint(int x, int y) implements IPoint {
 
         return neighboringHexPoints;
     }
-    
+
+    /**
+     * Calculates the distance to another HexPoint
+     *
+     * @param toPoint another HexPoint
+     * @return the distance between the two HexPoints
+     */
     public int calculateDistanceTo(IPoint toPoint) {
         return (Math.abs(y - toPoint.getY())
                 + Math.abs(y + x - toPoint.getY() - toPoint.getX())
@@ -31,6 +42,11 @@ public record HexPoint(int x, int y) implements IPoint {
         return y;
     }
 
+    /**
+     * Creates a deep copy of this instance of HexPoint
+     *
+     * @return a deep copy of this instance of HexPoint
+     */
     @Override
     public IPoint clone() {
         return new HexPoint(x, y);

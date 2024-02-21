@@ -3,6 +3,7 @@ package hexaround.game.board;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.ICreature;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IBoard {
@@ -21,4 +22,6 @@ public interface IBoard {
     boolean placementIsDisconnecting(ICreature creature, IPoint point);
 
     boolean creatureCanSlide(IPoint fromPoint, IPoint toPoint);
+
+    List<Integer> findPathLengths(IPoint fromPoint, IPoint toPoint);
 }

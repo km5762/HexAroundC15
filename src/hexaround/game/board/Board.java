@@ -19,7 +19,7 @@ public class Board implements IBoard {
      * Places an instance of ICreature at the specified IPoint
      *
      * @param creature an instance of ICreature
-     * @param point the specified IPoint
+     * @param point    the specified IPoint
      */
     public void placeCreature(ICreature creature, IPoint point) {
         CreatureStack creaturesAtPoint = getAllCreatures(point);
@@ -27,6 +27,8 @@ public class Board implements IBoard {
         if (creaturesAtPoint.isEmpty()) {
             creaturesAtPoint.addCreature(creature);
             board.put(point, creaturesAtPoint);
+        } else {
+            creaturesAtPoint.addCreature(creature);
         }
     }
 
@@ -34,19 +36,23 @@ public class Board implements IBoard {
      * Removes creature with CreatureName from the specified IPoint
      *
      * @param creatureName the CreatureName of the creature to remove
-     * @param point the specified IPoint
+     * @param point        the specified IPoint
      */
     public void removeCreature(CreatureName creatureName, IPoint point) {
         CreatureStack creaturesAtPoint = getAllCreatures(point);
         creaturesAtPoint.removeCreature(creatureName);
+
+        if (creaturesAtPoint.isEmpty()) {
+            board.remove(point);
+        }
     }
 
     /**
      * Moves creature with CreatureName from one IPoint to another
      *
      * @param creatureName the CreatureName of the creature to move
-     * @param fromPoint the IPoint the creature is currently at
-     * @param fromPoint the IPoint to move the creature to
+     * @param fromPoint    the IPoint the creature is currently at
+     * @param fromPoint    the IPoint to move the creature to
      */
     @Override
     public void moveCreature(CreatureName creatureName, IPoint fromPoint, IPoint toPoint) {
@@ -80,34 +86,53 @@ public class Board implements IBoard {
         return board.getOrDefault(point, new CreatureStack());
     }
 
+    private int getTotalCreatureStacks() {
+        return board.size();
+    }
+
     /**
      * Returns true if the specified move disconnects the colony, and false otherwise
      *
-     * @param name  the CreatureName of the creature being moved
+     * @param name      the CreatureName of the creature being moved
      * @param fromPoint the IPoint the creature is currently at
      * @param fromPoint the IPoint to move the creature to
      * @return true if the specified move is disconnecting, and false otherwise
      */
     public boolean moveIsDisconnecting(CreatureName name, IPoint fromPoint, IPoint toPoint) {
-        if (getTotalCreatures() <= 1) {
+        Board boardSimulation = createBoardSimulation();
+        boardSimulation.moveCreature(name, fromPoint, toPoint);
+
+        if (boardSimulation.getTotalCreatureStacks() <= 1) {
             return false;
         }
 
-        Board boardSimulation = createBoardSimulation();
-        boardSimulation.moveCreature(name, fromPoint, toPoint);
-        List<IPoint> occupiedNeighboringPoints = boardSimulation.getOccupiedNeighboringPoints(toPoint);
-
-        return occupiedNeighboringPoints.isEmpty();
+        return !boardSimulation.isConnected();
     }
 
-    private int getTotalCreatures() {
-        int totalCreatures = 0;
+    /**
+     * Returns true if the board is disconnected
+     *
+     * @return true if the board is disconnected, false otherwise
+     */
+    private boolean isConnected() {
+        Set<IPoint> occupiedPoints = board.keySet();
+        Set<IPoint> visitedPoints = new HashSet<>();
+        Queue<IPoint> pointQueue = new LinkedList<>();
+        IPoint firstPoint = board.keySet().iterator().next();
+        pointQueue.add(firstPoint);
 
-        for (CreatureStack creatureStack : board.values()) {
-            totalCreatures += creatureStack.getSize();
+        while (!pointQueue.isEmpty()) {
+            IPoint currentPoint = pointQueue.poll();
+
+            for (IPoint neighboringPoint : currentPoint.getNeighboringPoints()) {
+                if (!visitedPoints.contains(neighboringPoint) && !getAllCreatures(neighboringPoint).isEmpty()) {
+                    visitedPoints.add(neighboringPoint);
+                    pointQueue.add(neighboringPoint);
+                }
+            }
         }
 
-        return totalCreatures;
+        return visitedPoints.containsAll(occupiedPoints);
     }
 
     private Board createBoardSimulation() {
@@ -140,7 +165,7 @@ public class Board implements IBoard {
      * Returns true if the specified placement disconnects the colony, and false otherwise
      *
      * @param creature the creature instance being placed
-     * @param point the specified IPoint
+     * @param point    the specified IPoint
      * @return true if the specified move is disconnecting, and false otherwise
      */
     public boolean placementIsDisconnecting(ICreature creature, IPoint point) {
@@ -150,9 +175,8 @@ public class Board implements IBoard {
 
         Board boardSimulation = createBoardSimulation();
         boardSimulation.placeCreature(creature, point);
-        List<IPoint> occupiedNeighboringIPoints = boardSimulation.getOccupiedNeighboringPoints(point);
 
-        return occupiedNeighboringIPoints.isEmpty();
+        return !boardSimulation.isConnected();
     }
 
     /**
@@ -179,31 +203,43 @@ public class Board implements IBoard {
         return true;
     }
 
-//    private List<IPoint> findMinPath(int fromX, int fromY, int toX, int toY) {
-//        PriorityQueue<PathNode> frontier = new PriorityQueue<>();
-//        PathNode start = new PathNode(new IPoint(fromX, fromY), 0);
-//        Map<PathNode, PathNode> cameFrom = new HashMap<>();
-//        Map<PathNode, Integer> costSoFar = new HashMap<>();
-//        cameFrom.put(start, null);
-//        costSoFar.put(start, 0);
-//
-//        while (!frontier.isEmpty()) {
-//            PathNode current = frontier.poll();
-//            IPoint currentIPoint = current.IPoint();
-//
-//            if (currentIPoint.x == toX && currentIPoint.y == toY) {
-//                break;
-//            }
-//
-//            List<IPoint> neighboringIPoints = getNeighboringIPoints(currentIPoint.x, currentIPoint.y);
-//            for (IPoint neighboringIPoint : neighboringIPoints) {
-//                if (!getAllCreatures(neighboringIPoint.x, neighboringIPoint.y).isEmpty()
-//                || is) {
-//                    continue;
-//                }
-//                int newCost = costSoFar.get(current) + 1;
-//
-//            }
-//        }
-//    }
+    /**
+     * Finds all possible valid path lengths from one IPoint to another
+     *
+     * Source: https://www.geeksforgeeks.org/print-paths-given-source-destination-using-bfs/
+     *
+     * @param fromPoint the starting IPoint
+     * @param toPoint   the target IPoint
+     * @return a List containing Integers, each of which represent a valid path length.
+     */
+    public List<Integer> findPathLengths(IPoint fromPoint, IPoint toPoint) {
+        Queue<List<IPoint>> pathQueue = new LinkedList<>();
+        List<Integer> pathLengths = new ArrayList<>();
+
+        List<IPoint> startPath = new ArrayList<>();
+        startPath.add(fromPoint);
+        pathQueue.add(startPath);
+
+        while (!pathQueue.isEmpty()) {
+            List<IPoint> currentPath = pathQueue.poll();
+            IPoint lastPoint = currentPath.get(currentPath.size() - 1);
+
+            if (lastPoint.equals(toPoint)) {
+                pathLengths.add(currentPath.size() - 1);
+                System.out.println(currentPath);
+            }
+
+            for (IPoint neighboringPoint : lastPoint.getNeighboringPoints()) {
+                if (!currentPath.contains(neighboringPoint)
+                        && !getOccupiedNeighboringPoints(neighboringPoint).isEmpty()
+                        && getAllCreatures(neighboringPoint).isEmpty()) {
+                    List<IPoint> newPath = new ArrayList<>(currentPath);
+                    newPath.add(neighboringPoint);
+                    pathQueue.add(newPath);
+                }
+            }
+        }
+
+        return pathLengths;
+    }
 }

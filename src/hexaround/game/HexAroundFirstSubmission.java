@@ -12,7 +12,7 @@ import hexaround.game.player.Player;
 import java.util.Collection;
 import java.util.Optional;
 
-public class HexAroundFirstSubmission implements IHexAround1 {
+public class HexAroundFirstSubmission implements IHexAroundGameManager {
     protected Collection<Player> players;
     protected IBoard board;
     protected CreatureFactory creatureFactory;
@@ -41,125 +41,31 @@ public class HexAroundFirstSubmission implements IHexAround1 {
     }
 
     /**
-     * Given the x and y-coordinates for a hex, return the name
-     * of the creature on that coordinate.
+     * Places a creature with CreatureName at the point specified by x and y
      *
-     * @param x
-     * @param y
-     * @return the name of the creature on (x, y), or null if there
-     * is no creature.
-     */
-    @Override
-    public CreatureName getCreatureAt(int x, int y) {
-        IPoint point = new HexPoint(x, y);
-        Optional<ICreature> topCreature = board.getTopCreature(point);
-
-        if (topCreature.isPresent()) {
-            return topCreature.get().getName();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Determine if the creature at the x and y-coordinates has the specified
-     * property. You can assume that there will be a creature at the specified
-     * location.
-     *
-     * @param x
-     * @param y
-     * @param property the property to look for.
-     * @return true if the creature at (x, y) has the specified property,
-     * false otherwise.
-     */
-    @Override
-    public boolean hasProperty(int x, int y, CreatureProperty property) {
-        IPoint point = new HexPoint(x, y);
-        Optional<ICreature> topCreature = board.getTopCreature(point);
-
-        if (topCreature.isPresent()) {
-            return topCreature.get().hasProperty(property);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Given the x and y-coordinate of a hex, determine if there is a
-     * piece on that hex on the board.
-     *
-     * @param x
-     * @param y
-     * @return true if there is a piece on the hex, false otherwise.
-     */
-    @Override
-    public boolean isOccupied(int x, int y) {
-        IPoint point = new HexPoint(x, y);
-        return !board.getAllCreatures(point).isEmpty();
-    }
-
-    /**
-     * Given the coordinates for two hexes, (x1, y1) and (x2, y2),
-     * return whether the piece at (x1, y1) could reach the other
-     * hex.
-     * You can assume that there will be a piece at (x1, y1).
-     * The distance is just the distance between the two hexes. You
-     * do not have to do any other checking.
-     *
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @return itrue if the distance between the two hexes is less
-     * than or equal to the maximum distance property for the piece
-     * at (x1, y1). Return false otherwise.
-     */
-    @Override
-    public boolean canReach(int x1, int y1, int x2, int y2) {
-        IPoint fromPoint = new HexPoint(x1, y1);
-        IPoint toPoint = new HexPoint(x2, y2);
-
-        Optional<ICreature> topCreature = board.getTopCreature(fromPoint);
-
-        if (topCreature.isPresent()) {
-            int maxDistance = topCreature.get().getMaxDistance();
-            int distance = fromPoint.calculateDistanceTo(toPoint);
-
-            return distance <= maxDistance;
-        } else {
-        return false;
-        }
-    }
-
-    /**
-     * For this submission, just put the piece on the board. You
-     * can assume that the hex (x, y) is empty. You do not have to do
-     * any checking.
-     *
-     * @param creature
-     * @param x
-     * @param y
-     * @return a response, or null. It is not going to be checked.
+     * @param creature the CreatureName of the creature to be palced
+     * @param x the x coordinate to place the creature at
+     * @param y the y coordinate to place the creature at
+     * @return a MoveResponse describing the outcome of the placement
      */
     @Override
     public MoveResponse placeCreature(CreatureName creature, int x, int y) {
         IPoint point = new HexPoint(x, y);
         ICreature creatureInstance = creatureFactory.makeCreature(creature);
-
         board.placeCreature(creatureInstance, point);
 
         return new MoveResponse(MoveResult.OK, "Legal move");
     }
 
     /**
-     * This is never used in this submission. You do not have to do anything.
+     * Moves a creature with CreatureName at the point specified by x and y
      *
-     * @param creature
-     * @param fromX
-     * @param fromY
-     * @param toX
-     * @param toY
-     * @return
+     * @param creature the CreatureName of the creature to be moved
+     * @param fromX the x coordinate to move the creature from
+     * @param fromY the y coordinate to move the creature from
+     * @param toX the x coordinate to move the creature to
+     * @param toY the y coordinate to move the creature to
+     * @return a MoveResponse describing the outcome of the move
      */
     @Override
     public MoveResponse moveCreature(CreatureName creature, int fromX, int fromY, int toX, int toY) {
@@ -171,7 +77,6 @@ public class HexAroundFirstSubmission implements IHexAround1 {
         }
 
         board.moveCreature(creature, fromPoint, toPoint);
-
         return new MoveResponse(MoveResult.OK, "Legal move");
     }
 }

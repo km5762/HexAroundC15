@@ -129,7 +129,7 @@ public class BoardTest {
         board.moveCreature(CreatureName.GRASSHOPPER, origin, toPoint);
 
         CreatureStack creaturesAtFromPoint = new CreatureStack().addCreature(creature1);
-        CreatureStack creaturesAtToPoint =  new CreatureStack().addCreature(creature2);
+        CreatureStack creaturesAtToPoint = new CreatureStack().addCreature(creature2);
 
         assertEquals(creaturesAtFromPoint, board.getAllCreatures(origin));
         assertEquals(creaturesAtToPoint, board.getAllCreatures(toPoint));
@@ -141,6 +141,7 @@ public class BoardTest {
             assertFalse(board.moveIsDisconnecting(CreatureName.CRAB, origin, neighboringPoint));
         }
     }
+
     @Test
     void movingOnEmptyBoardIsNotDisconnecting() {
         Board emptyBoard = new Board(new HashMap<>());
@@ -214,6 +215,35 @@ public class BoardTest {
         assertFalse(board.creatureCanSlide(new HexPoint(0, 0), new HexPoint(0, -1)));
     }
 
+    @Test
+    void getPathsToDisconnectedPoint() {
+        IBoard emptyBoard = new Board(new HashMap<>());
+        IPoint[] obstaclePoints = {new HexPoint(-1, 2), new HexPoint(0, 1), new HexPoint(1, 0)};
+        placeObstacleCreatures(obstaclePoints, emptyBoard);
+        System.out.println(emptyBoard.findPathLengths(origin, new HexPoint(2, -2)));
+    }
+
+    @Test
+    void getPathsToNeighboringPoint() {
+        IBoard emptyBoard = new Board(new HashMap<>());
+        IPoint[] obstaclePoints = {new HexPoint(-1, 2), new HexPoint(0, 1), new HexPoint(1, 0)};
+        placeObstacleCreatures(obstaclePoints, emptyBoard);
+        System.out.println(emptyBoard.findPathLengths(origin, new HexPoint(1, -1)));
+    }
+
+    @Test
+    void getPathsWithMaximumStartingPoints() {
+        IBoard emptyBoard = new Board(new HashMap<>());
+        IPoint[] obstaclePoints = {new HexPoint(0, 2), new HexPoint(-1, 2),
+                new HexPoint(-2, 2), new HexPoint(-2, 1),
+                new HexPoint(-2, 0), new HexPoint(-1, -1),
+                new HexPoint(0, -2), new HexPoint(1, -2),
+                new HexPoint(2, -2), new HexPoint(2, 0),
+                new HexPoint(1, 1)};
+        placeObstacleCreatures(obstaclePoints, emptyBoard);
+        emptyBoard.findPathLengths(origin, new HexPoint(1, -1));
+    }
+
     private List<IPoint> getScaledNeighboringPoints(IPoint point, int scale) {
         List<IPoint> scaledNeighboringPoints = new ArrayList<>();
 
@@ -225,5 +255,12 @@ public class BoardTest {
         }
 
         return scaledNeighboringPoints;
+    }
+
+    private void placeObstacleCreatures(IPoint[] obstaclePoints, IBoard board) {
+        for (IPoint atPoint : obstaclePoints) {
+            ICreature obstacleCreature = new Creature(CreatureName.CRAB, 1, Collections.singleton(CreatureProperty.WALKING));
+            board.placeCreature(obstacleCreature, atPoint);
+        }
     }
 }

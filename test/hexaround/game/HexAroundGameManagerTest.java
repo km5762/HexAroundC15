@@ -1,7 +1,7 @@
 package hexaround.game;
 
 import hexaround.game.creature.CreatureName;
-import hexaround.game.creature.CreatureProperty;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -9,126 +9,97 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HexAroundGameManagerTest {
-    HexAroundGameBuilder hexAroundGameBuilder = new HexAroundGameBuilder();
+    static HexAroundGameBuilder hexAroundGameBuilder = new HexAroundGameBuilder();
+    static IHexAroundGameManager gameManager;
 
-    @Test
-    void locationIsntOccupied() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
+    static MoveResponse legalResponse = new MoveResponse(MoveResult.OK, "Legal move");
+    static MoveResponse disconnectedResponse = new MoveResponse(MoveResult.MOVE_ERROR, "Colony is not connected, try again");
 
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-
-        assertFalse(gameManager.isOccupied(4, 5));
+    @BeforeEach
+    void setUpGameManager() throws IOException {
+        gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
     }
 
     @Test
-    void locationIsOccupied() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-
-        assertTrue(gameManager.isOccupied(3, 5));
-    }
-
-    @Test
-    void getCreatureAtNonOccupied() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
-        CreatureName creatureName = gameManager.getCreatureAt(3, 5);
-
-        assertNull(creatureName);
-    }
-
-    @Test
-    void getCreatureAt() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-
-        CreatureName creatureName = gameManager.getCreatureAt(3, 5);
-
-        assertEquals(CreatureName.BUTTERFLY, creatureName);
-    }
-
-    @Test
-    void creatureDoesntHaveProperty() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-
-        assertFalse(gameManager.hasProperty(3, 5, CreatureProperty.INTRUDING));
-    }
-
-    @Test
-    void creatureHasProperty() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-
-        assertTrue(gameManager.hasProperty(3, 5, CreatureProperty.WALKING));
-    }
-
-    @Test
-    void creatureCannotReach() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-
-        assertFalse(gameManager.canReach(3, 5, 4, 6));
-    }
-
-    @Test
-    void creatureCanReach() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-
-        assertTrue(gameManager.canReach(3, 5, 4, 5));
-    }
-
-    @Test
-    void legalMoveResponseOnPlaceCreature() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
+    void legalResponseOnPlaceCreature() {
         MoveResponse actualResponse = gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-        MoveResponse expectedResponse = new MoveResponse(MoveResult.OK, "Legal move");
 
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(legalResponse, actualResponse);
     }
 
     @Test
-    void legalResponseOnMoveCreature() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
+    void legalResponseOnMoveCreatureOnEmptyBoard() {
         gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
 
         MoveResponse actualResponse = gameManager.moveCreature(CreatureName.BUTTERFLY, 3, 5, 4, 5);
-        MoveResponse expectedResponse = new MoveResponse(MoveResult.OK, "Legal move");
 
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(legalResponse, actualResponse);
     }
 
     @Test
-    void creatureIsMoved() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 3, 5);
-
-        gameManager.moveCreature(CreatureName.BUTTERFLY, 3, 5, 4, 5);
-
-        assertFalse(gameManager.isOccupied(3, 5));
-        assertEquals(CreatureName.BUTTERFLY, gameManager.getCreatureAt(4, 5));
+    void legalResponseOnMoveCreatureInConnectedManner() {
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 0, 0);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 0);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 1);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 2);
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 0, 0, 1));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 1, 0, 2));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 2, 0, 3));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 3, 1, 3));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 3, 2, 2));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 3, 2, 2));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 3, 2, 1));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 3, 2, 0));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 3, 2, -1));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 3, 1, -1));
     }
 
     @Test
-    void invalidResponseOnDisconnectingMove() throws IOException {
-        IHexAround1 gameManager = hexAroundGameBuilder.buildGameManager("testConfigurations/FirstConfiguration.hgc");
-
+    void legalResponseOnMoveCreatureCreatingOneStack() {
         gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
-        gameManager.placeCreature(CreatureName.GRASSHOPPER, 0, 1);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 0);
 
-        MoveResponse actualResponse = gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 1, -1, 2);
-        MoveResponse expectedResponse = new MoveResponse(MoveResult.MOVE_ERROR, "Colony is not connected, try again");
+        MoveResponse actualResponse = gameManager.moveCreature(CreatureName.BUTTERFLY, 0, 0, 1, 0);
 
-        assertEquals(expectedResponse, actualResponse);
+        assertEquals(legalResponse, actualResponse);
+    }
+
+    @Test
+    void errorResponseOnDisconnectingMove() {
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 0, 0);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 0);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 1);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 2);
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 0, 0, 1));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 1, 0, 2));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 2, 0, 3));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 3, 1, 3));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 3, 2, 2));
+        assertEquals(disconnectedResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 2, 2, 0, 4));
+        assertEquals(disconnectedResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 2, 2, 0, 5));
+        assertEquals(disconnectedResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 2, 2, 3, 0));
+        assertEquals(disconnectedResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 2, 2, -1, -1));
+    }
+
+    @Test
+    void disconnectingMoveDoesNotChangeBoardState() {
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 0, 0);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 0);
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 0, 1, 0));
+        assertEquals(disconnectedResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 0, 2, 5));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 1, 0, 2, -1));
+    }
+
+    @Test
+    void errorResponseOnSplittingDisconnectingMove() {
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 0, 0);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, -1, 1);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, -1, 0);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, -1);
+        gameManager.placeCreature(CreatureName.GRASSHOPPER, 1, 0);
+
+        assertEquals(disconnectedResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 0, 2, -1));
+        assertEquals(disconnectedResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 0, -2, 1));
+        assertEquals(legalResponse, gameManager.moveCreature(CreatureName.GRASSHOPPER, 0, 0, 0, 1));
     }
 }

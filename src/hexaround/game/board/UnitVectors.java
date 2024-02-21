@@ -1,7 +1,7 @@
 package hexaround.game.board;
 
 public class UnitVectors {
-    protected static final Vector[] vectors = new Vector[]{
+    private static final Vector[] VECTORS = new Vector[]{
             new Vector(0, 1),
             new Vector(1, 0),
             new Vector(1, -1),
@@ -11,6 +11,6 @@ public class UnitVectors {
     };
 
     public Vector[] getVectors() {
-        return vectors;
+        return VECTORS;
     }
 }

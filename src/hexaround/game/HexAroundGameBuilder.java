@@ -32,11 +32,12 @@ import java.util.*;
 public class HexAroundGameBuilder {
     /**
      * Builds an instance of HexAroundGameManager using the specified configuration file
+     *
      * @param configurationFile the configuration file to be used to build the game manager
      * @return an instance of HexAroundGameManager
      * @throws IOException occurs when the specified configuration file cannot be read
      */
-    public static IHexAround1 buildGameManager(String configurationFile) throws IOException {
+    public static IHexAroundGameManager buildGameManager(String configurationFile) throws IOException {
         HexAroundConfigurationMaker configurationMaker =
             new HexAroundConfigurationMaker(configurationFile);
         GameConfiguration configuration = configurationMaker.makeConfiguration();
