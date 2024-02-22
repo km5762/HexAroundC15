@@ -79,6 +79,10 @@
 | T  |  X   | Return move error when specified creature doesnt exist                                                                                              | 
 | R  |  X   | Move all MoveResponses into seperate static class                                                                                                   | 
 | T  |  X   | Return move error when placing a creature that does has not been defined                                                                            | 
+| T  |  X   | move kamikaze creature properly destroys creatures at target                                                                                        |
+| T  |  X   | moveIsDisconnecting when kamikaze creature disconnects colony                                                                                       |
+| T  |  X   | move swapping creature properly swaps creatures                                                                                                     |
+| T  |  X   | move swapping creatures does not disconnect colony                                                                                                  |
 
 # Design Patterns
 

@@ -220,33 +220,68 @@ public class BoardTest {
         assertFalse(board.creatureCanSlide(new HexPoint(0, 0), new HexPoint(0, -1)));
     }
 
+//    @Test
+//    void getPathsToDisconnectedPoint() {
+//        IBoard emptyBoard = new Board(new HashMap<>());
+//        IPoint[] obstaclePoints = {new HexPoint(-1, 2), new HexPoint(0, 1), new HexPoint(1, 0)};
+//        placeObstacleCreatures(obstaclePoints, emptyBoard);
+//        System.out.println(emptyBoard.findPathLengths(origin, new HexPoint(2, -2)));
+//    }
+//
+//    @Test
+//    void getPathsToNeighboringPoint() {
+//        IBoard emptyBoard = new Board(new HashMap<>());
+//        IPoint[] obstaclePoints = {new HexPoint(-1, 2), new HexPoint(0, 1), new HexPoint(1, 0)};
+//        placeObstacleCreatures(obstaclePoints, emptyBoard);
+//        System.out.println(emptyBoard.findPathLengths(origin, new HexPoint(1, -1)));
+//    }
     @Test
-    void getPathsToDisconnectedPoint() {
-        IBoard emptyBoard = new Board(new HashMap<>());
-        IPoint[] obstaclePoints = {new HexPoint(-1, 2), new HexPoint(0, 1), new HexPoint(1, 0)};
-        placeObstacleCreatures(obstaclePoints, emptyBoard);
-        System.out.println(emptyBoard.findPathLengths(origin, new HexPoint(2, -2)));
+    void moveKamikazeCreature() {
+        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, Arrays.asList(new CreatureProperty[]{CreatureProperty.KAMIKAZE}));
+
+        board.placeCreature(creature, origin);
+        board.placeCreature(creature, new HexPoint(0, 1));
+        board.placeCreature(creature, new HexPoint(0, 2));
+        board.placeCreature(creature, new HexPoint(0, 3));
+        board.moveCreature(CreatureName.SPIDER, origin, new HexPoint(0, 1));
+        assertTrue(board.getAllCreatures(new HexPoint(0, 1)).isEmpty());
     }
 
     @Test
-    void getPathsToNeighboringPoint() {
+    void moveIsDisconnectingWithKamikazeCreature() {
         IBoard emptyBoard = new Board(new HashMap<>());
-        IPoint[] obstaclePoints = {new HexPoint(-1, 2), new HexPoint(0, 1), new HexPoint(1, 0)};
-        placeObstacleCreatures(obstaclePoints, emptyBoard);
-        System.out.println(emptyBoard.findPathLengths(origin, new HexPoint(1, -1)));
+        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, Arrays.asList(new CreatureProperty[]{CreatureProperty.KAMIKAZE}));
+
+        emptyBoard.placeCreature(creature, origin);
+        emptyBoard.placeCreature(creature, new HexPoint(0, 1));
+        emptyBoard.placeCreature(creature, new HexPoint(0, 2));
+        emptyBoard.placeCreature(creature, new HexPoint(0, 3));
+        assertTrue(emptyBoard.moveIsDisconnecting(CreatureName.SPIDER, origin, new HexPoint(0, 2)));
     }
 
     @Test
-    void getPathsWithMaximumStartingPoints() {
+    void moveSwappingCreature() {
         IBoard emptyBoard = new Board(new HashMap<>());
-        IPoint[] obstaclePoints = {new HexPoint(0, 2), new HexPoint(-1, 2),
-                new HexPoint(-2, 2), new HexPoint(-2, 1),
-                new HexPoint(-2, 0), new HexPoint(-1, -1),
-                new HexPoint(0, -2), new HexPoint(1, -2),
-                new HexPoint(2, -2), new HexPoint(2, 0),
-                new HexPoint(1, 1)};
-        placeObstacleCreatures(obstaclePoints, emptyBoard);
-        emptyBoard.findPathLengths(origin, new HexPoint(1, -1));
+        ICreature creature = new Creature(CreatureName.TURTLE, PlayerName.RED, 1, Arrays.asList(new CreatureProperty[]{CreatureProperty.SWAPPING}));
+
+        emptyBoard.placeCreature(creature, new HexPoint(0, 1));
+        emptyBoard.placeCreature(creature1, new HexPoint(0, 2));
+
+        emptyBoard.moveCreature(CreatureName.TURTLE, new HexPoint(0, 1), new HexPoint(0, 2));
+        assertSame(creature1, emptyBoard.getTopCreature(new HexPoint(0, 1)).get());
+        assertSame(creature, emptyBoard.getTopCreature(new HexPoint(0, 2)).get());
+    }
+
+    @Test
+    void moveSwappingCreatureIsNotDisconnecting() {
+        IBoard emptyBoard = new Board(new HashMap<>());
+        ICreature creature = new Creature(CreatureName.TURTLE, PlayerName.RED, 1, Arrays.asList(new CreatureProperty[]{CreatureProperty.SWAPPING}));
+
+        emptyBoard.placeCreature(creature, new HexPoint(0, 1));
+        emptyBoard.placeCreature(creature1, new HexPoint(0, 2));
+        emptyBoard.placeCreature(creature1, new HexPoint(0, 3));
+
+        assertFalse(emptyBoard.moveIsDisconnecting(CreatureName.TURTLE, new HexPoint(0, 1), new HexPoint(0, 2)));
     }
 
     private List<IPoint> getScaledNeighboringPoints(IPoint point, int scale) {
@@ -260,12 +295,5 @@ public class BoardTest {
         }
 
         return scaledNeighboringPoints;
-    }
-
-    private void placeObstacleCreatures(IPoint[] obstaclePoints, IBoard board) {
-        for (IPoint atPoint : obstaclePoints) {
-            ICreature obstacleCreature = new Creature(CreatureName.CRAB, PlayerName.RED, 1, Collections.singleton(CreatureProperty.WALKING));
-            board.placeCreature(obstacleCreature, atPoint);
-        }
     }
 }

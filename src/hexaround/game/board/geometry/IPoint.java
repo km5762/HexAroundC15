@@ -12,4 +12,6 @@ public interface IPoint {
     int getY();
 
     IPoint clone();
+
+    boolean equals(IPoint other);
 }

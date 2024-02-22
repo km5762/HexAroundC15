@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record HexPoint(int x, int y) implements IPoint {
-    private static final UnitVectors unitVectors = new UnitVectors();
-
     /**
      * Get all HexPoints neighboring this HexPoint
      *
@@ -14,7 +12,7 @@ public record HexPoint(int x, int y) implements IPoint {
     public List<IPoint> getNeighboringPoints() {
         List<IPoint> neighboringHexPoints = new ArrayList<>();
 
-        for (Vector unitVector : unitVectors.getVectors()) {
+        for (Vector unitVector : UnitVectors.VECTORS) {
             IPoint neighboringHexPoint = new HexPoint(x + unitVector.dX(), y + unitVector.dY());
             neighboringHexPoints.add(neighboringHexPoint);
         }
@@ -50,5 +48,10 @@ public record HexPoint(int x, int y) implements IPoint {
     @Override
     public IPoint clone() {
         return new HexPoint(x, y);
+    }
+    
+    @Override
+    public boolean equals(IPoint other) {
+        return x == other.getX() && y == other.getY();
     }
 }

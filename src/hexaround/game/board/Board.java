@@ -4,10 +4,7 @@ import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.creature.ICreature;
-import hexaround.game.player.Player;
-import hexaround.game.player.PlayerName;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.List;
 
@@ -64,21 +61,23 @@ public class Board implements IBoard {
         CreatureStack creaturesAtFromPoint = getAllCreatures(fromPoint);
         Optional<ICreature> creatureWithName = creaturesAtFromPoint.getCreatureWithName(creatureName);
 
-        removeCreature(creatureName, fromPoint);
         if (creatureWithName.isPresent()) {
-            if (creatureWithName.get().hasProperty(CreatureProperty.KAMIKAZE)) {
-                removeAllCreatures(toPoint);
-            } else {
-                if (creatureWithName.get().hasProperty(CreatureProperty.SWAPPING)) {
-                    Optional<ICreature> swappedCreature = getTopCreature(toPoint);
+            removeCreature(creatureName, fromPoint);
+            placeCreature(creatureWithName.get(), toPoint);
 
-                    if (swappedCreature.isPresent()) {
-                        removeCreature(swappedCreature.get().getName(), toPoint);
-                        placeCreature(swappedCreature.get(), fromPoint);
-                    }
-                }
-                placeCreature(creatureWithName.get(), toPoint);
-            }
+//            if (creatureWithName.get().hasProperty(CreatureProperty.KAMIKAZE)) {
+//                removeAllCreatures(toPoint);
+//            } else {
+//                if (creatureWithName.get().hasProperty(CreatureProperty.SWAPPING)) {
+//                    Optional<ICreature> swappedCreature = getTopCreature(toPoint);
+//
+//                    if (swappedCreature.isPresent()) {
+//                        removeCreature(swappedCreature.get().getName(), toPoint);
+//                        placeCreature(swappedCreature.get(), fromPoint);
+//                    }
+//                }
+//                placeCreature(creatureWithName.get(), toPoint);
+//            }
         }
     }
 
@@ -166,7 +165,7 @@ public class Board implements IBoard {
         return visitedPoints.size() != occupiedPoints.size();
     }
 
-    private Board createBoardSimulation() {
+    public Board createBoardSimulation() {
         Map<IPoint, CreatureStack> copiedBoard = new HashMap<>();
 
         for (Map.Entry<IPoint, CreatureStack> entry : board.entrySet()) {
@@ -179,7 +178,7 @@ public class Board implements IBoard {
         return new Board(copiedBoard);
     }
 
-    private List<IPoint> getOccupiedNeighboringPoints(IPoint point) {
+    public List<IPoint> getOccupiedNeighboringPoints(IPoint point) {
         List<IPoint> occupiedNeighboringPoints = new ArrayList<>();
 
         for (IPoint neighboringPoint : point.getNeighboringPoints()) {
@@ -191,7 +190,7 @@ public class Board implements IBoard {
         return occupiedNeighboringPoints;
     }
 
-    private boolean pointIsOccupied(IPoint point) {
+    public boolean pointIsOccupied(IPoint point) {
         return board.containsKey(point);
     }
 

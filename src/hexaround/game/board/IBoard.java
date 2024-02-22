@@ -20,11 +20,17 @@ public interface IBoard {
 
     Optional<ICreature> getCreatureWithName(CreatureName creatureName, IPoint point);
 
+    List<IPoint> getOccupiedNeighboringPoints(IPoint point);
+
     boolean moveIsDisconnecting(CreatureName name, IPoint fromPoint, IPoint toPoint);
 
     boolean placementIsDisconnecting(ICreature creature, IPoint point);
 
     boolean creatureCanSlide(IPoint fromPoint, IPoint toPoint);
 
+    boolean pointIsOccupied(IPoint point);
+
     List<Integer> findPathLengths(IPoint fromPoint, IPoint toPoint);
+
+    IBoard createBoardSimulation();
 }

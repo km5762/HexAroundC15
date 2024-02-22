@@ -1,4 +1,4 @@
-package hexaround.game.board;
+package hexaround.game.board.geometry;
 
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
