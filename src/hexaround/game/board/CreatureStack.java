@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public class CreatureStack {
+public class CreatureStack implements Iterable<ICreature> {
     protected List<ICreature> creatureStack;
 
     /**
@@ -134,5 +134,15 @@ public class CreatureStack {
         CreatureStack otherCreatureStack = (CreatureStack) other;
 
         return creatureStack.equals(otherCreatureStack.creatureStack);
+    }
+
+    /**
+     * Returns an iterator to the CreatureStack
+     *
+     * @return an iterator over the ICreatures in the stack
+     */
+    @Override
+    public Iterator<ICreature> iterator() {
+        return creatureStack.iterator();
     }
 }

@@ -1,10 +1,11 @@
 package hexaround.game.board;
 
+import hexaround.game.board.geometry.HexPoint;
+import hexaround.game.board.geometry.IPoint;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -6,16 +6,40 @@ import java.util.Map;
 
 public class Player {
     protected PlayerName name;
-    protected Map<CreatureName, Integer> creatures;
+    protected Map<CreatureName, Integer> creatureCounts;
 
     /**
      * Constructs an instance of Player
      * @param name the Player's name
-     * @param creatures a Map representing how many Creature's the Player starts with, where
+     * @param creatureCounts a Map representing how many Creature's the Player starts with, where
      *                  each CreatureName is mapped to its count.
      */
-    public Player(PlayerName name, Map<CreatureName, Integer> creatures) {
+    public Player(PlayerName name, Map<CreatureName, Integer> creatureCounts) {
         this.name = name;
-        this.creatures = creatures;
+        this.creatureCounts = creatureCounts;
+    }
+
+    /**
+     * Decrement the count for CreatureName
+     *
+     * @param creatureName the name of the creature to decrement
+     */
+    public void decrementCreature(CreatureName creatureName) {
+        if (creatureCounts.containsKey(creatureName)) {
+            int creatureCount = creatureCounts.get(creatureName);
+            creatureCounts.put(creatureName, creatureCount - 1);
+        }
+    }
+
+    /**
+     * Increment the count for CreatureName
+     *
+     * @param creatureName the name of the creature to increment
+     */
+    public void incrementCreature(CreatureName creatureName) {
+        if (creatureCounts.containsKey(creatureName)) {
+            int creatureCount = creatureCounts.get(creatureName);
+            creatureCounts.put(creatureName, creatureCount + 1);
+        }
     }
 }

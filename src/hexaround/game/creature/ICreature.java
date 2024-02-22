@@ -1,5 +1,7 @@
 package hexaround.game.creature;
 
+import hexaround.game.player.PlayerName;
+
 public interface ICreature {
     CreatureName getName();
 
@@ -7,4 +9,5 @@ public interface ICreature {
 
     boolean hasProperty(CreatureProperty property);
 
+    PlayerName getOwnerName();
 }

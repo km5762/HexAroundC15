@@ -1,4 +1,4 @@
-package hexaround.game.board;
+package hexaround.game.board.geometry;
 
 public class UnitVectors {
     private static final Vector[] VECTORS = new Vector[]{

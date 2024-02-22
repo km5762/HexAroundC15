@@ -1,9 +1,12 @@
 package hexaround.game.creature;
 
+import hexaround.game.player.PlayerName;
+
 import java.util.Collection;
 
 public class Creature implements ICreature {
     protected CreatureName name;
+    PlayerName ownerName;
     protected int maxDistance;
     protected Collection<CreatureProperty> properties;
 
@@ -13,14 +16,19 @@ public class Creature implements ICreature {
      * @param maxDistance the maximum range of the creature's movement.
      * @param properties the properties the Creature possesses. Must be of type CreatureProperty.
      */
-    public Creature(CreatureName name, int maxDistance, Collection<CreatureProperty> properties) {
+    public Creature(CreatureName name, PlayerName ownerName, int maxDistance, Collection<CreatureProperty> properties) {
         this.name = name;
+        this.ownerName = ownerName;
         this.maxDistance = maxDistance;
         this.properties = properties;
     }
 
     public CreatureName getName() {
         return name;
+    }
+
+    public PlayerName getOwnerName() {
+        return ownerName;
     }
 
     public int getMaxDistance() {

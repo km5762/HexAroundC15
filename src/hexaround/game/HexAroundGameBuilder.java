@@ -44,7 +44,7 @@ public class HexAroundGameBuilder {
         HexAroundFirstSubmission gameManager = new HexAroundFirstSubmission();    // an empty game manager
 
         Collection<PlayerConfiguration> playerConfigurations = configuration.players();
-        Collection<Player> players = constructPlayers(playerConfigurations);
+        Map<PlayerName, Player> players = constructPlayers(playerConfigurations);
         gameManager.setPlayers(players);
 
         Map<CreatureName, CreatureDefinition> creatureDefinitions = new HashMap<>();
@@ -56,12 +56,14 @@ public class HexAroundGameBuilder {
 
         IBoard board = new Board(new HashMap<>());
         gameManager.setBoard(board);
+        
+        gameManager.setNameOfPlayerWithTurn(PlayerName.BLUE);
 
         return gameManager;
     }
 
-    private static Collection<Player> constructPlayers(Collection<PlayerConfiguration> playerConfigurations) {
-        Collection<Player> players = new ArrayList<>();
+    private static Map<PlayerName, Player> constructPlayers(Collection<PlayerConfiguration> playerConfigurations) {
+        Map<PlayerName, Player> players = new HashMap<>();
 
         for (PlayerConfiguration playerConfiguration : playerConfigurations) {
             PlayerName name = playerConfiguration.Player();
@@ -69,7 +71,7 @@ public class HexAroundGameBuilder {
 
             Player player = new Player(name, creatures);
 
-            players.add(player);
+            players.put(name, player);
         }
 
         return players;

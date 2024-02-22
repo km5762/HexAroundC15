@@ -43,6 +43,7 @@
 | T  |  X   | board.moveIsDisconnecting when move is disconnecting                                                                                                |
 | R  |  X   | Create UnitVector and Vectors classes to allow for easier testing/more semantic access to cardinal directions                                       |
 | T  |  X   | board.placementIsDisconnecting when placement is not disconnecting                                                                                  |
+| R  |  X   | Invert isConnected -> isDisconnected since calls are typically inverted                                                                             |
 | T  |  X   | board.placementIsDisconnecting when placement is the first in the game                                                                              |
 | T  |  X   | board.placementISDisconnecting when placement is disconnecting                                                                                      |
 | R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.getAllCreatures()                                                     |
@@ -74,6 +75,10 @@
 | T  |  X   | equals override when object is a deep copy of CreatureStack                                                                                         | 
 | T  |  X   | clone returns a deep copy of CreatureStack                                                                                                          | 
 | R  |  X   | Builder now returns reduced interface (IHexAroundGameManager) instead of extended interface (IHexAround1). Tests for IHexAround1 have been removed. |
+| R  |  X   | Move all vector/point related classes into geometry subpackage in board                                                                             | 
+| T  |  X   | Return move error when specified creature doesnt exist                                                                                              | 
+| R  |  X   | Move all MoveResponses into seperate static class                                                                                                   | 
+| T  |  X   | Return move error when placing a creature that does has not been defined                                                                            | 
 
 # Design Patterns
 

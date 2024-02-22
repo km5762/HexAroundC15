@@ -1,4 +1,4 @@
-package hexaround.game.board;
+package hexaround.game.board.geometry;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,7 @@
 package hexaround.game.board;
 
 import hexaround.game.creature.*;
+import hexaround.game.player.PlayerName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +17,8 @@ public class CreatureStackTest {
     @BeforeEach
     void setUp() {
         creatureStack = new CreatureStack();
-        creature1 = new Creature(CreatureName.CRAB, 5, Collections.singleton(CreatureProperty.WALKING));
-        creature2 = new Creature(CreatureName.SPIDER, 2, Collections.singleton(CreatureProperty.WALKING));
+        creature1 = new Creature(CreatureName.CRAB, PlayerName.RED, 5, Collections.singleton(CreatureProperty.WALKING));
+        creature2 = new Creature(CreatureName.SPIDER, PlayerName.RED, 2, Collections.singleton(CreatureProperty.WALKING));
     }
 
     @Test

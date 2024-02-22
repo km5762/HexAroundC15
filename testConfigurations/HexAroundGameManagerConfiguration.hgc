@@ -1,0 +1,13 @@
+CREATURES:
+	BUTTERFLY [WALKING QUEEN]
+	GRASSHOPPER 3 [JUMPING INTRUDING]
+    SPIDER 3 [JUMPING KAMIKAZE]
+
+PLAYERS:
+	RED
+		butterfly 1,
+		grasshopper 5
+
+    BLUE
+    	butterfly 1,
+    	grasshopper 5

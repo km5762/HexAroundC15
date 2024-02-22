@@ -1,5 +1,6 @@
 package hexaround.game.board;
 
+import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.ICreature;
 
@@ -16,6 +17,8 @@ public interface IBoard {
     Optional<ICreature> getTopCreature(IPoint point);
 
     CreatureStack getAllCreatures(IPoint point);
+
+    Optional<ICreature> getCreatureWithName(CreatureName creatureName, IPoint point);
 
     boolean moveIsDisconnecting(CreatureName name, IPoint fromPoint, IPoint toPoint);
 

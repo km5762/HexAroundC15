@@ -1,10 +1,13 @@
 package hexaround.game.board;
 
+import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.CreatureName;
+import hexaround.game.creature.CreatureProperty;
 import hexaround.game.creature.ICreature;
+import hexaround.game.player.Player;
+import hexaround.game.player.PlayerName;
 
-import java.awt.*;
-import java.nio.file.Path;
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.List;
 
@@ -23,12 +26,10 @@ public class Board implements IBoard {
      */
     public void placeCreature(ICreature creature, IPoint point) {
         CreatureStack creaturesAtPoint = getAllCreatures(point);
+        creaturesAtPoint.addCreature(creature);
 
-        if (creaturesAtPoint.isEmpty()) {
-            creaturesAtPoint.addCreature(creature);
+        if (!pointIsOccupied(point)) {
             board.put(point, creaturesAtPoint);
-        } else {
-            creaturesAtPoint.addCreature(creature);
         }
     }
 
@@ -47,8 +48,12 @@ public class Board implements IBoard {
         }
     }
 
+    private void removeAllCreatures(IPoint point) {
+        board.remove(point);
+    }
+
     /**
-     * Moves creature with CreatureName from one IPoint to another
+     * Moves creature with CreatureName from one IPoint to another, carrying out any side effects of such movement (KAMIKAZE, SWAPPING)
      *
      * @param creatureName the CreatureName of the creature to move
      * @param fromPoint    the IPoint the creature is currently at
@@ -59,9 +64,21 @@ public class Board implements IBoard {
         CreatureStack creaturesAtFromPoint = getAllCreatures(fromPoint);
         Optional<ICreature> creatureWithName = creaturesAtFromPoint.getCreatureWithName(creatureName);
 
+        removeCreature(creatureName, fromPoint);
         if (creatureWithName.isPresent()) {
-            removeCreature(creatureName, fromPoint);
-            placeCreature(creatureWithName.get(), toPoint);
+            if (creatureWithName.get().hasProperty(CreatureProperty.KAMIKAZE)) {
+                removeAllCreatures(toPoint);
+            } else {
+                if (creatureWithName.get().hasProperty(CreatureProperty.SWAPPING)) {
+                    Optional<ICreature> swappedCreature = getTopCreature(toPoint);
+
+                    if (swappedCreature.isPresent()) {
+                        removeCreature(swappedCreature.get().getName(), toPoint);
+                        placeCreature(swappedCreature.get(), fromPoint);
+                    }
+                }
+                placeCreature(creatureWithName.get(), toPoint);
+            }
         }
     }
 
@@ -86,8 +103,21 @@ public class Board implements IBoard {
         return board.getOrDefault(point, new CreatureStack());
     }
 
-    private int getTotalCreatureStacks() {
-        return board.size();
+    /**
+     * Return a ICreature instance with CreatureName at IPoint
+     *
+     * @param creatureName the specified CreatureName
+     * @param point        the specified IPoint
+     * @return the ICreature with CreatureName at IPoint, or an empty Optional if none exist
+     */
+    public Optional<ICreature> getCreatureWithName(CreatureName creatureName, IPoint point) {
+        CreatureStack creaturesAtPoint = getAllCreatures(point);
+
+        if (!creaturesAtPoint.isEmpty()) {
+            return creaturesAtPoint.getCreatureWithName(creatureName);
+        } else {
+            return Optional.empty();
+        }
     }
 
     /**
@@ -102,11 +132,7 @@ public class Board implements IBoard {
         Board boardSimulation = createBoardSimulation();
         boardSimulation.moveCreature(name, fromPoint, toPoint);
 
-        if (boardSimulation.getTotalCreatureStacks() <= 1) {
-            return false;
-        }
-
-        return !boardSimulation.isConnected();
+        return boardSimulation.isDisconnected();
     }
 
     /**
@@ -114,25 +140,30 @@ public class Board implements IBoard {
      *
      * @return true if the board is disconnected, false otherwise
      */
-    private boolean isConnected() {
+    private boolean isDisconnected() {
+        if (board.isEmpty()) {
+            return false;
+        }
+
         Set<IPoint> occupiedPoints = board.keySet();
         Set<IPoint> visitedPoints = new HashSet<>();
         Queue<IPoint> pointQueue = new LinkedList<>();
         IPoint firstPoint = board.keySet().iterator().next();
         pointQueue.add(firstPoint);
+        visitedPoints.add(firstPoint);
 
         while (!pointQueue.isEmpty()) {
             IPoint currentPoint = pointQueue.poll();
 
-            for (IPoint neighboringPoint : currentPoint.getNeighboringPoints()) {
-                if (!visitedPoints.contains(neighboringPoint) && !getAllCreatures(neighboringPoint).isEmpty()) {
-                    visitedPoints.add(neighboringPoint);
-                    pointQueue.add(neighboringPoint);
+            for (IPoint occupiedNeighboringPoint : getOccupiedNeighboringPoints(currentPoint)) {
+                if (!visitedPoints.contains(occupiedNeighboringPoint)) {
+                    visitedPoints.add(occupiedNeighboringPoint);
+                    pointQueue.add(occupiedNeighboringPoint);
                 }
             }
         }
 
-        return visitedPoints.containsAll(occupiedPoints);
+        return visitedPoints.size() != occupiedPoints.size();
     }
 
     private Board createBoardSimulation() {
@@ -152,13 +183,16 @@ public class Board implements IBoard {
         List<IPoint> occupiedNeighboringPoints = new ArrayList<>();
 
         for (IPoint neighboringPoint : point.getNeighboringPoints()) {
-            CreatureStack neighboringCreatures = getAllCreatures(neighboringPoint);
-            if (!neighboringCreatures.isEmpty()) {
+            if (pointIsOccupied(neighboringPoint)) {
                 occupiedNeighboringPoints.add(neighboringPoint);
             }
         }
 
         return occupiedNeighboringPoints;
+    }
+
+    private boolean pointIsOccupied(IPoint point) {
+        return board.containsKey(point);
     }
 
     /**
@@ -176,7 +210,7 @@ public class Board implements IBoard {
         Board boardSimulation = createBoardSimulation();
         boardSimulation.placeCreature(creature, point);
 
-        return !boardSimulation.isConnected();
+        return boardSimulation.isDisconnected();
     }
 
     /**
@@ -205,7 +239,7 @@ public class Board implements IBoard {
 
     /**
      * Finds all possible valid path lengths from one IPoint to another
-     *
+     * <p>
      * Source: https://www.geeksforgeeks.org/print-paths-given-source-destination-using-bfs/
      *
      * @param fromPoint the starting IPoint

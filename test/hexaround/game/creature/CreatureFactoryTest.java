@@ -3,6 +3,7 @@ package hexaround.game.creature;
 import hexaround.config.CreatureDefinition;
 import hexaround.config.GameConfiguration;
 import hexaround.config.HexAroundConfigurationMaker;
+import hexaround.game.player.PlayerName;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
@@ -32,25 +33,25 @@ public class CreatureFactoryTest {
 
     @Test
     void makeCreatureInstance() throws IOException {
-        ICreature creature = creatureFactory.makeCreature(CreatureName.BUTTERFLY);
+        ICreature creature = creatureFactory.makeCreature(CreatureName.BUTTERFLY, PlayerName.RED);
         assertTrue(creature instanceof ICreature);
     }
 
     @Test
     void makeSpecificCreatureInstance() throws IOException {
-        ICreature creature = creatureFactory.makeCreature(CreatureName.BUTTERFLY);
+        ICreature creature = creatureFactory.makeCreature(CreatureName.BUTTERFLY, PlayerName.RED);
         assertEquals(CreatureName.BUTTERFLY, creature.getName());
     }
 
     @Test
     void makeCreatureInstanceWithMaxDistance() throws IOException {
-        ICreature creature = creatureFactory.makeCreature(CreatureName.GRASSHOPPER);
+        ICreature creature = creatureFactory.makeCreature(CreatureName.GRASSHOPPER, PlayerName.RED);
         assertEquals(3, creature.getMaxDistance());
     }
 
     @Test
     void makeCreatureWithProperties() throws IOException {
-        ICreature creature = creatureFactory.makeCreature(CreatureName.GRASSHOPPER);
+        ICreature creature = creatureFactory.makeCreature(CreatureName.GRASSHOPPER, PlayerName.RED);
         assertTrue(creature.hasProperty(CreatureProperty.INTRUDING));
         assertTrue(creature.hasProperty(CreatureProperty.JUMPING));
     }

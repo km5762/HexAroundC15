@@ -1,21 +1,25 @@
 package hexaround.game;
 
-import hexaround.game.board.HexPoint;
+import hexaround.game.board.CreatureStack;
+import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.IBoard;
-import hexaround.game.board.IPoint;
+import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.CreatureFactory;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.creature.ICreature;
 import hexaround.game.player.Player;
+import hexaround.game.player.PlayerName;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 public class HexAroundFirstSubmission implements IHexAroundGameManager {
-    protected Collection<Player> players;
+    protected Map<PlayerName, Player> players;
     protected IBoard board;
     protected CreatureFactory creatureFactory;
+    protected PlayerName nameOfPlayerWithTurn;
 
     /**
      * This is the default constructor, and the only constructor
@@ -25,10 +29,9 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
      * will be filled in by the builder.
      */
     public HexAroundFirstSubmission() {
-        // Nothing to do.
     }
 
-    public void setPlayers(Collection<Player> players) {
+    public void setPlayers(Map<PlayerName, Player> players) {
         this.players = players;
     }
 
@@ -38,6 +41,10 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
 
     public void setCreatureFactory(CreatureFactory creatureFactory) {
         this.creatureFactory = creatureFactory;
+    }
+
+    public void setNameOfPlayerWithTurn(PlayerName nameOfPlayerWithTurn) {
+        this.nameOfPlayerWithTurn = nameOfPlayerWithTurn;
     }
 
     /**
@@ -50,10 +57,18 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
      */
     @Override
     public MoveResponse placeCreature(CreatureName creature, int x, int y) {
+        Player playerWithTurn = players.get(nameOfPlayerWithTurn);
         IPoint point = new HexPoint(x, y);
-        ICreature creatureInstance = creatureFactory.makeCreature(creature);
-        board.placeCreature(creatureInstance, point);
+        ICreature creatureInstance = creatureFactory.makeCreature(creature, nameOfPlayerWithTurn);
 
+        if (creatureInstance == null) {
+            return MoveResponses.CREATURE_NOT_DEFINED;
+        }
+
+        playerWithTurn.decrementCreature(creature);
+
+        board.placeCreature(creatureInstance, point);
+        switchTurn();
         return new MoveResponse(MoveResult.OK, "Legal move");
     }
 
@@ -72,11 +87,41 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
         IPoint fromPoint = new HexPoint(fromX, fromY);
         IPoint toPoint = new HexPoint(toX, toY);
 
-        if (board.moveIsDisconnecting(creature, fromPoint, toPoint)) {
-            return new MoveResponse(MoveResult.MOVE_ERROR, "Colony is not connected, try again");
+        Optional<ICreature> specifiedCreature = board.getCreatureWithName(creature, fromPoint);
+
+        if (specifiedCreature.isEmpty()) {
+            return MoveResponses.CREATURE_DOES_NOT_EXIST;
         }
 
-        board.moveCreature(creature, fromPoint, toPoint);
-        return new MoveResponse(MoveResult.OK, "Legal move");
+        if (board.moveIsDisconnecting(creature, fromPoint, toPoint)) {
+            return MoveResponses.DISCONNECTING_MOVE;
+        }
+
+        if (specifiedCreature.get().hasProperty(CreatureProperty.KAMIKAZE)) {
+            CreatureStack affectedCreatures = board.getAllCreatures(toPoint);
+            returnCreatures(affectedCreatures, getNameOfPlayerOffTurn());
+        }
+
+        board.moveCreature(specifiedCreature.get().getName(), fromPoint, toPoint);
+
+        switchTurn();
+        return MoveResponses.LEGAL_MOVE;
+    }
+
+    private void switchTurn() {
+        nameOfPlayerWithTurn = getNameOfPlayerOffTurn();
+    }
+
+    private PlayerName getNameOfPlayerOffTurn() {
+        return (nameOfPlayerWithTurn == PlayerName.RED) ? PlayerName.BLUE : PlayerName.RED;
+    }
+
+    private void returnCreatures(CreatureStack creatures, PlayerName ownerName) {
+        for (ICreature creature : creatures) {
+            if (creature.getOwnerName() == ownerName) {
+                Player owner = players.get(ownerName);
+                owner.incrementCreature(creature.getName());
+            }
+        }
     }
 }
