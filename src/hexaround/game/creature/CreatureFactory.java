@@ -1,9 +1,12 @@
 package hexaround.game.creature;
 
 import hexaround.config.CreatureDefinition;
+import hexaround.game.board.pathfinding.IPathFinder;
+import hexaround.game.board.pathfinding.pathvalidator.IPathCondition;
+import hexaround.game.board.pathfinding.pointvalidator.IPointCondition;
 import hexaround.game.player.PlayerName;
 
-import java.util.Map;
+import java.util.*;
 
 public class CreatureFactory {
     protected Map<CreatureName, CreatureDefinition> creatureDefinitions;
@@ -24,15 +27,32 @@ public class CreatureFactory {
      * @param ownerName the PlayerName of the owner
      * @return an instance of Creature with fields configured according to CreatureName belonging to ownerName
      */
-    public ICreature makeCreature(CreatureName name, PlayerName ownerName) {
-        if (!creatureDefinitions.containsKey(name)) {
-            return null;
+    public Optional<ICreature> makeCreature(CreatureName creatureName, PlayerName ownerName) {
+        if (!creatureDefinitions.containsKey(creatureName)) {
+            return Optional.empty();
         }
-        CreatureDefinition creatureDefinition = creatureDefinitions.get(name);
+        CreatureDefinition creatureDefinition = creatureDefinitions.get(creatureName);
 
-        return new Creature(creatureDefinition.name(),
+        return Optional.of(new Creature(creatureDefinition.name(),
                 ownerName,
                 creatureDefinition.maxDistance(),
-                creatureDefinition.properties());
+                creatureDefinition.properties()));
+    }
+
+    private IPathFinder makePathFinder(Collection<CreatureProperty> creatureProperties) {
+        List<IPointCondition> pointConditions = new ArrayList<>();
+        List<IPathCondition> pathConditions = new ArrayList<>();
+
+        boolean walking = creatureProperties.contains(CreatureProperty.WALKING);
+        boolean running = creatureProperties.contains(CreatureProperty.RUNNING);
+        boolean flying = creatureProperties.contains(CreatureProperty.FLYING);
+        boolean jumping = creatureProperties.contains(CreatureProperty.JUMPING);
+        boolean intruding = creatureProperties.contains(CreatureProperty.INTRUDING);
+        boolean trapping = creatureProperties.contains(CreatureProperty.TRAPPING);
+        boolean
+
+        if (creatureProperties.contains(CreatureProperty.KAMIKAZE) || creatureProperties.contains(CreatureProperty.SWAPPING) || creatureProperties.contains(CreatureProperty.TRAPPING)) {
+
+        }
     }
 }

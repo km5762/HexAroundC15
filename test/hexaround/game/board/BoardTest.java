@@ -287,7 +287,7 @@ public class BoardTest {
     private List<IPoint> getScaledNeighboringPoints(IPoint point, int scale) {
         List<IPoint> scaledNeighboringPoints = new ArrayList<>();
 
-        for (Vector vector : unitVectors.getVectors()) {
+        for (Vector vector : UnitVectors.VECTORS) {
             int scaledX = point.getX() + vector.dX() * scale;
             int scaledY = point.getY() + vector.dY() * scale;
             IPoint scaledNeighboringPoint = new HexPoint(scaledX, scaledY);

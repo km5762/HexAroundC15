@@ -32,5 +32,7 @@ public interface IBoard {
 
     List<Integer> findPathLengths(IPoint fromPoint, IPoint toPoint);
 
-    IBoard createBoardSimulation();
+    IBoard clone();
+
+    boolean isConnected();
 }

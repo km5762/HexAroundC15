@@ -14,4 +14,6 @@ public interface IPoint {
     IPoint clone();
 
     boolean equals(IPoint other);
+
+    boolean inlineTo(IPoint toPoint);
 }

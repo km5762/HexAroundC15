@@ -54,4 +54,9 @@ public record HexPoint(int x, int y) implements IPoint {
     public boolean equals(IPoint other) {
         return x == other.getX() && y == other.getY();
     }
+
+    @Override
+    public boolean inlineTo(IPoint toPoint) {
+        return x == toPoint.getX() || y == toPoint.getY() || -y - x == -toPoint.getX() - toPoint.getY();
+    }
 }

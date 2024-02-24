@@ -2,7 +2,6 @@ package hexaround.game.board;
 
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.CreatureName;
-import hexaround.game.creature.CreatureProperty;
 import hexaround.game.creature.ICreature;
 
 import java.util.*;
@@ -128,10 +127,10 @@ public class Board implements IBoard {
      * @return true if the specified move is disconnecting, and false otherwise
      */
     public boolean moveIsDisconnecting(CreatureName name, IPoint fromPoint, IPoint toPoint) {
-        Board boardSimulation = createBoardSimulation();
+        Board boardSimulation = this.clone();
         boardSimulation.moveCreature(name, fromPoint, toPoint);
 
-        return boardSimulation.isDisconnected();
+        return !boardSimulation.isConnected();
     }
 
     /**
@@ -139,7 +138,7 @@ public class Board implements IBoard {
      *
      * @return true if the board is disconnected, false otherwise
      */
-    private boolean isDisconnected() {
+    public boolean isConnected() {
         if (board.isEmpty()) {
             return false;
         }
@@ -157,15 +156,21 @@ public class Board implements IBoard {
             for (IPoint occupiedNeighboringPoint : getOccupiedNeighboringPoints(currentPoint)) {
                 if (!visitedPoints.contains(occupiedNeighboringPoint)) {
                     visitedPoints.add(occupiedNeighboringPoint);
+
+                    if (visitedPoints.size() == occupiedPoints.size()) {
+                        return true;
+                    }
+
                     pointQueue.add(occupiedNeighboringPoint);
                 }
             }
         }
 
-        return visitedPoints.size() != occupiedPoints.size();
+        return false;
     }
 
-    public Board createBoardSimulation() {
+    @Override
+    public Board clone() {
         Map<IPoint, CreatureStack> copiedBoard = new HashMap<>();
 
         for (Map.Entry<IPoint, CreatureStack> entry : board.entrySet()) {
@@ -206,10 +211,10 @@ public class Board implements IBoard {
             return false;
         }
 
-        Board boardSimulation = createBoardSimulation();
+        Board boardSimulation = this.clone();
         boardSimulation.placeCreature(creature, point);
 
-        return boardSimulation.isDisconnected();
+        return !boardSimulation.isConnected();
     }
 
     /**

@@ -1,13 +1,13 @@
-package hexaround.game.board.pathfinding.stopstrategy;
+package hexaround.game.board.pathfinding.pathvalidator;
 
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.ICreature;
 
 import java.util.List;
 
-public class StopAtPathAtRange implements IStopStrategy {
+public class PathAtRange implements IPathCondition {
     @Override
-    public boolean shouldStop(List<IPoint> path, ICreature creature) {
+    public boolean test(List<IPoint> path, ICreature creature, IPoint targetPoint) {
         return path.size() == creature.getMaxDistance() + 1;
     }
 }

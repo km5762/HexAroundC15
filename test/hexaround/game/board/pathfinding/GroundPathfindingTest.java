@@ -5,8 +5,8 @@ import hexaround.game.board.BoardTestingUtils;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
-import hexaround.game.board.pathfinding.stopstrategy.IStopStrategy;
-import hexaround.game.board.pathfinding.stopstrategy.StopAtTargetInRange;
+import hexaround.game.board.pathfinding.pathvalidator.*;
+import hexaround.game.board.pathfinding.pointvalidator.*;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
@@ -22,9 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GroundPathfindingTest {
     IBoard board;
-    IPathfindingStrategy pathFindingStrategy = new GroundPathfinding();
+    IPathFinder pathFinder;
 
-    IStopStrategy stopStrategy;
+    IPathValidator pathValidator;
+
+    IPointValidator pointValidator;
 
     ICreature defaultCreature  = new Creature(CreatureName.CRAB, PlayerName.RED, 5, Arrays.asList(new CreatureProperty[] {CreatureProperty.WALKING}));
 
@@ -36,11 +38,13 @@ public class GroundPathfindingTest {
 
     @Test
     void doesExistPathToInRangePoint() {
-        stopStrategy = new StopAtTargetInRange(new HexPoint(2, 3));
+        pathValidator = new PathValidator(Arrays.asList(new IPathCondition[] {new PathInRange(), new PathAtTarget()}));
+        pointValidator = new PointValidator(Arrays.asList(new IPointCondition[] {new PointEmpty(), new PointConnected(), new PointSlideable()}));
         IPoint[] obstaclePoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3), new HexPoint(-1 ,2), new HexPoint(1, 1), new HexPoint(1, 2), new HexPoint(1, 3)};
         BoardTestingUtils.placeCreatures(defaultCreature, obstaclePoints, board);
         Optional<ICreature> creature = board.getTopCreature(new HexPoint(0, 0));
-        Optional<List<IPoint>> path = pathFindingStrategy.getPath(board, creature.get(), new HexPoint(0, 0), stopStrategy);
+        pathFinder = new PathFinder(pointValidator, pathValidator);
+        Optional<List<IPoint>> path = pathFinder.findPath(board, creature.get(), new HexPoint(0, 0), new HexPoint(0, 4));
 
         System.out.println(path);
     }
