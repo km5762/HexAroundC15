@@ -14,9 +14,9 @@ public class PathValidator implements IPathValidator {
     }
 
     @Override
-    public boolean validate(List<IPoint> path, IBoard board, ICreature creature, IPoint targetPoint) {
+    public boolean validate(List<IPoint> path, IBoard board, ICreature creature) {
         for (IPathCondition condition : conditions) {
-            if (!condition.test(path, board, creature, targetPoint)) {
+            if (!condition.test(path, board, creature)) {
                 return false;
             }
         }

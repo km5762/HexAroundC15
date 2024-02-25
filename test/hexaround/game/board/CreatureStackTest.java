@@ -17,8 +17,8 @@ public class CreatureStackTest {
     @BeforeEach
     void setUp() {
         creatureStack = new CreatureStack();
-        creature1 = new Creature(CreatureName.CRAB, PlayerName.RED, 5, Collections.singleton(CreatureProperty.WALKING));
-        creature2 = new Creature(CreatureName.SPIDER, PlayerName.RED, 2, Collections.singleton(CreatureProperty.WALKING));
+        creature1 = new Creature(CreatureName.CRAB, PlayerName.RED, 5, null, Collections.singleton(CreatureProperty.WALKING));
+        creature2 = new Creature(CreatureName.SPIDER, PlayerName.RED, 2, null, Collections.singleton(CreatureProperty.WALKING));
     }
 
     @Test

@@ -27,8 +27,8 @@ public class BoardTest {
     @BeforeEach
     void setUpBoard() {
         HashMap<IPoint, CreatureStack> initialBoard = new HashMap<>();
-        creature1 = new Creature(CreatureName.CRAB, PlayerName.RED, 1, Collections.singleton(CreatureProperty.INTRUDING));
-        creature2 = new Creature(CreatureName.GRASSHOPPER, PlayerName.RED, 3, Collections.singleton(CreatureProperty.INTRUDING));
+        creature1 = new Creature(CreatureName.CRAB, PlayerName.RED, 1, null, Collections.singleton(CreatureProperty.INTRUDING));
+        creature2 = new Creature(CreatureName.GRASSHOPPER, PlayerName.RED, 3, null, Collections.singleton(CreatureProperty.INTRUDING));
         creaturesAtPoint = new CreatureStack();
         creaturesAtPoint.addCreature(creature1);
         creaturesAtPoint.addCreature(creature2);
@@ -64,7 +64,7 @@ public class BoardTest {
 
     @Test
     void placeCreatureAtEmptyPoint() {
-        ICreature creature = new Creature(CreatureName.CRAB, PlayerName.RED, 1, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature creature = new Creature(CreatureName.CRAB, PlayerName.RED, 1, null, Collections.singleton(CreatureProperty.INTRUDING));
 
         board.placeCreature(creature, emptyPoint);
 
@@ -73,7 +73,7 @@ public class BoardTest {
 
     @Test
     void placeCreatureAtNonEmptyPoint() {
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, null, Collections.singleton(CreatureProperty.INTRUDING));
         board.placeCreature(creature, origin);
 
         assertEquals(creaturesAtPoint, board.getAllCreatures(origin));
@@ -103,7 +103,7 @@ public class BoardTest {
 
     @Test
     void removeCreatureLeavingPointEmpty() {
-        ICreature creature = new Creature(CreatureName.CRAB, PlayerName.RED, 1, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature creature = new Creature(CreatureName.CRAB, PlayerName.RED, 1, null, Collections.singleton(CreatureProperty.INTRUDING));
 
         board.placeCreature(creature, emptyPoint);
 
@@ -166,7 +166,7 @@ public class BoardTest {
 
     @Test
     void placementIsNotDisconnecting() {
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, null, Collections.singleton(CreatureProperty.INTRUDING));
 
         for (IPoint neighboringPoint : origin.getNeighboringPoints()) {
             assertFalse(board.placementIsDisconnecting(creature, neighboringPoint));
@@ -182,7 +182,7 @@ public class BoardTest {
 
     @Test
     void placementIsDisconnecting() {
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, null, Collections.singleton(CreatureProperty.INTRUDING));
 
         for (IPoint scaledNeighboringPoint : getScaledNeighboringPoints(origin, 2)) {
             assertTrue(board.placementIsDisconnecting(creature, scaledNeighboringPoint));
@@ -198,7 +198,7 @@ public class BoardTest {
 
     @Test
     void creatureCanSlideWithCommonNeighbor() {
-        ICreature neighbor = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature neighbor = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, null, Collections.singleton(CreatureProperty.INTRUDING));
         board.placeCreature(neighbor, new HexPoint(0, 1));
 
         assertTrue(board.creatureCanSlide(origin, new HexPoint(-1, 1)));
@@ -207,9 +207,9 @@ public class BoardTest {
 
     @Test
     void creatureCannotSlide() {
-        ICreature blocker1 = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, Collections.singleton(CreatureProperty.INTRUDING));
-        ICreature blocker2 = new Creature(CreatureName.SPIDER, PlayerName.RED,  5, Collections.singleton(CreatureProperty.INTRUDING));
-        ICreature blocker3 = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature blocker1 = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, null, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature blocker2 = new Creature(CreatureName.SPIDER, PlayerName.RED,  5, null, Collections.singleton(CreatureProperty.INTRUDING));
+        ICreature blocker3 = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, null, Collections.singleton(CreatureProperty.INTRUDING));
 
         board.placeCreature(blocker1, new HexPoint(0, 1));
         board.placeCreature(blocker2, new HexPoint(-1, 0));
@@ -237,7 +237,7 @@ public class BoardTest {
 //    }
     @Test
     void moveKamikazeCreature() {
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, Arrays.asList(new CreatureProperty[]{CreatureProperty.KAMIKAZE}));
+        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, null, Arrays.asList(new CreatureProperty[]{CreatureProperty.KAMIKAZE}));
 
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
@@ -250,7 +250,7 @@ public class BoardTest {
     @Test
     void moveIsDisconnectingWithKamikazeCreature() {
         IBoard emptyBoard = new Board(new HashMap<>());
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, Arrays.asList(new CreatureProperty[]{CreatureProperty.KAMIKAZE}));
+        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, null, Arrays.asList(new CreatureProperty[]{CreatureProperty.KAMIKAZE}));
 
         emptyBoard.placeCreature(creature, origin);
         emptyBoard.placeCreature(creature, new HexPoint(0, 1));
@@ -262,7 +262,7 @@ public class BoardTest {
     @Test
     void moveSwappingCreature() {
         IBoard emptyBoard = new Board(new HashMap<>());
-        ICreature creature = new Creature(CreatureName.TURTLE, PlayerName.RED, 1, Arrays.asList(new CreatureProperty[]{CreatureProperty.SWAPPING}));
+        ICreature creature = new Creature(CreatureName.TURTLE, PlayerName.RED, 1, null, Arrays.asList(new CreatureProperty[]{CreatureProperty.SWAPPING}));
 
         emptyBoard.placeCreature(creature, new HexPoint(0, 1));
         emptyBoard.placeCreature(creature1, new HexPoint(0, 2));
@@ -275,7 +275,7 @@ public class BoardTest {
     @Test
     void moveSwappingCreatureIsNotDisconnecting() {
         IBoard emptyBoard = new Board(new HashMap<>());
-        ICreature creature = new Creature(CreatureName.TURTLE, PlayerName.RED, 1, Arrays.asList(new CreatureProperty[]{CreatureProperty.SWAPPING}));
+        ICreature creature = new Creature(CreatureName.TURTLE, PlayerName.RED, 1, null, Arrays.asList(new CreatureProperty[]{CreatureProperty.SWAPPING}));
 
         emptyBoard.placeCreature(creature, new HexPoint(0, 1));
         emptyBoard.placeCreature(creature1, new HexPoint(0, 2));

@@ -141,6 +141,8 @@ public class Board implements IBoard {
     public boolean isConnected() {
         if (board.isEmpty()) {
             return false;
+        } else if (board.keySet().size() == 1) {
+            return true;
         }
 
         Set<IPoint> occupiedPoints = board.keySet();
@@ -279,5 +281,17 @@ public class Board implements IBoard {
         }
 
         return pathLengths;
+    }
+
+    public List<Boolean> anyCanMove() {
+        List<Boolean> paths = new ArrayList<>();
+
+        for (Map.Entry<IPoint, CreatureStack> entry : board.entrySet()) {
+            for (ICreature creature : entry.getValue()) {
+                paths.add(creature.canMove(this, entry.getKey()));
+            }
+        }
+
+        return paths;
     }
 }

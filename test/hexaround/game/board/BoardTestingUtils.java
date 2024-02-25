@@ -15,4 +15,11 @@ public class BoardTestingUtils {
             board.placeCreature(creature, atPoint);
         }
     }
+
+    public static void placeCreatures(IPoint[] points, IBoard board) {
+        ICreature defaultCreature = new Creature(CreatureName.CRAB, PlayerName.RED, 10, null, Collections.singleton(CreatureProperty.WALKING));
+        for (IPoint atPoint : points) {
+            board.placeCreature(defaultCreature, atPoint);
+        }
+    }
 }

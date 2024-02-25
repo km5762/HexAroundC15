@@ -43,7 +43,6 @@
 | T  |  X   | board.moveIsDisconnecting when move is disconnecting                                                                                                |
 | R  |  X   | Create UnitVector and Vectors classes to allow for easier testing/more semantic access to cardinal directions                                       |
 | T  |  X   | board.placementIsDisconnecting when placement is not disconnecting                                                                                  |
-| R  |  X   | Invert isConnected -> isDisconnected since calls are typically inverted                                                                             |
 | T  |  X   | board.placementIsDisconnecting when placement is the first in the game                                                                              |
 | T  |  X   | board.placementISDisconnecting when placement is disconnecting                                                                                      |
 | R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.getAllCreatures()                                                     |
@@ -79,10 +78,31 @@
 | T  |  X   | Return move error when specified creature doesnt exist                                                                                              | 
 | R  |  X   | Move all MoveResponses into seperate static class                                                                                                   | 
 | T  |  X   | Return move error when placing a creature that does has not been defined                                                                            | 
-| T  |  X   | move kamikaze creature properly destroys creatures at target                                                                                        |
-| T  |  X   | moveIsDisconnecting when kamikaze creature disconnects colony                                                                                       |
-| T  |  X   | move swapping creature properly swaps creatures                                                                                                     |
-| T  |  X   | move swapping creatures does not disconnect colony                                                                                                  |
+| R  |  X   | Move point checks into seperate IPointCondition lambda-like objects                                                                                 |
+| T  |  X   | PointConnected.test when moving on empty board                                                                                                      |
+| R  |  X   | Move board simulation operations in connectidness test to private helper                                                                            | 
+| R  |  X   | Rename IPointCondition -> IMoveCondition since we are really evaluating points in the context of a movement                                         | 
+| T  |  X   | MoveConnected.test when moving on a non empty board                                                                                                 |
+| T  |  X   | MoveConnected.test when moving generates 1 stack on the board                                                                                       |
+| T  |  X   | MoveConnected.test when moving to a disconnected point                                                                                              |
+| T  |  X   | MoveConnected.test when moving splits the colony in two                                                                                             |
+| T  |  X   | MoveEmpty.test when neighboring tile is not empty                                                                                                   |
+| T  |  X   | MoveEmpty.test when neighboring tile is empty                                                                                                       |
+| T  |  X   | MoveSlideable.test when moving on an empty board                                                                                                    |
+| T  |  X   | MoveSlideable.test when moving to a tile with 1 adjacent piece                                                                                      |
+| T  |  X   | MoveSlideable.test when moving to a tile with 2 adjacent pieces                                                                                     |
+| T  |  X   | MoveInline.test when moving a tile with the same X coordinate                                                                                       |
+| T  |  X   | MoveInline.test when moving a tile with the same Y coordinate                                                                                       |
+| T  |  X   | MoveInline.test when moving a tile on the same diagonal                                                                                             |
+| T  |  X   | PathAtRange.test when path is equal to the creatures max range                                                                                      |
+| T  |  X   | PathAtRange.test when path is not equal to creatures max range (less than)                                                                          |
+| T  |  X   | PathAtRange.test when path is not equal to creatures max range (greater than)                                                                       |
+| T  |  X   | PathDestinationEmpty.test when path destination is empty                                                                                            |
+| T  |  X   | PathDestinationEmpty.test when path destination is not empty                                                                                        |
+| T  |  X   | PathDestinationRemovable.test when removing path destination does not disconnect colony                                                             | 
+| T  |  X   | PathDestinationRemovable.test when removing path destination does disconnect colony                                                                 | 
+| T  |  X   | PathDestinationConnected.test when path destination is connected                                                                                    | 
+| T  |  X   | PathDestinationRemovable.test when removing path destination does disconnect colony                                                                 | 
 
 # Design Patterns
 

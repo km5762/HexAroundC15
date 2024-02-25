@@ -3,17 +3,17 @@ package hexaround.game.board.pathfinding;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.board.pathfinding.pathvalidator.IPathValidator;
-import hexaround.game.board.pathfinding.pointvalidator.IPointValidator;
+import hexaround.game.board.pathfinding.movevalidator.IMoveValidator;
 import hexaround.game.creature.ICreature;
 
 import java.util.*;
 
 public class PathFinder implements IPathFinder {
-    protected IPointValidator pointValidator;
+    protected IMoveValidator moveValidator;
     protected IPathValidator pathValidator;
 
-    public PathFinder(IPointValidator pointValidator, IPathValidator pathValidator) {
-        this.pointValidator = pointValidator;
+    public PathFinder(IMoveValidator moveValidator, IPathValidator pathValidator) {
+        this.moveValidator = moveValidator;
         this.pathValidator = pathValidator;
     }
 
@@ -30,12 +30,12 @@ public class PathFinder implements IPathFinder {
             IBoard boardSimulation = board.clone();
             boardSimulation.moveCreature(creature.getName(), fromPoint, lastPoint);
 
-            if (pathValidator.validate(currentPath, creature, toPoint) && (lastPoint.equals(toPoint) || toPoint == null)) {
+            if (pathValidator.validate(currentPath, board, creature) && (toPoint == null || lastPoint.equals(toPoint))) {
                 return Optional.of(currentPath);
             }
 
             for (IPoint neighboringPoint : lastPoint.getNeighboringPoints()) {
-                if (!currentPath.contains(neighboringPoint) && pointValidator.validate(boardSimulation, creature, lastPoint, neighboringPoint)) {
+                if (isValidPoint(boardSimulation, creature, lastPoint, neighboringPoint, currentPath, moveValidator)) {
                     List<IPoint> newPath = new ArrayList<>(currentPath);
                     newPath.add(neighboringPoint);
                     pathQueue.add(newPath);
@@ -49,5 +49,13 @@ public class PathFinder implements IPathFinder {
     @Override
     public Optional<List<IPoint>> findPath(IBoard board, ICreature creature, IPoint fromPoint) {
         return findPath(board, creature, fromPoint, null);
+    }
+
+    private boolean isValidPoint(IBoard board, ICreature creature, IPoint lastPoint, IPoint neighboringPoint, List<IPoint> currentPath, IMoveValidator moveValidator) {
+        boolean notVisited = !currentPath.contains(neighboringPoint);
+        boolean inRange = currentPath.size() <= creature.getMaxDistance();
+        boolean validMove = moveValidator.validate(board, creature, lastPoint, neighboringPoint);
+
+        return notVisited && inRange && validMove;
     }
 }

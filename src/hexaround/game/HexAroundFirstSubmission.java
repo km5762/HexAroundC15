@@ -12,6 +12,7 @@ import hexaround.game.player.Player;
 import hexaround.game.player.PlayerName;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -59,15 +60,15 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
     public MoveResponse placeCreature(CreatureName creature, int x, int y) {
         Player playerWithTurn = players.get(nameOfPlayerWithTurn);
         IPoint point = new HexPoint(x, y);
-        ICreature creatureInstance = creatureFactory.makeCreature(creature, nameOfPlayerWithTurn);
+        Optional<ICreature> creatureInstance = creatureFactory.makeCreature(creature, nameOfPlayerWithTurn);
 
-        if (creatureInstance == null) {
+        if (creatureInstance.isEmpty()) {
             return MoveResponses.CREATURE_NOT_DEFINED;
         }
 
         playerWithTurn.decrementCreature(creature);
 
-        board.placeCreature(creatureInstance, point);
+        board.placeCreature(creatureInstance.get(), point);
         switchTurn();
         return new MoveResponse(MoveResult.OK, "Legal move");
     }
@@ -123,5 +124,9 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
                 owner.incrementCreature(creature.getName());
             }
         }
+    }
+
+    public List<Boolean> test() {
+        return board.anyCanMove();
     }
 }

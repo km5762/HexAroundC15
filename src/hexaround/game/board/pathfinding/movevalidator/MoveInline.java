@@ -1,11 +1,13 @@
-package hexaround.game.board.pathfinding.pointvalidator;
+package hexaround.game.board.pathfinding.movevalidator;
 
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.ICreature;
 
-public class PointEmpty implements IPointCondition {
+public class MoveInline implements IMoveCondition {
+
+    @Override
     public boolean test(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint) {
-        return board.getAllCreatures(toPoint).isEmpty();
+        return fromPoint.inlineTo(toPoint);
     }
 }

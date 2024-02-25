@@ -17,6 +17,8 @@ package hexaround.game;
 
 import hexaround.game.creature.CreatureName;
 
+import java.util.List;
+
 /**
  * This interface describes the behavior of HexAround from the client's viewpoint.
  * The client can be any test of the game's functionality or an implementation of
@@ -35,4 +37,6 @@ import hexaround.game.creature.CreatureName;
 public interface IHexAroundGameManager {
     MoveResponse placeCreature(CreatureName creature, int x, int y);
     MoveResponse moveCreature(CreatureName creature, int fromX, int fromY, int toX, int toY);
+
+    List<Boolean> test();
 }

@@ -35,4 +35,6 @@ public interface IBoard {
     IBoard clone();
 
     boolean isConnected();
+
+    List<Boolean> anyCanMove();
 }

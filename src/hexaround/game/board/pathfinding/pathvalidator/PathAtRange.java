@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PathAtRange implements IPathCondition {
     @Override
-    public boolean test(List<IPoint> path, IBoard board, ICreature creature, IPoint targetPoint) {
+    public boolean test(List<IPoint> path, IBoard board, ICreature creature) {
         return path.size() == creature.getMaxDistance() + 1;
     }
 }

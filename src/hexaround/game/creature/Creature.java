@@ -26,6 +26,7 @@ public class Creature implements ICreature {
         this.name = name;
         this.ownerName = ownerName;
         this.maxDistance = maxDistance;
+        this.pathFinder = pathFinder;
         this.properties = properties;
     }
 
@@ -56,6 +57,7 @@ public class Creature implements ICreature {
     }
 
     public boolean canMove(IBoard board, IPoint fromPoint) {
+        System.out.println(pathFinder.findPath(board, this, fromPoint));
         return pathFinder.findPath(board, this, fromPoint).isPresent();
     }
 }

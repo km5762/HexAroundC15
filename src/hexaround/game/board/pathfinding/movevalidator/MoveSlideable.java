@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.pointvalidator;
+package hexaround.game.board.pathfinding.movevalidator;
 
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
@@ -7,8 +7,8 @@ import hexaround.game.creature.ICreature;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PointSlideable implements IPointCondition {
-    protected static IPointCondition pointEmpty = new PointEmpty();
+public class MoveSlideable implements IMoveCondition {
+    protected static IMoveCondition pointEmpty = new MoveEmpty();
 
     public boolean test(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint) {
         return creatureCanSlide(board, creature, fromPoint, toPoint);
