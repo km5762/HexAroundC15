@@ -5,5 +5,5 @@ import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.ICreature;
 
 public interface IPointCondition {
-    boolean test(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint, IPoint targetPoint);
+    boolean test(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint);
 }

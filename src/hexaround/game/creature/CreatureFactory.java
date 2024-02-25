@@ -2,8 +2,9 @@ package hexaround.game.creature;
 
 import hexaround.config.CreatureDefinition;
 import hexaround.game.board.pathfinding.IPathFinder;
-import hexaround.game.board.pathfinding.pathvalidator.IPathCondition;
-import hexaround.game.board.pathfinding.pointvalidator.IPointCondition;
+import hexaround.game.board.pathfinding.PathFinder;
+import hexaround.game.board.pathfinding.pathvalidator.*;
+import hexaround.game.board.pathfinding.pointvalidator.*;
 import hexaround.game.player.PlayerName;
 
 import java.util.*;
@@ -31,11 +32,14 @@ public class CreatureFactory {
         if (!creatureDefinitions.containsKey(creatureName)) {
             return Optional.empty();
         }
-        CreatureDefinition creatureDefinition = creatureDefinitions.get(creatureName);
 
-        return Optional.of(new Creature(creatureDefinition.name(),
+        CreatureDefinition creatureDefinition = creatureDefinitions.get(creatureName);
+        IPathFinder pathFinder = makePathFinder(creatureDefinition.properties());
+
+        return Optional.of(new Creature(creatureName,
                 ownerName,
                 creatureDefinition.maxDistance(),
+                pathFinder,
                 creatureDefinition.properties()));
     }
 
@@ -49,10 +53,46 @@ public class CreatureFactory {
         boolean jumping = creatureProperties.contains(CreatureProperty.JUMPING);
         boolean intruding = creatureProperties.contains(CreatureProperty.INTRUDING);
         boolean trapping = creatureProperties.contains(CreatureProperty.TRAPPING);
-        boolean
+        boolean swapping = creatureProperties.contains(CreatureProperty.SWAPPING);
+        boolean kamikaze = creatureProperties.contains(CreatureProperty.KAMIKAZE);
+        boolean hatching = creatureProperties.contains(CreatureProperty.HATCHING);
 
-        if (creatureProperties.contains(CreatureProperty.KAMIKAZE) || creatureProperties.contains(CreatureProperty.SWAPPING) || creatureProperties.contains(CreatureProperty.TRAPPING)) {
+        boolean hasMovementEffect = trapping || swapping || kamikaze;
 
+        if (flying || jumping) {
+            pathConditions.add(new PathConnected());
+        } else if (hasMovementEffect) {
+            if (kamikaze) {
+                pathConditions.add(new PathDestinationRemovable());
+            }
+            pathConditions.add(new PathEmpty());
+        } else {
+            pointConditions.add(new PointEmpty());
         }
+
+        if (running) {
+            pathConditions.add(new PathAtRange());
+        } else {
+            pathConditions.add(new PathInRange());
+        }
+
+        else if (walking || running) {
+            if (!intruding) {
+                pointConditions.add(new PointSlideable());
+                pointConditions.add(new PointEmpty());
+            }
+            pointConditions.add(new PointConnected());
+        } else {
+            if (jumping) {
+                pointConditions.add(new PointInline());
+            } else {
+                pathConditions.add(new PathConnected());
+            }
+        }
+
+        IPointValidator pointValidator = new PointValidator(pointConditions);
+        IPathValidator pathValidator = new PathValidator(pathConditions);
+
+        return new PathFinder(pointValidator, pathValidator);
     }
 }

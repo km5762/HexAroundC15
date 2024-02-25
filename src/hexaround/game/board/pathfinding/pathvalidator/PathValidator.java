@@ -1,5 +1,6 @@
 package hexaround.game.board.pathfinding.pathvalidator;
 
+import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.ICreature;
 
@@ -13,9 +14,9 @@ public class PathValidator implements IPathValidator {
     }
 
     @Override
-    public boolean validate(List<IPoint> path, ICreature creature, IPoint targetPoint) {
+    public boolean validate(List<IPoint> path, IBoard board, ICreature creature, IPoint targetPoint) {
         for (IPathCondition condition : conditions) {
-            if (!condition.test(path, creature, targetPoint)) {
+            if (!condition.test(path, board, creature, targetPoint)) {
                 return false;
             }
         }
