@@ -2,6 +2,7 @@ package hexaround.game.board;
 
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.ICreature;
+import hexaround.game.player.PlayerName;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,17 +37,8 @@ public class CreatureStack implements Iterable<ICreature> {
      * @param creatureName the CreatureName of the creature to remove
      * @return this CreatureStack instance
      */
-    public CreatureStack removeCreature(CreatureName creatureName) {
-        Iterator<ICreature> iterator = creatureStack.iterator();
-
-        while(iterator.hasNext()) {
-            ICreature creature = iterator.next();
-
-            if (creature.getName() == creatureName) {
-                iterator.remove();
-                break;
-            }
-        }
+    public CreatureStack removeCreature(ICreature creature) {
+        creatureStack.remove(creature);
         return this;
     }
 
@@ -70,9 +62,9 @@ public class CreatureStack implements Iterable<ICreature> {
      * @param creatureName the CreatureName of the specified creature
      * @return the ICreature with CreatureName, or an empty Optional if there is no match or the CreatureStack is empty
      */
-    public Optional<ICreature> getCreatureWithName(CreatureName creatureName) {
+    public Optional<ICreature> getCreatureWithNameAndOwner(CreatureName creatureName, PlayerName ownerName) {
         for (ICreature creature : creatureStack) {
-            if (creature.getName() == creatureName) {
+            if (creature.getName() == creatureName && creature.getOwnerName() == ownerName) {
                 return Optional.of(creature);
             }
         }

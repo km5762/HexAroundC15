@@ -11,7 +11,7 @@ public class MoveConnected implements IMoveCondition {
 
     private boolean moveIsConnected(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint) {
         IBoard boardSimulation = board.clone();
-        boardSimulation.moveCreature(creature.getName(), fromPoint, toPoint);
+        boardSimulation.moveCreature(creature, fromPoint, toPoint);
 
         return boardSimulation.isConnected();
     }

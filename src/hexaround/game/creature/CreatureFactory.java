@@ -2,6 +2,7 @@ package hexaround.game.creature;
 
 import hexaround.config.CreatureDefinition;
 import hexaround.game.board.pathfinding.IPathFinder;
+import hexaround.game.board.pathfinding.MovementRules;
 import hexaround.game.board.pathfinding.PathFinder;
 import hexaround.game.board.pathfinding.pathvalidator.*;
 import hexaround.game.board.pathfinding.movevalidator.*;
@@ -34,16 +35,16 @@ public class CreatureFactory {
         }
 
         CreatureDefinition creatureDefinition = creatureDefinitions.get(creatureName);
-        IPathFinder pathFinder = makePathFinder(creatureDefinition.properties());
+        MovementRules movementRules = makeMovementRules(creatureDefinition.properties());
 
         return Optional.of(new Creature(creatureName,
                 ownerName,
                 creatureDefinition.maxDistance(),
-                pathFinder,
+                movementRules,
                 creatureDefinition.properties()));
     }
 
-    private IPathFinder makePathFinder(Collection<CreatureProperty> creatureProperties) {
+    private MovementRules makeMovementRules(Collection<CreatureProperty> creatureProperties) {
         List<IMoveCondition> pointConditions = new ArrayList<>();
         List<IPathCondition> pathConditions = new ArrayList<>();
 
@@ -87,9 +88,9 @@ public class CreatureFactory {
             }
         }
 
-        IMoveValidator pointValidator = new MoveValidator(pointConditions);
+        IMoveValidator moveValidator = new MoveValidator(pointConditions);
         IPathValidator pathValidator = new PathValidator(pathConditions);
 
-        return new PathFinder(pointValidator, pathValidator);
+        return new MovementRules(moveValidator, pathValidator);
     }
 }

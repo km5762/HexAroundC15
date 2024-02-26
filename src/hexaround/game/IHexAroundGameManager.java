@@ -37,6 +37,4 @@ import java.util.List;
 public interface IHexAroundGameManager {
     MoveResponse placeCreature(CreatureName creature, int x, int y);
     MoveResponse moveCreature(CreatureName creature, int fromX, int fromY, int toX, int toY);
-
-    List<Boolean> test();
 }

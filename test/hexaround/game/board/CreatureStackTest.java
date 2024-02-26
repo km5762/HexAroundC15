@@ -28,20 +28,11 @@ public class CreatureStackTest {
     }
 
     @Test
-    void removeCreatureNoMatch() {
-        creatureStack.addCreature(creature1);
-        creatureStack.addCreature(creature2);
-
-        assertTrue(creatureStack.removeCreature(CreatureName.BUTTERFLY) instanceof CreatureStack);
-        assertEquals(2, creatureStack.getSize());
-    }
-
-    @Test
     void removeCreature() {
         creatureStack.addCreature(creature1);
         creatureStack.addCreature(creature2);
 
-        assertTrue(creatureStack.removeCreature(CreatureName.CRAB) instanceof CreatureStack);
+        assertTrue(creatureStack.removeCreature(creature2) instanceof CreatureStack);
         assertEquals(1, creatureStack.getSize());
     }
 
@@ -59,19 +50,27 @@ public class CreatureStackTest {
     }
 
     @Test
-    void getCreatureWithNameNoMatch() {
+    void getCreatureWithNameAndOwnerWrongCreatureName() {
         creatureStack.addCreature(creature1);
         creatureStack.addCreature(creature2);
 
-        assertFalse(creatureStack.getCreatureWithName(CreatureName.GRASSHOPPER).isPresent());
+        assertFalse(creatureStack.getCreatureWithNameAndOwner(CreatureName.GRASSHOPPER, PlayerName.RED).isPresent());
     }
 
     @Test
-    void getCreatureWithName() {
+    void getCreatureWithNameAndOwnerWrongPlayerName() {
         creatureStack.addCreature(creature1);
         creatureStack.addCreature(creature2);
 
-        assertEquals(creature1, creatureStack.getCreatureWithName(CreatureName.CRAB).get());
+        assertFalse(creatureStack.getCreatureWithNameAndOwner(CreatureName.CRAB, PlayerName.BLUE).isPresent());
+    }
+
+    @Test
+    void getCreatureWithNameAndOwner() {
+        creatureStack.addCreature(creature1);
+        creatureStack.addCreature(creature2);
+
+        assertEquals(creature1, creatureStack.getCreatureWithNameAndOwner(CreatureName.CRAB, PlayerName.RED).get());
     }
 
     @Test

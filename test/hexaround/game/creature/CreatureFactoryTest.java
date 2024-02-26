@@ -3,56 +3,58 @@ package hexaround.game.creature;
 import hexaround.config.CreatureDefinition;
 import hexaround.config.GameConfiguration;
 import hexaround.config.HexAroundConfigurationMaker;
+import hexaround.game.board.pathfinding.MovementRules;
+import hexaround.game.board.pathfinding.movevalidator.IMoveCondition;
 import hexaround.game.player.PlayerName;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CreatureFactoryTest {
 
-    private static CreatureFactory creatureFactory;
+    static CreatureFactory creatureFactory1;
+    static CreatureFactory creatureFactory2;
 
     @BeforeAll
     static void loadCreatureFactory() throws IOException {
-        HexAroundConfigurationMaker configurationMaker =
-                new HexAroundConfigurationMaker("testConfigurations/FirstConfiguration.hgc");
-        GameConfiguration configuration = configurationMaker.makeConfiguration();
-
-        Map<CreatureName, CreatureDefinition> creatureDefinitions = new HashMap<>();
-
-        for (CreatureDefinition creatureDefinition : configuration.creatures()) {
-            creatureDefinitions.put(creatureDefinition.name(), creatureDefinition);
-        }
-
-        creatureFactory = new CreatureFactory(creatureDefinitions);
+        creatureFactory1 = CreatureFactoryTestingUtils.loadCreatureFactory("testConfigurations/FirstConfiguration.hgc");
+        creatureFactory2 = new CreatureFactory(new HashMap<>());
     }
-//
-//    @Test
-//    void makeCreatureInstance() throws IOException {
-//        ICreature creature = creatureFactory.makeCreature(CreatureName.BUTTERFLY, PlayerName.RED);
-//        assertTrue(creature instanceof ICreature);
-//    }
-//
-//    @Test
-//    void makeSpecificCreatureInstance() throws IOException {
-//        ICreature creature = creatureFactory.makeCreature(CreatureName.BUTTERFLY, PlayerName.RED);
-//        assertEquals(CreatureName.BUTTERFLY, creature.getName());
-//    }
-//
-//    @Test
-//    void makeCreatureInstanceWithMaxDistance() throws IOException {
-//        ICreature creature = creatureFactory.makeCreature(CreatureName.GRASSHOPPER, PlayerName.RED);
-//        assertEquals(3, creature.getMaxDistance());
-//    }
-//
-//    @Test
-//    void makeCreatureWithProperties() throws IOException {
-//        ICreature creature = creatureFactory.makeCreature(CreatureName.GRASSHOPPER, PlayerName.RED);
-//        assertTrue(creature.hasProperty(CreatureProperty.INTRUDING));
-//        assertTrue(creature.hasProperty(CreatureProperty.JUMPING));
-//    }
+
+    @Test
+    void makeCreatureInstance() {
+        Optional<ICreature> creature = creatureFactory1.makeCreature(CreatureName.BUTTERFLY, PlayerName.RED);
+        assertTrue(creature.get() instanceof ICreature);
+    }
+
+    @Test
+    void makeSpecificCreatureInstance() {
+        Optional<ICreature> creature = creatureFactory1.makeCreature(CreatureName.BUTTERFLY, PlayerName.RED);
+        assertEquals(CreatureName.BUTTERFLY, creature.get().getName());
+    }
+
+    @Test
+    void makeCreatureInstanceWithMaxDistance() {
+        Optional<ICreature> creature = creatureFactory1.makeCreature(CreatureName.GRASSHOPPER, PlayerName.RED);
+        assertEquals(5, creature.get().getMaxDistance());
+    }
+
+    @Test
+    void makeCreatureWithProperties() {
+        Optional<ICreature> creature = creatureFactory1.makeCreature(CreatureName.CRAB, PlayerName.RED);
+        assertTrue(creature.get().hasProperty(CreatureProperty.INTRUDING));
+        assertTrue(creature.get().hasProperty(CreatureProperty.WALKING));
+    }
+
+    @Test
+    void makeCreatureThatDoesntExist() {
+        Optional<ICreature> creature = creatureFactory2.makeCreature(CreatureName.TURTLE, PlayerName.RED);
+        assertTrue(creature.isEmpty());
+    }
 }

@@ -3,6 +3,7 @@ package hexaround.game.board;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.ICreature;
+import hexaround.game.player.PlayerName;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,19 +11,17 @@ import java.util.Optional;
 public interface IBoard {
     void placeCreature(ICreature creature, IPoint point);
 
-    void removeCreature(CreatureName creatureName, IPoint point);
+    void removeCreature(ICreature creature, IPoint point);
 
-    void moveCreature(CreatureName creatureName, IPoint fromPoint, IPoint toPoint);
+    void moveCreature(ICreature creature, IPoint fromPoint, IPoint toPoint);
 
     Optional<ICreature> getTopCreature(IPoint point);
 
     CreatureStack getAllCreatures(IPoint point);
 
-    Optional<ICreature> getCreatureWithName(CreatureName creatureName, IPoint point);
+    Optional<ICreature> getCreatureWithNameAndOwner(CreatureName creatureName, PlayerName ownerName, IPoint point);
 
     List<IPoint> getOccupiedNeighboringPoints(IPoint point);
-
-    boolean moveIsDisconnecting(CreatureName name, IPoint fromPoint, IPoint toPoint);
 
     boolean placementIsDisconnecting(ICreature creature, IPoint point);
 
@@ -30,11 +29,11 @@ public interface IBoard {
 
     boolean pointIsOccupied(IPoint point);
 
-    List<Integer> findPathLengths(IPoint fromPoint, IPoint toPoint);
-
     IBoard clone();
 
     boolean isConnected();
 
-    List<Boolean> anyCanMove();
+    boolean existsPath(ICreature creature, IPoint fromPoint, IPoint toPoint);
+
+    boolean existsPath(ICreature creature, IPoint fromPoint);
 }

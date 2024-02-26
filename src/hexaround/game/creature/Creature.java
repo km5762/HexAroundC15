@@ -3,6 +3,7 @@ package hexaround.game.creature;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.board.pathfinding.IPathFinder;
+import hexaround.game.board.pathfinding.MovementRules;
 import hexaround.game.player.PlayerName;
 
 import java.util.Collection;
@@ -13,7 +14,7 @@ public class Creature implements ICreature {
     protected CreatureName name;
     PlayerName ownerName;
     protected int maxDistance;
-    protected IPathFinder pathFinder;
+    protected MovementRules movementRules;
     protected Collection<CreatureProperty> properties;
 
     /**
@@ -22,11 +23,11 @@ public class Creature implements ICreature {
      * @param maxDistance the maximum range of the creature's movement.
      * @param properties the properties the Creature possesses. Must be of type CreatureProperty.
      */
-    public Creature(CreatureName name, PlayerName ownerName, int maxDistance, IPathFinder pathFinder, Collection<CreatureProperty> properties) {
+    public Creature(CreatureName name, PlayerName ownerName, int maxDistance, MovementRules movementRules, Collection<CreatureProperty> properties) {
         this.name = name;
         this.ownerName = ownerName;
         this.maxDistance = maxDistance;
-        this.pathFinder = pathFinder;
+        this.movementRules = movementRules;
         this.properties = properties;
     }
 
@@ -52,12 +53,7 @@ public class Creature implements ICreature {
         return properties.contains(property);
     }
 
-    public boolean canMove(IBoard board, IPoint fromPoint, IPoint toPoint) {
-        return pathFinder.findPath(board, this, fromPoint, toPoint).isPresent();
-    }
-
-    public boolean canMove(IBoard board, IPoint fromPoint) {
-        System.out.println(pathFinder.findPath(board, this, fromPoint));
-        return pathFinder.findPath(board, this, fromPoint).isPresent();
+    public MovementRules getMovementRules() {
+        return movementRules;
     }
 }

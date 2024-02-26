@@ -131,14 +131,4 @@ public class HexAroundGameManagerTest {
         gameManager.placeCreature(CreatureName.GRASSHOPPER, 0, 3);
         assertEquals(MoveResponses.DISCONNECTING_MOVE, gameManager.moveCreature(CreatureName.SPIDER, 0, 0, 0, 2));
     }
-
-    @Test
-    void test() {
-        gameManager.placeCreature(CreatureName.SPIDER, 0, 0);
-        gameManager.placeCreature(CreatureName.GRASSHOPPER, 0, 1);
-        gameManager.placeCreature(CreatureName.CRAB, 0, 2);
-        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 3);
-
-        System.out.println(gameManager.test());
-    }
 }

@@ -17,16 +17,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardTest {
     IBoard board;
-    UnitVectors unitVectors = new UnitVectors();
     CreatureStack creaturesAtPoint;
     ICreature creature1;
     ICreature creature2;
+    ICreature nonExistentCreature;
     IPoint origin;
     IPoint emptyPoint = new HexPoint(5, 5);
 
     @BeforeEach
     void setUpBoard() {
         HashMap<IPoint, CreatureStack> initialBoard = new HashMap<>();
+        nonExistentCreature = new Creature(null, null, 5, null, null);
         creature1 = new Creature(CreatureName.CRAB, PlayerName.RED, 1, null, Collections.singleton(CreatureProperty.INTRUDING));
         creature2 = new Creature(CreatureName.GRASSHOPPER, PlayerName.RED, 3, null, Collections.singleton(CreatureProperty.INTRUDING));
         creaturesAtPoint = new CreatureStack();
@@ -81,21 +82,14 @@ public class BoardTest {
 
     @Test
     void removeCreatureAtEmptyPoint() {
-        board.removeCreature(CreatureName.SPIDER, emptyPoint);
+        board.removeCreature(creature1, emptyPoint);
 
         assertTrue(board.getAllCreatures(emptyPoint).isEmpty());
     }
 
     @Test
-    void removeCreatureNoMatch() {
-        board.removeCreature(CreatureName.SPIDER, origin);
-
-        assertEquals(creaturesAtPoint, board.getAllCreatures(origin));
-    }
-
-    @Test
     void removeCreature() {
-        board.removeCreature(CreatureName.CRAB, origin);
+        board.removeCreature(creature1, origin);
         CreatureStack expectedCreatures = new CreatureStack().addCreature(creature2);
 
         assertEquals(expectedCreatures, board.getAllCreatures(origin));
@@ -107,61 +101,21 @@ public class BoardTest {
 
         board.placeCreature(creature, emptyPoint);
 
-        board.removeCreature(CreatureName.CRAB, emptyPoint);
+        board.removeCreature(creature, emptyPoint);
 
         assertTrue(board.getAllCreatures(emptyPoint).isEmpty());
     }
 
     @Test
-    void moveCreatureFromEmptyPoint() {
-        IPoint toPoint = new HexPoint(4, 6);
-        board.moveCreature(CreatureName.CRAB, emptyPoint, toPoint);
-
-        assertTrue(board.getAllCreatures(toPoint).isEmpty());
-    }
-
-    @Test
-    void moveCreatureNoMatch() {
-        IPoint toPoint = new HexPoint(4, 6);
-        board.moveCreature(CreatureName.BUTTERFLY, origin, toPoint);
-
-        assertTrue(board.getAllCreatures(toPoint).isEmpty());
-    }
-
-    @Test
     void moveCreature() {
         IPoint toPoint = new HexPoint(1, 1);
-        board.moveCreature(CreatureName.GRASSHOPPER, origin, toPoint);
+        board.moveCreature(creature2, origin, toPoint);
 
         CreatureStack creaturesAtFromPoint = new CreatureStack().addCreature(creature1);
         CreatureStack creaturesAtToPoint = new CreatureStack().addCreature(creature2);
 
         assertEquals(creaturesAtFromPoint, board.getAllCreatures(origin));
         assertEquals(creaturesAtToPoint, board.getAllCreatures(toPoint));
-    }
-
-    @Test
-    void moveIsNotDisconnecting() {
-        for (IPoint neighboringPoint : origin.getNeighboringPoints()) {
-            assertFalse(board.moveIsDisconnecting(CreatureName.CRAB, origin, neighboringPoint));
-        }
-    }
-
-    @Test
-    void movingOnEmptyBoardIsNotDisconnecting() {
-        Board emptyBoard = new Board(new HashMap<>());
-        emptyBoard.placeCreature(creature1, origin);
-
-        for (IPoint neighboringPoint : origin.getNeighboringPoints()) {
-            assertFalse(board.moveIsDisconnecting(CreatureName.CRAB, origin, neighboringPoint));
-        }
-    }
-
-    @Test
-    void moveIsDisconnecting() {
-        for (IPoint scaledNeighboringPoint : getScaledNeighboringPoints(origin, 2)) {
-            assertTrue(board.moveIsDisconnecting(CreatureName.CRAB, origin, scaledNeighboringPoint));
-        }
     }
 
     @Test
@@ -218,70 +172,6 @@ public class BoardTest {
         assertFalse(board.creatureCanSlide(new HexPoint(0, 0), new HexPoint(-1, 1)));
         assertFalse(board.creatureCanSlide(new HexPoint(0, 0), new HexPoint(1, 0)));
         assertFalse(board.creatureCanSlide(new HexPoint(0, 0), new HexPoint(0, -1)));
-    }
-
-//    @Test
-//    void getPathsToDisconnectedPoint() {
-//        IBoard emptyBoard = new Board(new HashMap<>());
-//        IPoint[] obstaclePoints = {new HexPoint(-1, 2), new HexPoint(0, 1), new HexPoint(1, 0)};
-//        placeObstacleCreatures(obstaclePoints, emptyBoard);
-//        System.out.println(emptyBoard.findPathLengths(origin, new HexPoint(2, -2)));
-//    }
-//
-//    @Test
-//    void getPathsToNeighboringPoint() {
-//        IBoard emptyBoard = new Board(new HashMap<>());
-//        IPoint[] obstaclePoints = {new HexPoint(-1, 2), new HexPoint(0, 1), new HexPoint(1, 0)};
-//        placeObstacleCreatures(obstaclePoints, emptyBoard);
-//        System.out.println(emptyBoard.findPathLengths(origin, new HexPoint(1, -1)));
-//    }
-    @Test
-    void moveKamikazeCreature() {
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, null, Arrays.asList(new CreatureProperty[]{CreatureProperty.KAMIKAZE}));
-
-        board.placeCreature(creature, origin);
-        board.placeCreature(creature, new HexPoint(0, 1));
-        board.placeCreature(creature, new HexPoint(0, 2));
-        board.placeCreature(creature, new HexPoint(0, 3));
-        board.moveCreature(CreatureName.SPIDER, origin, new HexPoint(0, 1));
-        assertTrue(board.getAllCreatures(new HexPoint(0, 1)).isEmpty());
-    }
-
-    @Test
-    void moveIsDisconnectingWithKamikazeCreature() {
-        IBoard emptyBoard = new Board(new HashMap<>());
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, null, Arrays.asList(new CreatureProperty[]{CreatureProperty.KAMIKAZE}));
-
-        emptyBoard.placeCreature(creature, origin);
-        emptyBoard.placeCreature(creature, new HexPoint(0, 1));
-        emptyBoard.placeCreature(creature, new HexPoint(0, 2));
-        emptyBoard.placeCreature(creature, new HexPoint(0, 3));
-        assertTrue(emptyBoard.moveIsDisconnecting(CreatureName.SPIDER, origin, new HexPoint(0, 2)));
-    }
-
-    @Test
-    void moveSwappingCreature() {
-        IBoard emptyBoard = new Board(new HashMap<>());
-        ICreature creature = new Creature(CreatureName.TURTLE, PlayerName.RED, 1, null, Arrays.asList(new CreatureProperty[]{CreatureProperty.SWAPPING}));
-
-        emptyBoard.placeCreature(creature, new HexPoint(0, 1));
-        emptyBoard.placeCreature(creature1, new HexPoint(0, 2));
-
-        emptyBoard.moveCreature(CreatureName.TURTLE, new HexPoint(0, 1), new HexPoint(0, 2));
-        assertSame(creature1, emptyBoard.getTopCreature(new HexPoint(0, 1)).get());
-        assertSame(creature, emptyBoard.getTopCreature(new HexPoint(0, 2)).get());
-    }
-
-    @Test
-    void moveSwappingCreatureIsNotDisconnecting() {
-        IBoard emptyBoard = new Board(new HashMap<>());
-        ICreature creature = new Creature(CreatureName.TURTLE, PlayerName.RED, 1, null, Arrays.asList(new CreatureProperty[]{CreatureProperty.SWAPPING}));
-
-        emptyBoard.placeCreature(creature, new HexPoint(0, 1));
-        emptyBoard.placeCreature(creature1, new HexPoint(0, 2));
-        emptyBoard.placeCreature(creature1, new HexPoint(0, 3));
-
-        assertFalse(emptyBoard.moveIsDisconnecting(CreatureName.TURTLE, new HexPoint(0, 1), new HexPoint(0, 2)));
     }
 
     private List<IPoint> getScaledNeighboringPoints(IPoint point, int scale) {

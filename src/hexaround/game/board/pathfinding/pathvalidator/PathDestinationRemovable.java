@@ -14,12 +14,11 @@ public class PathDestinationRemovable implements IPathCondition {
         IBoard boardSimulation = board.clone();
         IPoint firstPoint = path.get(0);
         IPoint lastPoint = path.get(path.size() - 1);
-        Optional<ICreature> kamikazeCreature = boardSimulation.getCreatureWithName(creature.getName(), firstPoint);
         Optional<ICreature> removedCreature = boardSimulation.getTopCreature(lastPoint);
 
-        boardSimulation.removeCreature(kamikazeCreature.get().getName(), firstPoint);
+        boardSimulation.removeCreature(creature, firstPoint);
         if (removedCreature.isPresent()) {
-            boardSimulation.removeCreature(removedCreature.get().getName(), lastPoint);
+            boardSimulation.removeCreature(removedCreature.get(), lastPoint);
         }
 
         return removedCreature.isEmpty() || boardSimulation.isConnected();

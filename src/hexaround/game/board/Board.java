@@ -1,17 +1,24 @@
 package hexaround.game.board;
 
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.IPathFinder;
+import hexaround.game.board.pathfinding.MovementRules;
+import hexaround.game.board.pathfinding.PathFinder;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.ICreature;
+import hexaround.game.player.PlayerName;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.List;
 
 public class Board implements IBoard {
     protected Map<IPoint, CreatureStack> board;
+    protected IPathFinder pathFinder;
 
     public Board(Map<IPoint, CreatureStack> board) {
         this.board = board;
+        this.pathFinder = new PathFinder();
     }
 
     /**
@@ -35,9 +42,9 @@ public class Board implements IBoard {
      * @param creatureName the CreatureName of the creature to remove
      * @param point        the specified IPoint
      */
-    public void removeCreature(CreatureName creatureName, IPoint point) {
+    public void removeCreature(ICreature creature, IPoint point) {
         CreatureStack creaturesAtPoint = getAllCreatures(point);
-        creaturesAtPoint.removeCreature(creatureName);
+        creaturesAtPoint.removeCreature(creature);
 
         if (creaturesAtPoint.isEmpty()) {
             board.remove(point);
@@ -56,13 +63,9 @@ public class Board implements IBoard {
      * @param fromPoint    the IPoint to move the creature to
      */
     @Override
-    public void moveCreature(CreatureName creatureName, IPoint fromPoint, IPoint toPoint) {
-        CreatureStack creaturesAtFromPoint = getAllCreatures(fromPoint);
-        Optional<ICreature> creatureWithName = creaturesAtFromPoint.getCreatureWithName(creatureName);
-
-        if (creatureWithName.isPresent()) {
-            removeCreature(creatureName, fromPoint);
-            placeCreature(creatureWithName.get(), toPoint);
+    public void moveCreature(ICreature creature, IPoint fromPoint, IPoint toPoint) {
+        removeCreature(creature, fromPoint);
+        placeCreature(creature, toPoint);
 
 //            if (creatureWithName.get().hasProperty(CreatureProperty.KAMIKAZE)) {
 //                removeAllCreatures(toPoint);
@@ -77,7 +80,6 @@ public class Board implements IBoard {
 //                }
 //                placeCreature(creatureWithName.get(), toPoint);
 //            }
-        }
     }
 
     /**
@@ -108,29 +110,14 @@ public class Board implements IBoard {
      * @param point        the specified IPoint
      * @return the ICreature with CreatureName at IPoint, or an empty Optional if none exist
      */
-    public Optional<ICreature> getCreatureWithName(CreatureName creatureName, IPoint point) {
+    public Optional<ICreature> getCreatureWithNameAndOwner(CreatureName creatureName, PlayerName ownerName, IPoint point) {
         CreatureStack creaturesAtPoint = getAllCreatures(point);
 
         if (!creaturesAtPoint.isEmpty()) {
-            return creaturesAtPoint.getCreatureWithName(creatureName);
+            return creaturesAtPoint.getCreatureWithNameAndOwner(creatureName, ownerName);
         } else {
             return Optional.empty();
         }
-    }
-
-    /**
-     * Returns true if the specified move disconnects the colony, and false otherwise
-     *
-     * @param name      the CreatureName of the creature being moved
-     * @param fromPoint the IPoint the creature is currently at
-     * @param fromPoint the IPoint to move the creature to
-     * @return true if the specified move is disconnecting, and false otherwise
-     */
-    public boolean moveIsDisconnecting(CreatureName name, IPoint fromPoint, IPoint toPoint) {
-        Board boardSimulation = this.clone();
-        boardSimulation.moveCreature(name, fromPoint, toPoint);
-
-        return !boardSimulation.isConnected();
     }
 
     /**
@@ -243,55 +230,13 @@ public class Board implements IBoard {
         return true;
     }
 
-    /**
-     * Finds all possible valid path lengths from one IPoint to another
-     * <p>
-     * Source: https://www.geeksforgeeks.org/print-paths-given-source-destination-using-bfs/
-     *
-     * @param fromPoint the starting IPoint
-     * @param toPoint   the target IPoint
-     * @return a List containing Integers, each of which represent a valid path length.
-     */
-    public List<Integer> findPathLengths(IPoint fromPoint, IPoint toPoint) {
-        Queue<List<IPoint>> pathQueue = new LinkedList<>();
-        List<Integer> pathLengths = new ArrayList<>();
-
-        List<IPoint> startPath = new ArrayList<>();
-        startPath.add(fromPoint);
-        pathQueue.add(startPath);
-
-        while (!pathQueue.isEmpty()) {
-            List<IPoint> currentPath = pathQueue.poll();
-            IPoint lastPoint = currentPath.get(currentPath.size() - 1);
-
-            if (lastPoint.equals(toPoint)) {
-                pathLengths.add(currentPath.size() - 1);
-                System.out.println(currentPath);
-            }
-
-            for (IPoint neighboringPoint : lastPoint.getNeighboringPoints()) {
-                if (!currentPath.contains(neighboringPoint)
-                        && !getOccupiedNeighboringPoints(neighboringPoint).isEmpty()
-                        && getAllCreatures(neighboringPoint).isEmpty()) {
-                    List<IPoint> newPath = new ArrayList<>(currentPath);
-                    newPath.add(neighboringPoint);
-                    pathQueue.add(newPath);
-                }
-            }
-        }
-
-        return pathLengths;
+    public boolean existsPath(ICreature creature, IPoint fromPoint, IPoint toPoint) {
+        MovementRules movementRules = creature.getMovementRules();
+        return pathFinder.findPath(this, creature, fromPoint, toPoint, movementRules).isPresent();
     }
 
-    public List<Boolean> anyCanMove() {
-        List<Boolean> paths = new ArrayList<>();
-
-        for (Map.Entry<IPoint, CreatureStack> entry : board.entrySet()) {
-            for (ICreature creature : entry.getValue()) {
-                paths.add(creature.canMove(this, entry.getKey()));
-            }
-        }
-
-        return paths;
+    public boolean existsPath(ICreature creature, IPoint fromPoint) {
+        MovementRules movementRules = creature.getMovementRules();
+        return pathFinder.findPath(this, creature, fromPoint, movementRules).isPresent();
     }
 }

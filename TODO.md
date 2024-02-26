@@ -21,21 +21,16 @@
 | R  |  X   | Move basic functionality for getting/putting ICreatures on board into seperate Board class                                                          |
 | T  |  X   | board.getAllCreatures when no creatures at point                                                                                                    | 
 | T  |  X   | board.getAllCreatures when creatures at point                                                                                                       |
-| T  |  X   | board.getCreatureWithName when no creatures at point                                                                                                |
-| T  |  X   | board.getCreatureWithName when no creature with name at point                                                                                       |
-| T  |  X   | board.getCreatureWithName when there is a match at the point                                                                                        |
 | T  |  X   | board.getTopCreature when there are no creatures at point                                                                                           |
 | T  |  X   | board.getTopCreature when there are creatures at point                                                                                              |
-| T  |  X   | Use @BeforeEach directive to make testing more concise                                                                                              | 
+| R  |  X   | Use @BeforeEach directive to make testing more concise                                                                                              | 
 | T  |  X   | board.placeCreature when no creatures at point                                                                                                      |
 | T  |  X   | board.placeCreature when already creatures at point                                                                                                 |
 | T  |  X   | board.removeCreature when no creatures at point                                                                                                     |
-| T  |  X   | board.removeCreature when no creatures with name at point                                                                                           |
-| T  |  X   | board.removeCreature there is a match at the point                                                                                                  |
-| T  |  X   | board.removeCreature there is a match at the point and removing the creature leaves the point empty                                                 |
+| T  |  X   | board.removeCreature                                                                                                                                |
+| T  |  X   | board.removeCreature and removing the creature leaves the point empty                                                                               |
 | T  |  X   | board.moveCreature from an empty point                                                                                                              |
 | T  |  X   | board.moveCreature when no creature with name at point                                                                                              |
-| T  |  X   | board.moveCreature when there is a match at the point                                                                                               |
 | R  |  X   | Move calculateDistance helper from GameManager to Board                                                                                             |
 | T  |  X   | board.moveIsDisconnecting when move is not disconnecting                                                                                            |
 | T  |  X   | board.moveIsDisconnecting when creature being moved is the only one on board                                                                        |
@@ -48,6 +43,7 @@
 | R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.getAllCreatures()                                                     |
 | T  |  X   | GameManager.placeCreature returns legal MoveResponse                                                                                                |
 | R  |  X   | Prefer Java Optionals vs. null returns to force consumers to deal with null case                                                                    |
+| T  |  X   | CreatureFactory.makeCreature when creature name is not recognized in creature definitions                                                           | 
 | T  |  X   | GameManager.moveCreature returns legal MoveResponse when moving on empty board                                                                      |
 | R  |  X   | Make calculateDistance return type double -> int since distances will always be integers                                                            |
 | T  |  X   | GameManager.moveCreature returns legal MoveResponse when moving in a connected manner                                                               |
@@ -63,12 +59,12 @@
 | T  |  X   | clone HexPoint                                                                                                                                      | 
 | R  |  X   | Move logic for interacting with creatures at a certain point from List<ICreature> -> CreatureStack class                                            | 
 | T  |  X   | addCreature to CreatureStack                                                                                                                        | 
-| T  |  X   | removeCreature from CreatureStack where no name matches                                                                                             |
 | T  |  X   | removeCreature from CreatureStack                                                                                                                   | 
 | T  |  X   | getTopCreature from empty CreatureStack                                                                                                             | 
 | T  |  X   | getTopCreature from CreatureStack                                                                                                                   | 
-| T  |  X   | getCreatureWithName from CreatureStack where no name matches                                                                                        | 
-| T  |  X   | getCreatureWithName from CreatureStack                                                                                                              | 
+| T  |  X   | getCreatureWithNameAndOwner from creatureStack when no creature with name match                                                                     | 
+| T  |  X   | getCreatureWithNameAndOwner from creatureStack when no creature with owner match                                                                    | 
+| T  |  X   | getCreatureWithNameAndOwner from creatureStack                                                                                                      |
 | T  |  X   | equals override when object is same instance of CreatureStack                                                                                       | 
 | T  |  X   | equals override when object is not an instance of CreatureStack                                                                                     | 
 | T  |  X   | equals override when object is a deep copy of CreatureStack                                                                                         | 
@@ -107,7 +103,6 @@
 | T  |  X   | PathUpToDestinationEmpty.test when the path is entirely empty                                                                                       | 
 | T  |  X   | PathUpToDestinationEmpty.test when only the destination is occupied                                                                                 | 
 | T  |  X   | PathUpToDestinationEmpty.test when the path contains occupied points                                                                                | 
-
 
 # Design Patterns
 

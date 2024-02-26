@@ -11,8 +11,6 @@ import hexaround.game.creature.ICreature;
 import hexaround.game.player.Player;
 import hexaround.game.player.PlayerName;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -87,15 +85,10 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
     public MoveResponse moveCreature(CreatureName creature, int fromX, int fromY, int toX, int toY) {
         IPoint fromPoint = new HexPoint(fromX, fromY);
         IPoint toPoint = new HexPoint(toX, toY);
-
-        Optional<ICreature> specifiedCreature = board.getCreatureWithName(creature, fromPoint);
+        Optional<ICreature> specifiedCreature = board.getCreatureWithNameAndOwner(creature, nameOfPlayerWithTurn, fromPoint);
 
         if (specifiedCreature.isEmpty()) {
             return MoveResponses.CREATURE_DOES_NOT_EXIST;
-        }
-
-        if (board.moveIsDisconnecting(creature, fromPoint, toPoint)) {
-            return MoveResponses.DISCONNECTING_MOVE;
         }
 
         if (specifiedCreature.get().hasProperty(CreatureProperty.KAMIKAZE)) {
@@ -103,7 +96,7 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
             returnCreatures(affectedCreatures, getNameOfPlayerOffTurn());
         }
 
-        board.moveCreature(specifiedCreature.get().getName(), fromPoint, toPoint);
+        board.moveCreature(specifiedCreature.get(), fromPoint, toPoint);
 
         switchTurn();
         return MoveResponses.LEGAL_MOVE;
@@ -124,9 +117,5 @@ public class HexAroundFirstSubmission implements IHexAroundGameManager {
                 owner.incrementCreature(creature.getName());
             }
         }
-    }
-
-    public List<Boolean> test() {
-        return board.anyCanMove();
     }
 }
