@@ -68,11 +68,13 @@ public class CreatureFactory {
         if (isGroundCreature) {
             moveConditions.add(new MoveConnected());
 
-            if (hasMovementEffect) {
-                pathConditions.add(new PathUpToDestinationEmpty());
-            } else if (!intruding) {
+            if (!intruding) {
                 moveConditions.add(new MoveSlideable());
-                moveConditions.add(new MoveEmpty());
+                if (hasMovementEffect) {
+                    pathConditions.add(new PathUpToDestinationEmpty());
+                } else {
+                    moveConditions.add(new MoveEmpty());
+                }
             }
         } else {
             pathConditions.add(new PathDestinationConnected());
