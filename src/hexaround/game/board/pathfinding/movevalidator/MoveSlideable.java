@@ -2,21 +2,25 @@ package hexaround.game.board.pathfinding.movevalidator;
 
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.ICreature;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoveSlideable implements IMoveCondition {
-    protected static IMoveCondition pointEmpty = new MoveEmpty();
+public class MoveSlideable implements ICondition<MoveContext> {
+    protected static ICondition<MoveContext> pointEmpty = new MoveEmpty();
 
-    public boolean test(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint) {
-        return creatureCanSlide(board, creature, fromPoint, toPoint);
+    public boolean test(MoveContext context) {
+        return creatureCanSlide(context);
     }
 
-    public boolean creatureCanSlide(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint) {
-        List<IPoint> fromOccupiedNeighboringPoints = getOccupiedNeighboringPoints(board, creature, fromPoint);
-        List<IPoint> toOccupiedNeighboringPoints = getOccupiedNeighboringPoints(board, creature, toPoint);
+    public boolean creatureCanSlide(MoveContext context) {
+        IPoint fromPoint = context.fromPoint();
+        IPoint toPoint = context.toPoint();
+
+        List<IPoint> fromOccupiedNeighboringPoints = getOccupiedNeighboringPoints(context, fromPoint);
+        List<IPoint> toOccupiedNeighboringPoints = getOccupiedNeighboringPoints(context, toPoint);
         int commonNeighborsCount = 0;
 
         for (IPoint fromOccupiedNeighboringPoint : fromOccupiedNeighboringPoints) {
@@ -31,11 +35,12 @@ public class MoveSlideable implements IMoveCondition {
         return true;
     }
 
-    public List<IPoint> getOccupiedNeighboringPoints(IBoard board, ICreature creature, IPoint lastPoint) {
+    public List<IPoint> getOccupiedNeighboringPoints(MoveContext context, IPoint point) {
         List<IPoint> occupiedNeighboringPoints = new ArrayList<>();
 
-        for (IPoint neighboringPoint : lastPoint.getNeighboringPoints()) {
-            if (!pointEmpty.test(board, creature, lastPoint, neighboringPoint)) {
+        for (IPoint neighboringPoint : point.getNeighboringPoints()) {
+            MoveContext moveContext = new MoveContext(context.board(), context.creature(), context.fromPoint(), neighboringPoint);
+            if (!pointEmpty.test(moveContext)) {
                 occupiedNeighboringPoints.add(neighboringPoint);
             }
         }

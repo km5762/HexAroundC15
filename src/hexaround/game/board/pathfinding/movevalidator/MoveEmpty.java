@@ -1,11 +1,9 @@
 package hexaround.game.board.pathfinding.movevalidator;
 
-import hexaround.game.board.IBoard;
-import hexaround.game.board.geometry.IPoint;
-import hexaround.game.creature.ICreature;
+import hexaround.game.board.pathfinding.ICondition;
 
-public class MoveEmpty implements IMoveCondition {
-    public boolean test(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint) {
-        return !board.pointIsOccupied(toPoint);
+public class MoveEmpty implements ICondition<MoveContext> {
+    public boolean test(MoveContext context) {
+        return !context.board().pointIsOccupied(context.toPoint());
     }
 }

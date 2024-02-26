@@ -51,7 +51,7 @@ public class Board implements IBoard {
         }
     }
 
-    private void removeAllCreatures(IPoint point) {
+    public void removeAllCreatures(IPoint point) {
         board.remove(point);
     }
 
@@ -158,6 +158,10 @@ public class Board implements IBoard {
         return false;
     }
 
+    public boolean isSurrounded(IPoint point) {
+        return getOccupiedNeighboringPoints(point).size() == 6;
+    }
+
     @Override
     public Board clone() {
         Map<IPoint, CreatureStack> copiedBoard = new HashMap<>();
@@ -172,7 +176,7 @@ public class Board implements IBoard {
         return new Board(copiedBoard);
     }
 
-    public List<IPoint> getOccupiedNeighboringPoints(IPoint point) {
+    private List<IPoint> getOccupiedNeighboringPoints(IPoint point) {
         List<IPoint> occupiedNeighboringPoints = new ArrayList<>();
 
         for (IPoint neighboringPoint : point.getNeighboringPoints()) {

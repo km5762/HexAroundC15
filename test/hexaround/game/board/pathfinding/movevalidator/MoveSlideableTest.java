@@ -4,6 +4,7 @@ import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.ICreature;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MoveSlideableTest {
-    IMoveCondition moveSlideable = new MoveSlideable();
+    ICondition<MoveContext> moveSlideable = new MoveSlideable();
     IBoard board;
     ICreature creature;
 
@@ -34,8 +35,9 @@ public class MoveSlideableTest {
     @Test
     void moveSlideableOnEmptyBoard() {
         board.placeCreature(creature, origin);
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
 
-        assertTrue(moveSlideable.test(board, creature, origin, new HexPoint(0, 1)));
+        assertTrue(moveSlideable.test(context));
     }
 
 
@@ -43,8 +45,9 @@ public class MoveSlideableTest {
     void moveSlideableWithOneAdjacent() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(-1, 1));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
 
-        assertTrue(moveSlideable.test(board, creature, origin, new HexPoint(0, 1)));
+        assertTrue(moveSlideable.test(context));
     }
 
     @Test
@@ -52,7 +55,8 @@ public class MoveSlideableTest {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(-1, 1));
         board.placeCreature(creature, new HexPoint(1, 0));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
 
-        assertFalse(moveSlideable.test(board, creature, origin, new HexPoint(0, 1)));
+        assertFalse(moveSlideable.test(context));
     }
 }

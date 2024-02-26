@@ -103,6 +103,7 @@
 | T  |  X   | PathUpToDestinationEmpty.test when the path is entirely empty                                                                                       | 
 | T  |  X   | PathUpToDestinationEmpty.test when only the destination is occupied                                                                                 | 
 | T  |  X   | PathUpToDestinationEmpty.test when the path contains occupied points                                                                                | 
+| R  |  X   | Make all conditions implement the same generic interface rather than one for each type of condition                                                 |
 
 # Design Patterns
 

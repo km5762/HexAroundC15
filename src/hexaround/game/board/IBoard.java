@@ -21,15 +21,17 @@ public interface IBoard {
 
     Optional<ICreature> getCreatureWithNameAndOwner(CreatureName creatureName, PlayerName ownerName, IPoint point);
 
-    List<IPoint> getOccupiedNeighboringPoints(IPoint point);
-
     boolean placementIsDisconnecting(ICreature creature, IPoint point);
 
     boolean creatureCanSlide(IPoint fromPoint, IPoint toPoint);
 
     boolean pointIsOccupied(IPoint point);
 
+    boolean isSurrounded(IPoint point);
+
     IBoard clone();
+
+    void removeAllCreatures(IPoint point);
 
     boolean isConnected();
 

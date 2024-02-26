@@ -2,8 +2,8 @@ package hexaround.game.board.pathfinding;
 
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
-import hexaround.game.board.pathfinding.pathvalidator.IPathValidator;
-import hexaround.game.board.pathfinding.movevalidator.IMoveValidator;
+import hexaround.game.board.pathfinding.movevalidator.MoveContext;
+import hexaround.game.board.pathfinding.pathvalidator.PathContext;
 import hexaround.game.creature.ICreature;
 
 import java.util.*;
@@ -11,8 +11,8 @@ import java.util.*;
 public class PathFinder implements IPathFinder {
     @Override
     public Optional<List<IPoint>> findPath(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint, MovementRules movementRules) {
-        IMoveValidator moveValidator = movementRules.moveValidator();
-        IPathValidator pathValidator = movementRules.pathValidator();
+        Validator<MoveContext> moveValidator = movementRules.moveValidator();
+        Validator<PathContext> pathValidator = movementRules.pathValidator();
         Queue<List<IPoint>> pathQueue = new LinkedList<>();
         List<IPoint> startPath = new ArrayList<>();
         startPath.add(fromPoint);
@@ -24,12 +24,14 @@ public class PathFinder implements IPathFinder {
             IBoard boardSimulation = board.clone();
             boardSimulation.moveCreature(creature, fromPoint, lastPoint);
 
-            if (pathValidator.validate(currentPath, board, creature) && (toPoint == null || lastPoint.equals(toPoint)) && currentPath.size() > 1) {
+            PathContext pathContext = new PathContext(currentPath, board, creature);
+            if (pathValidator.validate(pathContext) && (toPoint == null || lastPoint.equals(toPoint)) && currentPath.size() > 1) {
                 return Optional.of(currentPath);
             }
 
             for (IPoint neighboringPoint : lastPoint.getNeighboringPoints()) {
-                if (isValidPoint(boardSimulation, creature, lastPoint, neighboringPoint, currentPath, moveValidator)) {
+                MoveContext moveContext = new MoveContext(boardSimulation, creature, lastPoint, neighboringPoint);
+                if (isValidPoint(moveContext, currentPath, moveValidator)) {
                     List<IPoint> newPath = new ArrayList<>(currentPath);
                     newPath.add(neighboringPoint);
                     pathQueue.add(newPath);
@@ -45,10 +47,13 @@ public class PathFinder implements IPathFinder {
         return findPath(board, creature, fromPoint, null, movementRules);
     }
 
-    private boolean isValidPoint(IBoard board, ICreature creature, IPoint lastPoint, IPoint neighboringPoint, List<IPoint> currentPath, IMoveValidator moveValidator) {
+    private boolean isValidPoint(MoveContext moveContext, List<IPoint> currentPath, Validator<MoveContext> moveValidator) {
+        IPoint neighboringPoint = moveContext.toPoint();
+        ICreature creature = moveContext.creature();
+
         boolean notVisited = !currentPath.contains(neighboringPoint);
         boolean inRange = currentPath.size() <= creature.getMaxDistance();
-        boolean validMove = moveValidator.validate(board, creature, lastPoint, neighboringPoint);
+        boolean validMove = moveValidator.validate(moveContext);
 
         return notVisited && inRange && validMove;
     }

@@ -5,6 +5,7 @@ import hexaround.game.board.BoardTestingUtils;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.ICreature;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PathDestinationRemovableTest {
-    IPathCondition pathDestinationRemovable = new PathDestinationRemovable();
+    ICondition<PathContext> pathDestinationRemovable = new PathDestinationRemovable();
     List<IPoint> basePath;
     IBoard board;
     ICreature creature;
@@ -35,12 +36,16 @@ public class PathDestinationRemovableTest {
 
     @Test
     void pathDestinationRemovable() {
-        assertTrue(pathDestinationRemovable.test(basePath, board, creature));
+        PathContext context = new PathContext(basePath, board, creature);
+
+        assertTrue(pathDestinationRemovable.test(context));
     }
 
     @Test
     void pathDestinationNotRemovable() {
         basePath.add(new HexPoint(0, 2));
-        assertFalse(pathDestinationRemovable.test(basePath, board, creature));
+        PathContext context = new PathContext(basePath, board, creature);
+
+        assertFalse(pathDestinationRemovable.test(context));
     }
 }

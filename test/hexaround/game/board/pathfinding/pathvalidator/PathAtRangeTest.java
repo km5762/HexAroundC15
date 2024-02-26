@@ -4,6 +4,7 @@ import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PathAtRangeTest {
-    IPathCondition pathAtRange = new PathAtRange();
+    ICondition<PathContext> pathAtRange = new PathAtRange();
 
     List<IPoint> basePath;
     IBoard board;
@@ -40,13 +41,17 @@ public class PathAtRangeTest {
     void pathEqualToRange() {
         board.placeCreature(creature, origin);
         basePath.add(new HexPoint(0, 5));
-        assertTrue(pathAtRange.test(basePath, board, creature));
+        PathContext context = new PathContext(basePath, board, creature);
+
+        assertTrue(pathAtRange.test(context));
     }
 
     @Test
     void pathLessThanRange() {
         board.placeCreature(creature, origin);
-        assertFalse(pathAtRange.test(basePath, board, creature));
+        PathContext context = new PathContext(basePath, board, creature);
+
+        assertFalse(pathAtRange.test(context));
     }
 
     @Test
@@ -54,6 +59,8 @@ public class PathAtRangeTest {
         board.placeCreature(creature, origin);
         basePath.add(new HexPoint(0, 5));
         basePath.add(new HexPoint(0, 6));
-        assertFalse(pathAtRange.test(basePath, board, creature));
+        PathContext context = new PathContext(basePath, board, creature);
+
+        assertFalse(pathAtRange.test(context));
     }
 }

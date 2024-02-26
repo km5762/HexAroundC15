@@ -6,6 +6,5 @@ import hexaround.game.creature.ICreature;
 
 import java.util.List;
 
-public interface IPathCondition {
-    boolean test(List<IPoint> path, IBoard board, ICreature creature);
+public record PathContext(List<IPoint> path, IBoard board, ICreature creature) {
 }

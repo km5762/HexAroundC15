@@ -112,6 +112,7 @@ public class BoardMovementTest {
         assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(0, 2)));
     }
 
+
 //    @Test
 //    void walkingIntrudingCreatureExistsPath() {
 //        ICreature walkingIntrudingCreature = creatureFactory1.makeCreature(walkingIntrudingCreatureName, null).get();

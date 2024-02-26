@@ -1,7 +1,7 @@
 package hexaround.game.board.pathfinding;
 
-import hexaround.game.board.pathfinding.movevalidator.IMoveValidator;
-import hexaround.game.board.pathfinding.pathvalidator.IPathValidator;
+import hexaround.game.board.pathfinding.movevalidator.MoveContext;
+import hexaround.game.board.pathfinding.pathvalidator.PathContext;
 
-public record MovementRules(IMoveValidator moveValidator, IPathValidator pathValidator) {
+public record MovementRules(Validator<MoveContext> moveValidator, Validator<PathContext> pathValidator) {
 }

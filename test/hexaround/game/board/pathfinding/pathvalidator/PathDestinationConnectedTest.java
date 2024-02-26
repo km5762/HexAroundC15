@@ -5,6 +5,7 @@ import hexaround.game.board.BoardTestingUtils;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PathDestinationConnectedTest {
-    IPathCondition pathDestinationConnected = new PathDestinationConnected();
+    ICondition<PathContext> pathDestinationConnected = new PathDestinationConnected();
 
     List<IPoint> path;
     IBoard board;
@@ -39,18 +40,24 @@ public class PathDestinationConnectedTest {
     @Test
     void pathDestinationConnected() {
         path = PathTestingUtils.constructPath(new IPoint[] {origin, new HexPoint(-1, 0), new HexPoint(-1, 1)});
-        assertTrue(pathDestinationConnected.test(path, board, creature));
+        PathContext context = new PathContext(path, board, creature);
+
+        assertTrue(pathDestinationConnected.test(context));
     }
 
     @Test
     void pathDestinationNotConnected() {
         path = PathTestingUtils.constructPath(new IPoint[] {origin, new HexPoint(-1, 0), new HexPoint(-1, 1), new HexPoint(-2, 2)});
-        assertFalse(pathDestinationConnected.test(path, board, creature));
+        PathContext context = new PathContext(path, board, creature);
+
+        assertFalse(pathDestinationConnected.test(context));
     }
 
     @Test
     void pathDestinationSplitsColony() {
         path = PathTestingUtils.constructPath(new IPoint[] {new HexPoint(0, 1), new HexPoint(-1, 1), new HexPoint(-1, 0)});
-        assertFalse(pathDestinationConnected.test(path, board, creature));
+        PathContext context = new PathContext(path, board, creature);
+
+        assertFalse(pathDestinationConnected.test(context));
     }
 }

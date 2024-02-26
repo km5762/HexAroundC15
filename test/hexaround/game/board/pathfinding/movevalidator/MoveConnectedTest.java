@@ -5,8 +5,8 @@ import hexaround.game.board.BoardTestingUtils;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.ICreature;
-import hexaround.game.board.pathfinding.movevalidator.IMoveCondition;
 import hexaround.game.board.pathfinding.movevalidator.MoveConnected;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MoveConnectedTest {
-    IMoveCondition moveConnected = new MoveConnected();
+    ICondition<MoveContext> moveConnected = new MoveConnected();
     IBoard board;
     ICreature creature;
 
@@ -36,28 +36,35 @@ public class MoveConnectedTest {
     @Test
     void moveConnectedOnEmptyBoard() {
         board.placeCreature(creature, origin);
-        assertTrue(moveConnected.test(board, creature, origin, new HexPoint(0, 1)));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        assertTrue(moveConnected.test(context));
     }
 
     @Test
     void moveConnectedOnNonEmptyBoard() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        assertTrue(moveConnected.test(board, creature, origin, new HexPoint(1, 0)));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(1, 0));
+
+        assertTrue(moveConnected.test(context));
     }
 
     @Test
     void moveConnectedOnStack() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        assertTrue(moveConnected.test(board, creature, origin, new HexPoint(0, 1)));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+
+        assertTrue(moveConnected.test(context));
     }
 
     @Test
     void moveDisconnectedToDisconnectedPoint() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        assertFalse(moveConnected.test(board, creature, origin, new HexPoint(0, 3)));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 3));
+
+        assertFalse(moveConnected.test(context));
     }
 
 
@@ -66,6 +73,8 @@ public class MoveConnectedTest {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
         board.placeCreature(creature, new HexPoint(0, -1));
-        assertFalse(moveConnected.test(board, creature, origin, new HexPoint(1, 0)));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(1, 0));
+
+        assertFalse(moveConnected.test(context));
     }
 }

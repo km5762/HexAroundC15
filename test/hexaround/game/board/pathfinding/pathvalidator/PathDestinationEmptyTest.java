@@ -4,6 +4,7 @@ import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PathDestinationEmptyTest {
-    IPathCondition pathDestinationEmpty = new PathDestinationEmpty();
+    ICondition<PathContext> pathDestinationEmpty = new PathDestinationEmpty();
 
     List<IPoint> path;
     IBoard board;
@@ -38,13 +39,17 @@ public class PathDestinationEmptyTest {
     @Test
     void pathDestinationEmpty() {
         board.placeCreature(creature, origin);
-        assertTrue(pathDestinationEmpty.test(path, board, creature));
+        PathContext context = new PathContext(path, board, creature);
+
+        assertTrue(pathDestinationEmpty.test(context));
     }
 
     @Test
     void pathDestinationNotEmpty() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        assertFalse(pathDestinationEmpty.test(path, board, creature));
+        PathContext context = new PathContext(path, board, creature);
+
+        assertFalse(pathDestinationEmpty.test(context));
     }
 }

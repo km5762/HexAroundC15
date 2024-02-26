@@ -1,9 +1,7 @@
 package hexaround.game.creature;
 
 import hexaround.config.CreatureDefinition;
-import hexaround.game.board.pathfinding.IPathFinder;
-import hexaround.game.board.pathfinding.MovementRules;
-import hexaround.game.board.pathfinding.PathFinder;
+import hexaround.game.board.pathfinding.*;
 import hexaround.game.board.pathfinding.pathvalidator.*;
 import hexaround.game.board.pathfinding.movevalidator.*;
 import hexaround.game.player.PlayerName;
@@ -45,8 +43,8 @@ public class CreatureFactory {
     }
 
     private MovementRules makeMovementRules(Collection<CreatureProperty> creatureProperties) {
-        List<IMoveCondition> pointConditions = new ArrayList<>();
-        List<IPathCondition> pathConditions = new ArrayList<>();
+        List<ICondition<MoveContext>> moveConditions = new ArrayList<>();
+        List<ICondition<PathContext>> pathConditions = new ArrayList<>();
 
         boolean walking = creatureProperties.contains(CreatureProperty.WALKING);
         boolean running = creatureProperties.contains(CreatureProperty.RUNNING);
@@ -68,19 +66,19 @@ public class CreatureFactory {
         }
 
         if (isGroundCreature) {
-            pointConditions.add(new MoveConnected());
+            moveConditions.add(new MoveConnected());
 
             if (hasMovementEffect) {
                 pathConditions.add(new PathUpToDestinationEmpty());
             } else if (!intruding) {
-                pointConditions.add(new MoveSlideable());
-                pointConditions.add(new MoveEmpty());
+                moveConditions.add(new MoveSlideable());
+                moveConditions.add(new MoveEmpty());
             }
         } else {
             pathConditions.add(new PathDestinationConnected());
 
             if (jumping) {
-                pointConditions.add(new MoveInline());
+                moveConditions.add(new MoveInline());
             }
 
             if (!(intruding || hasMovementEffect)) {
@@ -88,8 +86,8 @@ public class CreatureFactory {
             }
         }
 
-        IMoveValidator moveValidator = new MoveValidator(pointConditions);
-        IPathValidator pathValidator = new PathValidator(pathConditions);
+        Validator<MoveContext> moveValidator = new Validator<>(moveConditions);
+        Validator<PathContext> pathValidator = new Validator<>(pathConditions);
 
         return new MovementRules(moveValidator, pathValidator);
     }

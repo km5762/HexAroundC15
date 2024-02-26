@@ -1,13 +1,11 @@
 package hexaround.game.board.pathfinding.movevalidator;
 
-import hexaround.game.board.IBoard;
-import hexaround.game.board.geometry.IPoint;
-import hexaround.game.creature.ICreature;
+import hexaround.game.board.pathfinding.ICondition;
 
-public class MoveInline implements IMoveCondition {
+public class MoveInline implements ICondition<MoveContext> {
 
     @Override
-    public boolean test(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint) {
-        return fromPoint.inlineTo(toPoint);
+    public boolean test(MoveContext context) {
+        return context.fromPoint().inlineTo(context.toPoint());
     }
 }

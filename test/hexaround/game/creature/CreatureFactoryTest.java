@@ -1,17 +1,10 @@
 package hexaround.game.creature;
 
-import hexaround.config.CreatureDefinition;
-import hexaround.config.GameConfiguration;
-import hexaround.config.HexAroundConfigurationMaker;
-import hexaround.game.board.pathfinding.MovementRules;
-import hexaround.game.board.pathfinding.movevalidator.IMoveCondition;
 import hexaround.game.player.PlayerName;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;

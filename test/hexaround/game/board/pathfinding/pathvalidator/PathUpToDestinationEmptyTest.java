@@ -5,6 +5,7 @@ import hexaround.game.board.BoardTestingUtils;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.ICreature;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
@@ -18,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PathUpToDestinationEmptyTest {
-    IPathCondition pathUpToDestinationEmpty = new PathUpToDestinationEmpty();
+    ICondition<PathContext> pathUpToDestinationEmpty = new PathUpToDestinationEmpty();
     List<IPoint> path;
     IBoard board;
     ICreature creature;
@@ -35,18 +36,22 @@ public class PathUpToDestinationEmptyTest {
     @Test
     void pathCompletelyEmpty() {
         path = PathTestingUtils.constructPath(new IPoint[] {origin, new HexPoint(1, 0), new HexPoint(1, 1)});
-        assertTrue(pathUpToDestinationEmpty.test(path, board, creature));
+        PathContext context = new PathContext(path, board, creature);
+
+        assertTrue(pathUpToDestinationEmpty.test(context));
     }
 
     @Test
     void pathUpToDestinationEmpty() {
         path = PathTestingUtils.constructPath(new IPoint[] {origin, new HexPoint(1, 0), new HexPoint(1, 1), new HexPoint(0, 2)});
-        assertTrue(pathUpToDestinationEmpty.test(path, board, creature));
-    }
+        PathContext context = new PathContext(path, board, creature);
+
+        assertTrue(pathUpToDestinationEmpty.test(context));    }
 
     @Test
     void pathContainsOccupiedPoints() {
         path = PathTestingUtils.constructPath(new IPoint[] {origin, new HexPoint(1, 0), new HexPoint(0, 1), new HexPoint(1, 1)});
-        assertFalse(pathUpToDestinationEmpty.test(path, board, creature));
-    }
+        PathContext context = new PathContext(path, board, creature);
+
+        assertFalse(pathUpToDestinationEmpty.test(context));    }
 }

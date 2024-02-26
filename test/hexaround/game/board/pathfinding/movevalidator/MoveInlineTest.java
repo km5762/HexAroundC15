@@ -5,8 +5,8 @@ import hexaround.game.board.BoardTestingUtils;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.board.pathfinding.ICondition;
 import hexaround.game.creature.ICreature;
-import hexaround.game.board.pathfinding.movevalidator.IMoveCondition;
 import hexaround.game.board.pathfinding.movevalidator.MoveConnected;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MoveInlineTest {
-    IMoveCondition moveInline = new MoveInline();
+    ICondition<MoveContext> moveInline = new MoveInline();
     IBoard board;
     ICreature creature;
 
@@ -37,18 +37,24 @@ public class MoveInlineTest {
     @Test
     void moveInlineWhenXEqual() {
         board.placeCreature(creature, origin);
-        assertTrue(moveInline.test(board, creature, origin, new HexPoint(0, 1)));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+
+        assertTrue(moveInline.test(context));
     }
 
     @Test
     void moveInlineWhenYEqual() {
         board.placeCreature(creature, origin);
-        assertTrue(moveInline.test(board, creature, origin, new HexPoint(1, 0)));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(1, 0));
+
+        assertTrue(moveInline.test(context));
     }
 
     @Test
     void moveInlineWhenOnDiagonal() {
         board.placeCreature(creature, origin);
-        assertTrue(moveInline.test(board, creature, origin, new HexPoint(-1, 1)));
+        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(-1, 1));
+
+        assertTrue(moveInline.test(context));
     }
 }
