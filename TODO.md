@@ -102,7 +102,12 @@
 | T  |  X   | PathDestinationRemovable.test when removing path destination does not disconnect colony                                                             | 
 | T  |  X   | PathDestinationRemovable.test when removing path destination does disconnect colony                                                                 | 
 | T  |  X   | PathDestinationConnected.test when path destination is connected                                                                                    | 
-| T  |  X   | PathDestinationRemovable.test when removing path destination does disconnect colony                                                                 | 
+| T  |  X   | PathDestinationConnected.test when path destination is disconnected                                                                                 | 
+| T  |  X   | PathDestinationConnected.test when moving to path destination splits the colony                                                                     | 
+| T  |  X   | PathUpToDestinationEmpty.test when the path is entirely empty                                                                                       | 
+| T  |  X   | PathUpToDestinationEmpty.test when only the destination is occupied                                                                                 | 
+| T  |  X   | PathUpToDestinationEmpty.test when the path contains occupied points                                                                                | 
+
 
 # Design Patterns
 
