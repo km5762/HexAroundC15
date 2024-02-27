@@ -10,7 +10,7 @@ import hexaround.game.creature.ICreature;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PreMoveTrapped implements ICondition<PreMoveContext> {
+public class PreMoveNotTrapped implements ICondition<PreMoveContext> {
 
     @Override
     public boolean test(PreMoveContext context) {
@@ -20,11 +20,11 @@ public class PreMoveTrapped implements ICondition<PreMoveContext> {
 
         for (ICreature aboveCreature : getAboveCreatures(board, creature, fromPoint)) {
             if (aboveCreature.hasProperty(CreatureProperty.TRAPPING)) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     private List<ICreature> getAboveCreatures(IBoard board, ICreature creature, IPoint point) {

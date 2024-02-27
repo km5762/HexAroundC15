@@ -5,9 +5,9 @@ import hexaround.game.board.pathfinding.*;
 import hexaround.game.board.pathfinding.pathvalidator.*;
 import hexaround.game.board.pathfinding.movevalidator.*;
 import hexaround.game.board.pathfinding.premovevalidator.PreMoveContext;
-import hexaround.game.board.pathfinding.premovevalidator.PreMovePinned;
-import hexaround.game.board.pathfinding.premovevalidator.PreMoveSurrounded;
-import hexaround.game.board.pathfinding.premovevalidator.PreMoveTrapped;
+import hexaround.game.board.pathfinding.premovevalidator.PreMoveNotPinned;
+import hexaround.game.board.pathfinding.premovevalidator.PreMoveNotSurrounded;
+import hexaround.game.board.pathfinding.premovevalidator.PreMoveNotTrapped;
 import hexaround.game.player.PlayerName;
 
 import java.util.*;
@@ -62,8 +62,8 @@ public class CreatureFactory {
         boolean hasMovementEffect = trapping || swapping || kamikaze;
         boolean isGroundCreature = walking || running;
 
-        preMoveConditions.add(new PreMovePinned());
-        preMoveConditions.add(new PreMoveTrapped());
+        preMoveConditions.add(new PreMoveNotPinned());
+        preMoveConditions.add(new PreMoveNotTrapped());
 
         if (kamikaze) {
             pathConditions.add(new PathDestinationRemovable());
@@ -90,7 +90,7 @@ public class CreatureFactory {
             if (jumping) {
                 moveConditions.add(new MoveInline());
             } else {
-                preMoveConditions.add(new PreMoveSurrounded());
+                preMoveConditions.add(new PreMoveNotSurrounded());
             }
 
             if (!(intruding || hasMovementEffect)) {

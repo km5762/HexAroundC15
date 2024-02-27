@@ -35,13 +35,13 @@ public class CreatureFactoryTest {
     @Test
     void makeCreatureInstanceWithMaxDistance() {
         Optional<ICreature> creature = creatureFactory1.makeCreature(CreatureName.GRASSHOPPER, PlayerName.RED);
-        assertEquals(5, creature.get().getMaxDistance());
+        assertEquals(3, creature.get().getMaxDistance());
     }
 
     @Test
     void makeCreatureWithProperties() {
-        Optional<ICreature> creature = creatureFactory1.makeCreature(CreatureName.CRAB, PlayerName.RED);
-        assertTrue(creature.get().hasProperty(CreatureProperty.INTRUDING));
+        Optional<ICreature> creature = creatureFactory1.makeCreature(CreatureName.BUTTERFLY, PlayerName.RED);
+        assertTrue(creature.get().hasProperty(CreatureProperty.QUEEN));
         assertTrue(creature.get().hasProperty(CreatureProperty.WALKING));
     }
 
