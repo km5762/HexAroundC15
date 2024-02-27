@@ -32,6 +32,8 @@ public class BoardMovementTest {
     static ICreature jumpingCreature;
     static ICreature jumpingIntrudingCreature;
     static ICreature jumpingEffectCreature;
+    static ICreature trappingCreature;
+    static ICreature kamikazeCreature;
 
     @BeforeAll
     static void setUpCreatures() throws IOException {
@@ -50,6 +52,8 @@ public class BoardMovementTest {
         jumpingCreature = creatureFactory1.makeCreature(CreatureName.TURTLE, null).get();
         jumpingIntrudingCreature = creatureFactory2.makeCreature(CreatureName.CRAB, null).get();
         jumpingEffectCreature = creatureFactory2.makeCreature(CreatureName.DOVE, null).get();
+        trappingCreature = creatureFactory2.makeCreature(CreatureName.DUCK, null).get();
+        kamikazeCreature = creatureFactory2.makeCreature(CreatureName.GRASSHOPPER, null).get();
     }
 
     @BeforeEach
@@ -513,5 +517,25 @@ public class BoardMovementTest {
         IPoint[] occupiedPoints = {new HexPoint(0,0), new HexPoint(0,1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(jumpingEffectCreature, occupiedPoints, board);
         assertFalse(board.existsPath(jumpingEffectCreature, new HexPoint(0, 1)));
+    }
+
+    @Test
+    void noMovesTrapped() {
+        IPoint[] occupiedPoints = {new HexPoint(0,0), new HexPoint(0,1), new HexPoint(0, 2)};
+        BoardTestingUtils.placeCreatures(occupiedPoints, board);
+        board.placeCreature(trappingCreature, new HexPoint(0, 0));
+        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0)));
+    }
+
+    @Test
+    void noMovesFlyingSurrounded() {
+        IPoint origin = new HexPoint(0,0);
+
+        for (IPoint neighboringPoint : origin.getNeighboringPoints()) {
+            board.placeCreature(walkingCreature, neighboringPoint);
+        }
+
+        board.placeCreature(flyingCreature, new HexPoint(0, 0));
+        assertFalse(board.existsPath(flyingCreature, new HexPoint(0, 0)));
     }
 }

@@ -4,6 +4,7 @@ import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.board.pathfinding.movevalidator.MoveContext;
 import hexaround.game.board.pathfinding.pathvalidator.PathContext;
+import hexaround.game.board.pathfinding.premovevalidator.PreMoveContext;
 import hexaround.game.creature.ICreature;
 
 import java.util.*;
@@ -11,6 +12,7 @@ import java.util.*;
 public class PathFinder implements IPathFinder {
     @Override
     public Optional<List<IPoint>> findPath(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint, MovementRules movementRules) {
+        Validator<PreMoveContext> preMoveValidator = movementRules.preMoveValidator();
         Validator<MoveContext> moveValidator = movementRules.moveValidator();
         Validator<PathContext> pathValidator = movementRules.pathValidator();
         Queue<List<IPoint>> pathQueue = new LinkedList<>();
@@ -18,7 +20,10 @@ public class PathFinder implements IPathFinder {
         startPath.add(fromPoint);
         pathQueue.add(startPath);
 
-        while (!pathQueue.isEmpty()) {
+        PreMoveContext preMoveContext = new PreMoveContext(board, creature, fromPoint);
+        boolean preMoveValidated = preMoveValidator.validate(preMoveContext);
+
+        while (!pathQueue.isEmpty() && preMoveValidated) {
             List<IPoint> currentPath = pathQueue.poll();
             IPoint lastPoint = currentPath.get(currentPath.size() - 1);
             IBoard boardSimulation = board.clone();

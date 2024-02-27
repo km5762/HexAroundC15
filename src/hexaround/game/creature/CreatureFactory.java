@@ -4,6 +4,10 @@ import hexaround.config.CreatureDefinition;
 import hexaround.game.board.pathfinding.*;
 import hexaround.game.board.pathfinding.pathvalidator.*;
 import hexaround.game.board.pathfinding.movevalidator.*;
+import hexaround.game.board.pathfinding.premovevalidator.PreMoveContext;
+import hexaround.game.board.pathfinding.premovevalidator.PreMovePinned;
+import hexaround.game.board.pathfinding.premovevalidator.PreMoveSurrounded;
+import hexaround.game.board.pathfinding.premovevalidator.PreMoveTrapped;
 import hexaround.game.player.PlayerName;
 
 import java.util.*;
@@ -43,6 +47,7 @@ public class CreatureFactory {
     }
 
     private MovementRules makeMovementRules(Collection<CreatureProperty> creatureProperties) {
+        List<ICondition<PreMoveContext>> preMoveConditions = new ArrayList<>();
         List<ICondition<MoveContext>> moveConditions = new ArrayList<>();
         List<ICondition<PathContext>> pathConditions = new ArrayList<>();
 
@@ -56,6 +61,9 @@ public class CreatureFactory {
 
         boolean hasMovementEffect = trapping || swapping || kamikaze;
         boolean isGroundCreature = walking || running;
+
+        preMoveConditions.add(new PreMovePinned());
+        preMoveConditions.add(new PreMoveTrapped());
 
         if (kamikaze) {
             pathConditions.add(new PathDestinationRemovable());
@@ -81,6 +89,8 @@ public class CreatureFactory {
 
             if (jumping) {
                 moveConditions.add(new MoveInline());
+            } else {
+                preMoveConditions.add(new PreMoveSurrounded());
             }
 
             if (!(intruding || hasMovementEffect)) {
@@ -88,9 +98,10 @@ public class CreatureFactory {
             }
         }
 
+        Validator<PreMoveContext> preMoveValidator = new Validator<>(preMoveConditions);
         Validator<MoveContext> moveValidator = new Validator<>(moveConditions);
         Validator<PathContext> pathValidator = new Validator<>(pathConditions);
 
-        return new MovementRules(moveValidator, pathValidator);
+        return new MovementRules(preMoveValidator, moveValidator, pathValidator);
     }
 }
