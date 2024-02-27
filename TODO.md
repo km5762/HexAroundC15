@@ -104,6 +104,72 @@
 | T  |  X   | PathUpToDestinationEmpty.test when only the destination is occupied                                                                                 | 
 | T  |  X   | PathUpToDestinationEmpty.test when the path contains occupied points                                                                                | 
 | R  |  X   | Make all conditions implement the same generic interface rather than one for each type of condition                                                 |
+| T  |  X   | Board.existsPath for walking creature                                                                                                               | 
+| T  |  X   | Board.existsPath when walking path out of range                                                                                                     | 
+| T  |  X   | Board.existsPath when walking path destination occupied                                                                                             | 
+| T  |  X   | Board.existsPath when walking path blocked                                                                                                          | 
+| T  |  X   | Board.existsPath when walking path destination not connected                                                                                        | 
+| T  |  X   | Board.existsPath when walking creature pinned (has no moves that dont split colony)                                                                 | 
+| T  |  X   | Board.existsPath when walking creature surrounded                                                                                                   | 
+| T  |  X   | Board.existsPath for walking intruding creature                                                                                                     | 
+| T  |  X   | Board.existsPath when walking intruding path out of range                                                                                           | 
+| T  |  X   | Board.existsPath when walking intruding path destination not connected                                                                              | 
+| T  |  X   | Board.existsPath when walking intruding creature pinned                                                                                             | 
+| T  |  X   | Board.existsPath for walking creature with effect                                                                                                   | 
+| T  |  X   | Board.existsPath when walking effect path out of range                                                                                              | 
+| T  |  X   | Board.existsPath when walking effect path blocked                                                                                                   | 
+| T  |  X   | Board.existsPath when walking effect path destination not connected                                                                                 | 
+| T  |  X   | Board.existsPath when walking effect creature pinned                                                                                                | 
+| T  |  X   | Board.existsPath when walking effect creature surrounded                                                                                            | 
+| T  |  X   | Board.existsPath for running creature                                                                                                               | 
+| T  |  X   | Board.existsPath when running path out of range                                                                                                     | 
+| T  |  X   | Board.existsPath when running path destination occupied                                                                                             | 
+| T  |  X   | Board.existsPath when running path too small                                                                                                        | 
+| T  |  X   | Board.existsPath when running path blocked                                                                                                          | 
+| T  |  X   | Board.existsPath when running path destination not connected                                                                                        | 
+| T  |  X   | Board.existsPath when running creature pinned                                                                                                       | 
+| T  |  X   | Board.existsPath when running creature surrounded                                                                                                   | 
+| T  |  X   | Board.existsPath when running creature has no moves long enough                                                                                     | 
+| T  |  X   | Board.existsPath for running intruding creature                                                                                                     | 
+| T  |  X   | Board.existsPath when running intruding path out of range                                                                                           | 
+| T  |  X   | Board.existsPath when running intruding path destination not connected                                                                              | 
+| T  |  X   | Board.existsPath when running intruding creature has no moves long enough                                                                           | 
+| T  |  X   | Board.existsPath when running intruding creature is pinned                                                                                          | 
+| T  |  X   | Board.existsPath for running effect creature                                                                                                        | 
+| T  |  X   | Board.existsPath when running effect path out of range                                                                                              | 
+| T  |  X   | Board.existsPath when running effect path destination not connected                                                                                 | 
+| T  |  X   | Board.existsPath when running effect path too small                                                                                                 | 
+| T  |  X   | Board.existsPath when running creature pinned                                                                                                       | 
+| T  |  X   | Board.existsPath for flying creature                                                                                                                | 
+| T  |  X   | Board.existsPath when flying path out of range                                                                                                      | 
+| T  |  X   | Board.existsPath when flying path destination occupied                                                                                              | 
+| T  |  X   | Board.existsPath when flying path destination not connected                                                                                         | 
+| T  |  X   | Board.existsPath when flying creature pinned                                                                                                        | 
+| T  |  X   | Board.existsPath for flying intruding creature                                                                                                      |
+| T  |  X   | Board.existsPath when flying intruding path out of range                                                                                            |
+| T  |  X   | Board.existsPath when flying intruding path destination not connected                                                                               |
+| T  |  X   | Board.existsPath when flying intruding creature pinned                                                                                              |
+| T  |  X   | Board.existsPath for flying effect creature                                                                                                         |
+| T  |  X   | Board.existsPath when flying effect path out of range                                                                                               |
+| T  |  X   | Board.existsPath when flying effect path destination not connected                                                                                  |
+| T  |  X   | Board.existsPath when flying effect creature pinned                                                                                                 |
+| T  |  X   | Board.existsPath for jumping creature                                                                                                               |
+| T  |  X   | Board.existsPath when jumping path out of range                                                                                                     |
+| T  |  X   | Board.existsPath when jumping path destination occupied                                                                                             |
+| T  |  X   | Board.existsPath when jumping path destination not connected                                                                                        |
+| T  |  X   | Board.existsPath when jumping path destination not inline                                                                                           |
+| T  |  X   | Board.existsPath when jumping creature pinned                                                                                                       |
+| T  |  X   | Board.existsPath for jumping intruding creature                                                                                                     |
+| T  |  X   | Board.existsPath when jumping intruding path out of range                                                                                           |
+| T  |  X   | Board.existsPath when jumping intruding path destination not connected                                                                              |
+| T  |  X   | Board.existsPath when jumping intruding path destination not inline                                                                                 |
+| T  |  X   | Board.existsPath when jumping intruding creature pinned                                                                                             |
+| T  |  X   | Board.existsPath for jumping effect creature                                                                                                        |
+| T  |  X   | Board.existsPath when jumping effect path out of range                                                                                              |
+| T  |  X   | Board.existsPath when jumping effect path destination not connected                                                                                 |
+| T  |  X   | Board.existsPath when jumping effect path destination not inline                                                                                    |
+| T  |  X   | Board.existsPath when jumping effect creature pinned                                                                                                |
+| T  |  X   | PreMovePinned                                                                                                                                       |
 
 # Design Patterns
 
