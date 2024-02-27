@@ -169,7 +169,16 @@
 | T  |  X   | Board.existsPath when jumping effect path destination not connected                                                                                 |
 | T  |  X   | Board.existsPath when jumping effect path destination not inline                                                                                    |
 | T  |  X   | Board.existsPath when jumping effect creature pinned                                                                                                |
-| T  |  X   | PreMovePinned                                                                                                                                       |
+| T  |  X   | Board.existsPath when creature trapped                                                                                                              |
+| T  |  X   | Board.existsPath when flying creature surrounded                                                                                                    |
+| R  |  X   | Move pre movement logic into PreMoveConditions for each creature                                                                                    |
+| T  |  X   | PreMovePinned.test when not pinned                                                                                                                  |
+| T  |  X   | PreMovePinned.test when pinned                                                                                                                      |
+| T  |  X   | PreMoveSurrounded.test when not surrounded                                                                                                          |
+| T  |  X   | PreMoveSurrounded.test when surrounded                                                                                                              |
+| T  |  X   | PreMoveTrapped.test when not trapped                                                                                                                |
+| T  |  X   | PreMoveTrapped.test when above trapper                                                                                                              |
+| T  |  X   | PreMoveTrapped.test when trapped                                                                                                                    |
 
 # Design Patterns
 
