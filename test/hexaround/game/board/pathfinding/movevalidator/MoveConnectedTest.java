@@ -36,7 +36,7 @@ public class MoveConnectedTest {
     @Test
     void moveConnectedOnEmptyBoard() {
         board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(0, 1));
         assertTrue(moveConnected.test(context));
     }
 
@@ -44,7 +44,7 @@ public class MoveConnectedTest {
     void moveConnectedOnNonEmptyBoard() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(1, 0));
+        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(1, 0));
 
         assertTrue(moveConnected.test(context));
     }
@@ -53,7 +53,7 @@ public class MoveConnectedTest {
     void moveConnectedOnStack() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(0, 1));
 
         assertTrue(moveConnected.test(context));
     }
@@ -62,7 +62,7 @@ public class MoveConnectedTest {
     void moveDisconnectedToDisconnectedPoint() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 3));
+        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(0, 3));
 
         assertFalse(moveConnected.test(context));
     }
@@ -73,7 +73,7 @@ public class MoveConnectedTest {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
         board.placeCreature(creature, new HexPoint(0, -1));
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(1, 0));
+        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(1, 0));
 
         assertFalse(moveConnected.test(context));
     }

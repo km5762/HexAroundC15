@@ -18,7 +18,7 @@ public class PathDestinationConnected implements ICondition<PathContext> {
         IPoint firstPoint = path.get(0);
         IPoint lastPoint = path.get(path.size() - 1);
 
-        MoveContext moveContext = new MoveContext(context.board(), context.creature(), firstPoint, lastPoint);
+        MoveContext moveContext = new MoveContext(context.board(), context.creature(), null, firstPoint, lastPoint);
         return pointConnected.test(moveContext);
     }
 }

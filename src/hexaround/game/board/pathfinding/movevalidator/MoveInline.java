@@ -6,6 +6,6 @@ public class MoveInline implements ICondition<MoveContext> {
 
     @Override
     public boolean test(MoveContext context) {
-        return context.fromPoint().inlineTo(context.toPoint());
+        return context.originPoint().inlineTo(context.toPoint());
     }
 }

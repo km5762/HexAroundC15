@@ -39,7 +39,7 @@ public class MoveSlideable implements ICondition<MoveContext> {
         List<IPoint> occupiedNeighboringPoints = new ArrayList<>();
 
         for (IPoint neighboringPoint : point.getNeighboringPoints()) {
-            MoveContext moveContext = new MoveContext(context.board(), context.creature(), context.fromPoint(), neighboringPoint);
+            MoveContext moveContext = new MoveContext(context.board(), context.creature(), context.originPoint(), context.fromPoint(), neighboringPoint);
             if (!pointEmpty.test(moveContext)) {
                 occupiedNeighboringPoints.add(neighboringPoint);
             }

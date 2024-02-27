@@ -21,7 +21,7 @@ public class PathUpToDestinationEmpty implements ICondition<PathContext> {
         for (int i = 1; i < path.size(); i++) {
             IPoint point = path.get(i);
             boolean isLastPoint = i == path.size() - 1;
-            MoveContext moveContext = new MoveContext(board, creature, null, point);
+            MoveContext moveContext = new MoveContext(board, creature, null, null, point);
             if (!pointEmpty.test(moveContext) && !isLastPoint) {
                 return false;
             }

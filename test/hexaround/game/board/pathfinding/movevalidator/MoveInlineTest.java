@@ -37,7 +37,7 @@ public class MoveInlineTest {
     @Test
     void moveInlineWhenXEqual() {
         board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(0, 1));
 
         assertTrue(moveInline.test(context));
     }
@@ -45,7 +45,7 @@ public class MoveInlineTest {
     @Test
     void moveInlineWhenYEqual() {
         board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(1, 0));
+        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(1, 0));
 
         assertTrue(moveInline.test(context));
     }
@@ -53,7 +53,7 @@ public class MoveInlineTest {
     @Test
     void moveInlineWhenOnDiagonal() {
         board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(-1, 1));
+        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(-1, 1));
 
         assertTrue(moveInline.test(context));
     }

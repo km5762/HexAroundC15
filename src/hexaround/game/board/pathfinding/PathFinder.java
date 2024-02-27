@@ -30,7 +30,7 @@ public class PathFinder implements IPathFinder {
             }
 
             for (IPoint neighboringPoint : lastPoint.getNeighboringPoints()) {
-                MoveContext moveContext = new MoveContext(boardSimulation, creature, lastPoint, neighboringPoint);
+                MoveContext moveContext = new MoveContext(boardSimulation, creature, fromPoint, lastPoint, neighboringPoint);
                 if (isValidPoint(moveContext, currentPath, moveValidator)) {
                     List<IPoint> newPath = new ArrayList<>(currentPath);
                     newPath.add(neighboringPoint);

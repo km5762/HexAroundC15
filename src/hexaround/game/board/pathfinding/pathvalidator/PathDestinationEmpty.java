@@ -19,7 +19,7 @@ public class PathDestinationEmpty implements ICondition<PathContext> {
         ICreature creature = context.creature();
 
         IPoint lastPoint = path.get(path.size() - 1);
-        MoveContext moveContext = new MoveContext(board, creature, null, lastPoint);
+        MoveContext moveContext = new MoveContext(board, creature, null, null, lastPoint);
 
         return pointEmpty.test(moveContext);
     }

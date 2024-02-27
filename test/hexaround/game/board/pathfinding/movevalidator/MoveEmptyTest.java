@@ -38,14 +38,14 @@ public class MoveEmptyTest {
     void moveNotEmpty() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
         assertFalse(moveEmpty.test(context));
     }
 
     @Test
     void moveEmpty() {
         board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
         assertTrue(moveEmpty.test(context));
     }
 }

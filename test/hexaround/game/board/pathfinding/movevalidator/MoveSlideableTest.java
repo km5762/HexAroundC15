@@ -35,7 +35,7 @@ public class MoveSlideableTest {
     @Test
     void moveSlideableOnEmptyBoard() {
         board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
 
         assertTrue(moveSlideable.test(context));
     }
@@ -45,7 +45,7 @@ public class MoveSlideableTest {
     void moveSlideableWithOneAdjacent() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(-1, 1));
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
 
         assertTrue(moveSlideable.test(context));
     }
@@ -55,7 +55,7 @@ public class MoveSlideableTest {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(-1, 1));
         board.placeCreature(creature, new HexPoint(1, 0));
-        MoveContext context = new MoveContext(board, creature, origin, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
 
         assertFalse(moveSlideable.test(context));
     }
