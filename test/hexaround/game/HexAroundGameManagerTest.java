@@ -204,7 +204,7 @@ public class HexAroundGameManagerTest {
         gameManager.placeCreature(CreatureName.CRAB, 0, 0);
         gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
         response = gameManager.moveCreature(CreatureName.CRAB, 0, 0, -1, -3);
-        assertEquals(MoveResponses.NO_PATH, response);
+        assertEquals(MoveResponses.MOVE_OUT_OF_RANGE, response);
     }
 
     @Test
@@ -268,5 +268,39 @@ public class HexAroundGameManagerTest {
         gameManager.moveCreature(flyingCreatureName, 1, -2, 1, 1);
         gameManager.placeCreature(CreatureName.CRAB, -1, 1);
         response = gameManager.moveCreature(flyingCreatureName, 1, 1, 0, 0);
+    }
+
+    @Test
+    void moveDestinationDisconnected() {
+        gameManager.placeCreature(CreatureName.CRAB, 0, 0);
+        gameManager.placeCreature(CreatureName.CRAB, 0, 1);
+        response = gameManager.moveCreature(CreatureName.CRAB, 0, 0, 0, -1);
+        assertEquals(MoveResponses.MOVE_DISCONNECTED, response);
+    }
+
+    @Test
+    void moveDestinationOccupied() {
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        response = gameManager.moveCreature(CreatureName.BUTTERFLY, 0, 0, 0, 1);
+        assertEquals(MoveResponses.MOVE_OCCUPIED, response);
+    }
+
+    @Test
+    void moveDestinationNotInline() {
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        gameManager.placeCreature(jumpingCreatureName, 0, 0);
+        gameManager.moveCreature(CreatureName.BUTTERFLY, 0, 1, -1, 1);
+        response = gameManager.moveCreature(jumpingCreatureName, 0, 0, -1, 2);
+        assertEquals(MoveResponses.MOVE_NOT_INLINE, response);
+    }
+
+    @Test
+    void swapDestinationButterfly() {
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        gameManager.placeCreature(walkingEffectCreatureName, 0, 0);
+        gameManager.moveCreature(CreatureName.BUTTERFLY, 0, 1, -1, 1);
+        response = gameManager.moveCreature(walkingEffectCreatureName, 0, 0, -1, 1);
+        assertEquals(MoveResponses.MOVE_BUTTERFLY, response);
     }
 }

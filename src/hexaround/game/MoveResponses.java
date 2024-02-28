@@ -1,7 +1,14 @@
 package hexaround.game;
 
 public class MoveResponses {
-    static MoveResponse NO_PATH = new MoveResponse(MoveResult.MOVE_ERROR, "There exists no legal path to that point");
+    static MoveResponse NO_PATH = new MoveResponse(MoveResult.MOVE_ERROR, "No legal path exists to that point");
+    static MoveResponse MOVE_OUT_OF_RANGE = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is out of range");
+    static MoveResponse MOVE_OCCUPIED = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is occupied");
+    static MoveResponse MOVE_NOT_INLINE = new MoveResponse(MoveResult.MOVE_ERROR, "That move is not inline");
+    static MoveResponse MOVE_BUTTERFLY = new MoveResponse(MoveResult.MOVE_ERROR, "The target of this creatures move may not be a butterfly");
+    static MoveResponse MOVE_DISCONNECTED = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is disconnected");
+    static MoveResponse MOVE_PINNED = new MoveResponse(MoveResult.MOVE_ERROR, "This creature cannot move without disconnecting the colony");
+    static MoveResponse MOVE_SURROUNDED = new MoveResponse(MoveResult.MOVE_ERROR, "This creature cannot move while surrounded");
     static MoveResponse ILLEGAL_PLACEMENT = new MoveResponse(MoveResult.MOVE_ERROR, "This placement is not legal");
     static MoveResponse LEGAL_MOVE = new MoveResponse(MoveResult.OK, "Legal move");
     static MoveResponse CREATURE_DOES_NOT_EXIST = new MoveResponse(MoveResult.MOVE_ERROR, "A creature does not exist at that point with that name");
@@ -16,4 +23,5 @@ public class MoveResponses {
     static MoveResponse RED_WON = new MoveResponse(MoveResult.RED_WON, "Red has won");
     static MoveResponse BLUE_WON = new MoveResponse(MoveResult.BLUE_WON, "Blue has won");
     static MoveResponse DRAW = new MoveResponse(MoveResult.DRAW, "The game is a draw");
+
 }

@@ -6,10 +6,7 @@ import hexaround.game.rules.MovementRules;
 import hexaround.game.rules.Validator;
 import hexaround.game.rules.movement.*;
 import hexaround.game.rules.path.*;
-import hexaround.game.rules.pre_movement.PreMoveContext;
-import hexaround.game.rules.pre_movement.PreMoveDestinationNotButterfly;
-import hexaround.game.rules.pre_movement.PreMoveNotPinned;
-import hexaround.game.rules.pre_movement.PreMoveNotSurrounded;
+import hexaround.game.rules.pre_movement.*;
 import hexaround.game.player.PlayerName;
 
 import java.util.*;
@@ -65,6 +62,8 @@ public class CreatureFactory {
         boolean isGroundCreature = walking || running;
 
         preMoveConditions.add(new PreMoveNotPinned());
+        preMoveConditions.add(new PreMoveInRange());
+        preMoveConditions.add(new PreMoveDestinationConnected());
 
         if (kamikaze) {
             pathConditions.add(new PathDestinationRemovable());
@@ -80,6 +79,7 @@ public class CreatureFactory {
 
         if (swapping) {
             preMoveConditions.add(new PreMoveDestinationNotButterfly());
+            pathConditions.add(new PathDestinationNotButterfly());
         }
 
         if (isGroundCreature) {
@@ -90,6 +90,7 @@ public class CreatureFactory {
                 if (hasMovementEffect) {
                     pathConditions.add(new PathUpToDestinationEmpty());
                 } else {
+                    preMoveConditions.add(new PreMoveDestinationEmpty());
                     moveConditions.add(new MoveEmpty());
                 }
             }
@@ -98,11 +99,13 @@ public class CreatureFactory {
 
             if (jumping) {
                 moveConditions.add(new MoveInline());
+                preMoveConditions.add(new PreMoveDestinationInline());
             } else {
                 preMoveConditions.add(new PreMoveNotSurrounded());
             }
 
             if (!(intruding || hasMovementEffect)) {
+                preMoveConditions.add(new PreMoveDestinationEmpty());
                 pathConditions.add(new PathDestinationEmpty());
             }
         }

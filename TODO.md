@@ -225,7 +225,7 @@
 | T  |  X   | GameManager game end by no available moves or placements                                                                                            |
 | T  |  X   | PreMoveDestinationNotButterfly.test when destination is not butterfly                                                                               |
 | T  |  X   | PreMoveDestinationNotButterfly.test when destination is butterfly                                                                                   |
-
+| T | X | GameManager.moveCreature when movement 
 # Design Patterns
 
 ## Factory Pattern
