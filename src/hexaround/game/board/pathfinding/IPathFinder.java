@@ -3,6 +3,7 @@ package hexaround.game.board.pathfinding;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.creature.ICreature;
+import hexaround.game.rules.MovementRules;
 
 import java.util.List;
 import java.util.Optional;

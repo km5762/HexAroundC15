@@ -25,6 +25,12 @@ import hexaround.game.creature.CreatureFactory;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.player.Player;
 import hexaround.game.player.PlayerName;
+import hexaround.game.rules.ICondition;
+import hexaround.game.rules.Validator;
+import hexaround.game.rules.placement.OpeningPlacementValidator;
+import hexaround.game.rules.placement.PlacementContext;
+import hexaround.game.rules.placement.PlacementEmpty;
+import hexaround.game.rules.placement.PlacementNextToAllyAndNotEnemy;
 
 import java.io.*;
 import java.util.*;
@@ -41,7 +47,7 @@ public class HexAroundGameBuilder {
         HexAroundConfigurationMaker configurationMaker =
             new HexAroundConfigurationMaker(configurationFile);
         GameConfiguration configuration = configurationMaker.makeConfiguration();
-        HexAroundFirstSubmission gameManager = new HexAroundFirstSubmission();    // an empty game manager
+        HexAroundGameManager gameManager = new HexAroundGameManager();    // an empty game manager
 
         Collection<PlayerConfiguration> playerConfigurations = configuration.players();
         Map<PlayerName, Player> players = constructPlayers(playerConfigurations);
@@ -58,6 +64,11 @@ public class HexAroundGameBuilder {
         gameManager.setBoard(board);
         
         gameManager.setNameOfPlayerWithTurn(PlayerName.BLUE);
+
+        Validator<PlacementContext> openingPlacementValidator = new OpeningPlacementValidator();
+        gameManager.setPlacementValidator(openingPlacementValidator);
+
+        gameManager.setTurnNumber(0);
 
         return gameManager;
     }

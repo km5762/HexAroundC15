@@ -2,20 +2,20 @@ package hexaround.game.board;
 
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.board.pathfinding.IPathFinder;
-import hexaround.game.board.pathfinding.MovementRules;
+import hexaround.game.rules.MovementRules;
 import hexaround.game.board.pathfinding.PathFinder;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.ICreature;
 import hexaround.game.player.PlayerName;
+import hexaround.game.rules.ValidationResult;
+import hexaround.game.rules.Validator;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.List;
 
 public class Board implements IBoard {
     protected Map<IPoint, CreatureStack> board;
     protected IPathFinder pathFinder;
-
     public Board(Map<IPoint, CreatureStack> board) {
         this.board = board;
         this.pathFinder = new PathFinder();
@@ -66,20 +66,6 @@ public class Board implements IBoard {
     public void moveCreature(ICreature creature, IPoint fromPoint, IPoint toPoint) {
         removeCreature(creature, fromPoint);
         placeCreature(creature, toPoint);
-
-//            if (creatureWithName.get().hasProperty(CreatureProperty.KAMIKAZE)) {
-//                removeAllCreatures(toPoint);
-//            } else {
-//                if (creatureWithName.get().hasProperty(CreatureProperty.SWAPPING)) {
-//                    Optional<ICreature> swappedCreature = getTopCreature(toPoint);
-//
-//                    if (swappedCreature.isPresent()) {
-//                        removeCreature(swappedCreature.get().getName(), toPoint);
-//                        placeCreature(swappedCreature.get(), fromPoint);
-//                    }
-//                }
-//                placeCreature(creatureWithName.get(), toPoint);
-//            }
     }
 
     /**
@@ -127,7 +113,7 @@ public class Board implements IBoard {
      */
     public boolean isConnected() {
         if (board.isEmpty()) {
-            return false;
+            return true;
         } else if (board.keySet().size() == 1) {
             return true;
         }
@@ -242,5 +228,39 @@ public class Board implements IBoard {
     public boolean existsPath(ICreature creature, IPoint fromPoint) {
         MovementRules movementRules = creature.getMovementRules();
         return pathFinder.findPath(this, creature, fromPoint, movementRules).isPresent();
+    }
+
+    public Optional<IPoint> findCreature(CreatureName creatureName, PlayerName ownerName) {
+        for (Map.Entry<IPoint, CreatureStack> entry : board.entrySet()) {
+            IPoint point = entry.getKey();
+            CreatureStack creatureStack = entry.getValue();
+            Optional<ICreature> specifiedCreature = creatureStack.getCreatureWithNameAndOwner(creatureName, ownerName);
+
+            if (specifiedCreature.isPresent()) {
+                return Optional.of(point);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public List<CreatureLocation> getOwnersCreaturesAndLocations(PlayerName ownerName) {
+        List<CreatureLocation> ownersCreatures = new ArrayList<>();
+
+        for (Map.Entry<IPoint, CreatureStack> entry : board.entrySet()) {
+            IPoint point = entry.getKey();
+            CreatureStack creatureStack = entry.getValue();
+            for (ICreature creature : creatureStack) {
+                if (creature.getOwnerName() == ownerName) {
+                    ownersCreatures.add(new CreatureLocation(creature, point));
+                }
+            }
+        }
+
+        return ownersCreatures;
+    }
+
+    public boolean isEmpty() {
+        return board.isEmpty();
     }
 }

@@ -94,9 +94,7 @@
 | T  |  X   | PathAtRange.test when path is not equal to creatures max range (less than)                                                                          |
 | T  |  X   | PathAtRange.test when path is not equal to creatures max range (greater than)                                                                       |
 | T  |  X   | PathDestinationEmpty.test when path destination is empty                                                                                            |
-| T  |  X   | PathDestinationEmpty.test when path destination is not empty                                                                                        |
-| T  |  X   | PathDestinationRemovable.test when removing path destination does not disconnect colony                                                             | 
-| T  |  X   | PathDestinationRemovable.test when removing path destination does disconnect colony                                                                 | 
+| T  |  X   | PathDestinationEmpty.test when path destination is not empty                                                                                        | 
 | T  |  X   | PathDestinationConnected.test when path destination is connected                                                                                    | 
 | T  |  X   | PathDestinationConnected.test when path destination is disconnected                                                                                 | 
 | T  |  X   | PathDestinationConnected.test when moving to path destination splits the colony                                                                     | 
@@ -179,6 +177,36 @@
 | T  |  X   | PreMoveTrapped.test when not trapped                                                                                                                |
 | T  |  X   | PreMoveTrapped.test when above trapper                                                                                                              |
 | T  |  X   | PreMoveTrapped.test when trapped                                                                                                                    |
+| T  |  X   | Board.existsPath when creature trapped                                                                                                              |
+| T  |  X   | Board.existsPath when flying creature surrounded                                                                                                    |
+| T  |  X   | PathDestinationRemovable.test when removing path destination does not disconnect colony                                                             | 
+| T  |  X   | PathDestinationRemovable.test when removing path destination does disconnect colony                                                                 |
+| T  |  X   | Board.existsPath when kamikaze path destination is pinned                                                                                           |
+| T  |  X   | Board.existsPath when intruding path would result in a stack size > 2                                                                               |
+| T  |  X   | PlacementEmpty.test when placement empty                                                                                                            
+| T  |  X   | PlacementEmpty.test when placement not empty                                                                                                        
+| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement not next to any creatures                                                                        
+| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to ally                                                                                     
+| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to enemy                                                                                    
+| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to enemy and ally                                                                           
+| T  |  X   | PlacementPlayerHasCreature.test when player has creature                                                                                            
+| T  |  X   | PlacementPlayerHasCreature.test when player does not have creature                                                                                  
+| T  |  X   | PlacementPlayerHasCreature.test when creature not in creatureCount map                                                                              
+| T  |  X   | PlacementConnected.test when placement not connected                                                                                                
+| T  |  X   | PlacementConnected.test when placement connected                                                                                                    
+| T  |  X   | GameManager.placeCreature when creature doesnt exist                                                                                                
+| T  |  X   | GameManager.placeCreature when creature does exist                                                                                                  
+| T  |  X   | GameManager.placeCreature when opening placement not connected                                                                                      
+| T  |  X   | GameManager.placeCreature when opening placement connected                                                                                          
+| T  |  X   | GameManager.placeCreature when opening placement on top of intial placement                                                                         
+| T  |  X   | GameManager.placeCreature when opening player does not have creature                                                                                
+| T  |  X   | GameManager.placeCreature when player has depleted their creature count                                                                             
+| T  |  X   | GameManager.placeCreature when placement is disconnected                                                                                            
+| T  |  X   | GameManager.placeCreature when placement next to enemy                                                                                              
+| T  |  X   | GameManager.moveCreature when creature not at point                                                                                                 
+| T  |  X   | GameManager.moveCreature when trying to move creature in opening                                                                                    
+| T  |  X   | GameManager.moveCreature properly kamikazes creatures                                                                                               
+| T  |  X   | GameManager.moveCreature properly swaps creatures                                                                                           
 
 # Design Patterns
 

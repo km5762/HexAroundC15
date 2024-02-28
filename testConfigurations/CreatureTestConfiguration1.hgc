@@ -12,4 +12,26 @@ CREATURES:
 
 PLAYERS:
 	RED
-		butterfly 1
+		BUTTERFLY 1,
+		CRAB 10,
+		DOVE 10,
+		DUCK 10,
+		GRASSHOPPER 10,
+		HORSE 10,
+		HUMMINGBIRD 10,
+		RABBIT 10,
+		SPIDER 10,
+		TURTLE 10
+
+    BLUE
+        BUTTERFLY 1,
+        CRAB 10,
+        DOVE 10,
+        DUCK 10,
+        GRASSHOPPER 10,
+        HORSE 10,
+        HUMMINGBIRD 10,
+        RABBIT 10,
+        SPIDER 10,
+        TURTLE 10
+

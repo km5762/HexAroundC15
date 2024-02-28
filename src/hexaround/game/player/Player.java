@@ -19,6 +19,23 @@ public class Player {
         this.creatureCounts = creatureCounts;
     }
 
+    public int getCreatureCount(CreatureName creatureName) {
+        return creatureCounts.getOrDefault(creatureName, 0);
+    }
+
+    public boolean outOfCreatures() {
+        for (int count : creatureCounts.values()) {
+            if (count > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public PlayerName getName() {
+        return name;
+    }
+
     /**
      * Decrement the count for CreatureName
      *

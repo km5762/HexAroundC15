@@ -1,14 +1,9 @@
 package hexaround.game.creature;
 
-import hexaround.game.board.IBoard;
-import hexaround.game.board.geometry.IPoint;
-import hexaround.game.board.pathfinding.IPathFinder;
-import hexaround.game.board.pathfinding.MovementRules;
+import hexaround.game.rules.MovementRules;
 import hexaround.game.player.PlayerName;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 public class Creature implements ICreature {
     protected CreatureName name;

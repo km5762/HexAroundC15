@@ -1,13 +1,14 @@
 package hexaround.game.creature;
 
 import hexaround.config.CreatureDefinition;
-import hexaround.game.board.pathfinding.*;
-import hexaround.game.board.pathfinding.pathvalidator.*;
-import hexaround.game.board.pathfinding.movevalidator.*;
-import hexaround.game.board.pathfinding.premovevalidator.PreMoveContext;
-import hexaround.game.board.pathfinding.premovevalidator.PreMoveNotPinned;
-import hexaround.game.board.pathfinding.premovevalidator.PreMoveNotSurrounded;
-import hexaround.game.board.pathfinding.premovevalidator.PreMoveNotTrapped;
+import hexaround.game.rules.ICondition;
+import hexaround.game.rules.MovementRules;
+import hexaround.game.rules.Validator;
+import hexaround.game.rules.movement.*;
+import hexaround.game.rules.path.*;
+import hexaround.game.rules.pre_movement.PreMoveContext;
+import hexaround.game.rules.pre_movement.PreMoveNotPinned;
+import hexaround.game.rules.pre_movement.PreMoveNotSurrounded;
 import hexaround.game.player.PlayerName;
 
 import java.util.*;
@@ -63,7 +64,6 @@ public class CreatureFactory {
         boolean isGroundCreature = walking || running;
 
         preMoveConditions.add(new PreMoveNotPinned());
-        preMoveConditions.add(new PreMoveNotTrapped());
 
         if (kamikaze) {
             pathConditions.add(new PathDestinationRemovable());
@@ -71,6 +71,10 @@ public class CreatureFactory {
 
         if (running) {
             pathConditions.add(new PathAtRange());
+        }
+
+        if (intruding) {
+            pathConditions.add(new PathDestinationNotStack());
         }
 
         if (isGroundCreature) {

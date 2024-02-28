@@ -2,9 +2,11 @@ package hexaround.game.board.pathfinding;
 
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
-import hexaround.game.board.pathfinding.movevalidator.MoveContext;
-import hexaround.game.board.pathfinding.pathvalidator.PathContext;
-import hexaround.game.board.pathfinding.premovevalidator.PreMoveContext;
+import hexaround.game.rules.MovementRules;
+import hexaround.game.rules.Validator;
+import hexaround.game.rules.movement.MoveContext;
+import hexaround.game.rules.path.PathContext;
+import hexaround.game.rules.pre_movement.PreMoveContext;
 import hexaround.game.creature.ICreature;
 
 import java.util.*;
@@ -21,7 +23,7 @@ public class PathFinder implements IPathFinder {
         pathQueue.add(startPath);
 
         PreMoveContext preMoveContext = new PreMoveContext(board, creature, fromPoint);
-        boolean preMoveValidated = preMoveValidator.validate(preMoveContext);
+        boolean preMoveValidated = preMoveValidator.validate(preMoveContext).valid();
 
         while (!pathQueue.isEmpty() && preMoveValidated) {
             List<IPoint> currentPath = pathQueue.poll();
@@ -30,7 +32,7 @@ public class PathFinder implements IPathFinder {
             boardSimulation.moveCreature(creature, fromPoint, lastPoint);
 
             PathContext pathContext = new PathContext(currentPath, board, creature);
-            if (pathValidator.validate(pathContext) && (toPoint == null || lastPoint.equals(toPoint)) && currentPath.size() > 1) {
+            if (pathValidator.validate(pathContext).valid() && (toPoint == null || lastPoint.equals(toPoint)) && currentPath.size() > 1) {
                 return Optional.of(currentPath);
             }
 
@@ -58,7 +60,7 @@ public class PathFinder implements IPathFinder {
 
         boolean notVisited = !currentPath.contains(neighboringPoint);
         boolean inRange = currentPath.size() <= creature.getMaxDistance();
-        boolean validMove = moveValidator.validate(moveContext);
+        boolean validMove = moveValidator.validate(moveContext).valid();
 
         return notVisited && inRange && validMove;
     }

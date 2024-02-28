@@ -38,4 +38,10 @@ public interface IBoard {
     boolean existsPath(ICreature creature, IPoint fromPoint, IPoint toPoint);
 
     boolean existsPath(ICreature creature, IPoint fromPoint);
+
+    Optional<IPoint> findCreature(CreatureName creatureName, PlayerName ownerName);
+
+    List<CreatureLocation> getOwnersCreaturesAndLocations(PlayerName ownerName);
+
+    boolean isEmpty();
 }
