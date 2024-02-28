@@ -7,6 +7,7 @@ import hexaround.game.rules.Validator;
 import hexaround.game.rules.movement.*;
 import hexaround.game.rules.path.*;
 import hexaround.game.rules.pre_movement.PreMoveContext;
+import hexaround.game.rules.pre_movement.PreMoveDestinationNotButterfly;
 import hexaround.game.rules.pre_movement.PreMoveNotPinned;
 import hexaround.game.rules.pre_movement.PreMoveNotSurrounded;
 import hexaround.game.player.PlayerName;
@@ -75,6 +76,10 @@ public class CreatureFactory {
 
         if (intruding) {
             pathConditions.add(new PathDestinationNotStack());
+        }
+
+        if (swapping) {
+            preMoveConditions.add(new PreMoveDestinationNotButterfly());
         }
 
         if (isGroundCreature) {

@@ -548,4 +548,11 @@ public class BoardMovementTest {
         board.placeCreature(walkingIntrudingCreature, new HexPoint(0, 1));
         assertFalse(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 1)));
     }
+
+    @Test
+    void cantSwapButterfly() {
+        board.placeCreature(walkingCreature, new HexPoint(0, 0));
+        board.placeCreature(walkingEffectCreature, new HexPoint(0, 1));
+        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 1), new HexPoint(0, 0)));
+    }
 }

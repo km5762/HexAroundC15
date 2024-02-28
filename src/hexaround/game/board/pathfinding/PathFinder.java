@@ -22,7 +22,7 @@ public class PathFinder implements IPathFinder {
         startPath.add(fromPoint);
         pathQueue.add(startPath);
 
-        PreMoveContext preMoveContext = new PreMoveContext(board, creature, fromPoint);
+        PreMoveContext preMoveContext = new PreMoveContext(board, creature, fromPoint, toPoint);
         boolean preMoveValidated = preMoveValidator.validate(preMoveContext).valid();
 
         while (!pathQueue.isEmpty() && preMoveValidated) {

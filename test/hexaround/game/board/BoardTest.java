@@ -107,6 +107,12 @@ public class BoardTest {
     }
 
     @Test
+    void removeAllCreatures() {
+        board.removeAllCreatures(origin);
+        assertTrue(board.getAllCreatures(origin).isEmpty());
+    }
+
+    @Test
     void moveCreature() {
         IPoint toPoint = new HexPoint(1, 1);
         board.moveCreature(creature2, origin, toPoint);
@@ -119,59 +125,36 @@ public class BoardTest {
     }
 
     @Test
-    void placementIsNotDisconnecting() {
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, null, Collections.singleton(CreatureProperty.INTRUDING));
-
-        for (IPoint neighboringPoint : origin.getNeighboringPoints()) {
-            assertFalse(board.placementIsDisconnecting(creature, neighboringPoint));
-        }
+    void isConnectedOnEmptyBoard() {
+        IBoard emptyBoard = new Board(new HashMap<>());
+        assertTrue(emptyBoard.isConnected());
     }
 
     @Test
-    void firstPlacementIsNotDisconnecting() {
-        Board emptyBoard = new Board(new HashMap<>());
-
-        assertFalse(emptyBoard.placementIsDisconnecting(creature1, origin));
+    void isConnected() {
+        IBoard emptyBoard = new Board(new HashMap<>());
+        emptyBoard.placeCreature(creature1, origin);
+        emptyBoard.placeCreature(creature1, new HexPoint(0, 1));
+        assertTrue(emptyBoard.isConnected());
     }
 
     @Test
-    void placementIsDisconnecting() {
-        ICreature creature = new Creature(CreatureName.SPIDER, PlayerName.RED, 1, null, Collections.singleton(CreatureProperty.INTRUDING));
+    void isNotConnected() {
+        IBoard emptyBoard = new Board(new HashMap<>());
+        emptyBoard.placeCreature(creature1, origin);
+        emptyBoard.placeCreature(creature1, new HexPoint(0, 1));
+        emptyBoard.placeCreature(creature1, new HexPoint(0, 3));
+        emptyBoard.placeCreature(creature1, new HexPoint(0, 4));
 
-        for (IPoint scaledNeighboringPoint : getScaledNeighboringPoints(origin, 2)) {
-            assertTrue(board.placementIsDisconnecting(creature, scaledNeighboringPoint));
-        }
+        assertFalse(emptyBoard.isConnected());
     }
 
     @Test
-    void creatureCanSlideWithNoNeighbors() {
-        for (IPoint neighboringPoint : origin.getNeighboringPoints()) {
-            assertTrue(board.creatureCanSlide(origin, neighboringPoint));
-        }
-    }
-
-    @Test
-    void creatureCanSlideWithCommonNeighbor() {
-        ICreature neighbor = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, null, Collections.singleton(CreatureProperty.INTRUDING));
-        board.placeCreature(neighbor, new HexPoint(0, 1));
-
-        assertTrue(board.creatureCanSlide(origin, new HexPoint(-1, 1)));
-        assertTrue(board.creatureCanSlide(origin, new HexPoint(1, 0)));
-    }
-
-    @Test
-    void creatureCannotSlide() {
-        ICreature blocker1 = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, null, Collections.singleton(CreatureProperty.INTRUDING));
-        ICreature blocker2 = new Creature(CreatureName.SPIDER, PlayerName.RED,  5, null, Collections.singleton(CreatureProperty.INTRUDING));
-        ICreature blocker3 = new Creature(CreatureName.SPIDER, PlayerName.RED, 5, null, Collections.singleton(CreatureProperty.INTRUDING));
-
-        board.placeCreature(blocker1, new HexPoint(0, 1));
-        board.placeCreature(blocker2, new HexPoint(-1, 0));
-        board.placeCreature(blocker3, new HexPoint(1, -1));
-
-        assertFalse(board.creatureCanSlide(new HexPoint(0, 0), new HexPoint(-1, 1)));
-        assertFalse(board.creatureCanSlide(new HexPoint(0, 0), new HexPoint(1, 0)));
-        assertFalse(board.creatureCanSlide(new HexPoint(0, 0), new HexPoint(0, -1)));
+    void cloneBoard() {
+        IBoard boardSimulation = board.clone();
+        assertNotSame(boardSimulation, board);
+        assertNotSame(boardSimulation.getAllCreatures(origin), board.getAllCreatures(origin));
+        assertEquals(boardSimulation.getAllCreatures(origin).getSize(), board.getAllCreatures(origin).getSize());
     }
 
     private List<IPoint> getScaledNeighboringPoints(IPoint point, int scale) {

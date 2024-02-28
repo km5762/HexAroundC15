@@ -2,6 +2,7 @@ package hexaround.game.board;
 
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.board.pathfinding.IPathFinder;
+import hexaround.game.rules.ICondition;
 import hexaround.game.rules.MovementRules;
 import hexaround.game.board.pathfinding.PathFinder;
 import hexaround.game.creature.CreatureName;
@@ -9,6 +10,7 @@ import hexaround.game.creature.ICreature;
 import hexaround.game.player.PlayerName;
 import hexaround.game.rules.ValidationResult;
 import hexaround.game.rules.Validator;
+import hexaround.game.rules.pre_movement.PreMoveContext;
 
 import java.util.*;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 public class Board implements IBoard {
     protected Map<IPoint, CreatureStack> board;
     protected IPathFinder pathFinder;
+
     public Board(Map<IPoint, CreatureStack> board) {
         this.board = board;
         this.pathFinder = new PathFinder();
@@ -178,51 +181,23 @@ public class Board implements IBoard {
         return board.containsKey(point);
     }
 
-    /**
-     * Returns true if the specified placement disconnects the colony, and false otherwise
-     *
-     * @param creature the creature instance being placed
-     * @param point    the specified IPoint
-     * @return true if the specified move is disconnecting, and false otherwise
-     */
-    public boolean placementIsDisconnecting(ICreature creature, IPoint point) {
-        if (board.isEmpty()) {
-            return false;
-        }
+    public ValidationResult existsPath(ICreature creature, IPoint fromPoint, IPoint toPoint) {
+        MovementRules movementRules = creature.getMovementRules();
+        PreMoveContext preMoveContext = new PreMoveContext(this, creature, fromPoint, toPoint);
+        ValidationResult preMoveValidation = movementRules.preMoveValidator().validate(preMoveContext);
+        ValidationResult result = new ValidationResult(true, null);
 
-        Board boardSimulation = this.clone();
-        boardSimulation.placeCreature(creature, point);
+        if (!preMoveValidation.valid()) {
+            result = preMoveValidation;
+        } else {
+            Optional<List<IPoint>> path = pathFinder.findPath(this, creature, fromPoint, toPoint, movementRules);
 
-        return !boardSimulation.isConnected();
-    }
-
-    /**
-     * Returns true if a creature could slide unobstructed from the specified IPoint to the target IPoint
-     *
-     * @param fromPoint the IPoint the creature is currently at
-     * @param fromPoint the target IPoint
-     * @return true if the creature's slide is unobstructed to the target, false otherwise
-     */
-    public boolean creatureCanSlide(IPoint fromPoint, IPoint toPoint) {
-        List<IPoint> fromOccupiedNeighboringPoints = getOccupiedNeighboringPoints(fromPoint);
-        List<IPoint> toOccupiedNeighboringPoints = getOccupiedNeighboringPoints(toPoint);
-        int commonNeighborsCount = 0;
-
-        for (IPoint fromOccupiedNeighboringPoint : fromOccupiedNeighboringPoints) {
-            if (toOccupiedNeighboringPoints.contains(fromOccupiedNeighboringPoint)) {
-                commonNeighborsCount++;
-
-                if (commonNeighborsCount == 2) {
-                    return false;
-                }
+            if (!path.isPresent()) {
+                result = new ValidationResult(false, "No legal path exists to that point");
             }
         }
-        return true;
-    }
 
-    public boolean existsPath(ICreature creature, IPoint fromPoint, IPoint toPoint) {
-        MovementRules movementRules = creature.getMovementRules();
-        return pathFinder.findPath(this, creature, fromPoint, toPoint, movementRules).isPresent();
+        return result;
     }
 
     public boolean existsPath(ICreature creature, IPoint fromPoint) {

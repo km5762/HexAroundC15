@@ -29,6 +29,7 @@
 | T  |  X   | board.removeCreature when no creatures at point                                                                                                     |
 | T  |  X   | board.removeCreature                                                                                                                                |
 | T  |  X   | board.removeCreature and removing the creature leaves the point empty                                                                               |
+| T  |  X   | board.removeAllCreatures                                                                                                                            | 
 | T  |  X   | board.moveCreature from an empty point                                                                                                              |
 | T  |  X   | board.moveCreature when no creature with name at point                                                                                              |
 | R  |  X   | Move calculateDistance helper from GameManager to Board                                                                                             |
@@ -40,6 +41,10 @@
 | T  |  X   | board.placementIsDisconnecting when placement is not disconnecting                                                                                  |
 | T  |  X   | board.placementIsDisconnecting when placement is the first in the game                                                                              |
 | T  |  X   | board.placementISDisconnecting when placement is disconnecting                                                                                      |
+| T  |  X   | board.isConnected when board is empty                                                                                                               |
+| T  |  X   | board.isConnected when board is connected                                                                                                           |
+| T  |  X   | board.isConnected when board is disconnected                                                                                                        |
+| T  |  X   | board.clone properly returns deep copy                                                                                                              |
 | R  |  X   | Prefer inbuilt Java getOrDefault as opposed to containsKey checking for Board.getAllCreatures()                                                     |
 | T  |  X   | GameManager.placeCreature returns legal MoveResponse                                                                                                |
 | R  |  X   | Prefer Java Optionals vs. null returns to force consumers to deal with null case                                                                    |
@@ -183,30 +188,43 @@
 | T  |  X   | PathDestinationRemovable.test when removing path destination does disconnect colony                                                                 |
 | T  |  X   | Board.existsPath when kamikaze path destination is pinned                                                                                           |
 | T  |  X   | Board.existsPath when intruding path would result in a stack size > 2                                                                               |
-| T  |  X   | PlacementEmpty.test when placement empty                                                                                                            
-| T  |  X   | PlacementEmpty.test when placement not empty                                                                                                        
-| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement not next to any creatures                                                                        
-| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to ally                                                                                     
-| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to enemy                                                                                    
-| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to enemy and ally                                                                           
-| T  |  X   | PlacementPlayerHasCreature.test when player has creature                                                                                            
-| T  |  X   | PlacementPlayerHasCreature.test when player does not have creature                                                                                  
-| T  |  X   | PlacementPlayerHasCreature.test when creature not in creatureCount map                                                                              
-| T  |  X   | PlacementConnected.test when placement not connected                                                                                                
-| T  |  X   | PlacementConnected.test when placement connected                                                                                                    
-| T  |  X   | GameManager.placeCreature when creature doesnt exist                                                                                                
-| T  |  X   | GameManager.placeCreature when creature does exist                                                                                                  
-| T  |  X   | GameManager.placeCreature when opening placement not connected                                                                                      
-| T  |  X   | GameManager.placeCreature when opening placement connected                                                                                          
-| T  |  X   | GameManager.placeCreature when opening placement on top of intial placement                                                                         
-| T  |  X   | GameManager.placeCreature when opening player does not have creature                                                                                
-| T  |  X   | GameManager.placeCreature when player has depleted their creature count                                                                             
-| T  |  X   | GameManager.placeCreature when placement is disconnected                                                                                            
-| T  |  X   | GameManager.placeCreature when placement next to enemy                                                                                              
-| T  |  X   | GameManager.moveCreature when creature not at point                                                                                                 
-| T  |  X   | GameManager.moveCreature when trying to move creature in opening                                                                                    
-| T  |  X   | GameManager.moveCreature properly kamikazes creatures                                                                                               
-| T  |  X   | GameManager.moveCreature properly swaps creatures                                                                                           
+| T  |  X   | PlacementEmpty.test when placement empty                                                                                                            |
+| T  |  X   | PlacementEmpty.test when placement not empty                                                                                                        |
+| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement not next to any creatures                                                                        |
+| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to ally                                                                                     |
+| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to enemy                                                                                    |
+| T  |  X   | PlacementNextToAllyAndNotEnemy.test when placement next to enemy and ally                                                                           |
+| T  |  X   | Player.decrementCreatures                                                                                                                           |
+| T  |  X   | Player.incrementCreatures                                                                                                                           |
+| T  |  X   | Player.outOfCreatures when out of creatures                                                                                                         |
+| T  |  X   | Player.outOfCreatures when not out of creatures                                                                                                     |
+| T  |  X   | PlacementPlayerHasCreature.test when player has creature                                                                                            |
+| T  |  X   | PlacementPlayerHasCreature.test when player does not have creature                                                                                  |
+| T  |  X   | PlacementPlayerHasCreature.test when creature not in creatureCount map                                                                              |
+| T  |  X   | PlacementConnected.test when placement not connected                                                                                                |
+| T  |  X   | PlacementConnected.test when placement connected                                                                                                    |
+| T  |  X   | GameManager.placeCreature when creature doesnt exist                                                                                                |
+| T  |  X   | GameManager.placeCreature when creature does exist                                                                                                  |
+| T  |  X   | GameManager.placeCreature when opening placement not connected                                                                                      |
+| T  |  X   | GameManager.placeCreature when opening placement connected                                                                                          |
+| T  |  X   | GameManager.placeCreature when opening placement on top of intial placement                                                                         |
+| T  |  X   | GameManager.placeCreature when opening player does not have creature                                                                                |
+| T  |  X   | GameManager.placeCreature when player has depleted their creature count                                                                             |
+| T  |  X   | GameManager.placeCreature when placement is disconnected                                                                                            |
+| T  |  X   | GameManager.placeCreature when placement next to enemy                                                                                              |
+| R  |  X   | Refactor placeCreature to avoid multiple returns                                                                                                    |
+| T  |  X   | GameManager.moveCreature when creature not at point                                                                                                 |
+| T  |  X   | GameManager.moveCreature when trying to move creature in opening                                                                                    |
+| T  |  X   | GameManager.moveCreature properly kamikazes creatures                                                                                               |
+| T  |  X   | GameManager.moveCreature properly handles kamikaze to empty location                                                                                |
+| T  |  X   | GameManager.moveCreature player must place butterfly after being kamikazed                                                                          |
+| T  |  X   | GameManager.moveCreature properly swaps creatures                                                                                                   |
+| R  |  X   | Refactor moveCreature to avoid multiple returns                                                                                                     | 
+| T  |  X   | GameManager game end by surrounding butterfly                                                                                                       |
+| T  |  X   | GameManager game draw by double surrounded butterfly                                                                                                |
+| T  |  X   | GameManager game end by no available moves or placements                                                                                            |
+| T  |  X   | PreMoveDestinationNotButterfly.test when destination is not butterfly                                                                               |
+| T  |  X   | PreMoveDestinationNotButterfly.test when destination is butterfly                                                                                   |
 
 # Design Patterns
 

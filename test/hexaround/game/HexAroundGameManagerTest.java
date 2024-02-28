@@ -37,7 +37,7 @@ public class HexAroundGameManagerTest {
     @Test
     void placeNonExistentCreature() {
         response = sparseGameManager.placeCreature(CreatureName.TURTLE, 0, 0);
-        assertEquals(MoveResponses.PLACEMENT_MISSING_CREATURE, response);
+        assertEquals(MoveResponses.CREATURE_NOT_DEFINED, response);
     }
 
     @Test
@@ -144,14 +144,26 @@ public class HexAroundGameManagerTest {
     }
 
     @Test
+    void kamikazeNothing() {
+        sparseGameManager.placeCreature(CreatureName.CRAB, 0, 0);
+        sparseGameManager.placeCreature(CreatureName.CRAB, 0, 1);
+        sparseGameManager.placeCreature(kamikazeCreatureName, 0, -1);
+        sparseGameManager.placeCreature(CreatureName.HORSE, 1, 1);
+        sparseGameManager.moveCreature(kamikazeCreatureName, 0, -1, 1, -1);
+        sparseGameManager.moveCreature(CreatureName.HORSE, 1, 1, -1, 1);
+        response = sparseGameManager.moveCreature(kamikazeCreatureName, 1, -1, 0, -1);
+        assertEquals(MoveResponses.LEGAL_MOVE, response);
+    }
+
+    @Test
     void mustPlaceButterflyAfterKamikaze() {
         sparseGameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
         sparseGameManager.placeCreature(kamikazeCreatureName, 0, 1);
         sparseGameManager.placeCreature(CreatureName.CRAB, 0, -1);
-        sparseGameManager.moveCreature(kamikazeCreatureName, 0, 1, 1, 0);
+        sparseGameManager.placeCreature(CreatureName.CRAB, 1, 1);
         sparseGameManager.moveCreature(CreatureName.CRAB, 0, -1, 1, -1);
-        sparseGameManager.moveCreature(kamikazeCreatureName, 1, 0, 0, 1);
-        sparseGameManager.moveCreature(CreatureName.CRAB, 1, -1, 0, -1);
+        sparseGameManager.moveCreature(CreatureName.CRAB, 1, 1, 1, 0);
+        sparseGameManager.moveCreature(CreatureName.CRAB, 1, -1, 2, -1);
         sparseGameManager.moveCreature(kamikazeCreatureName, 0, 1, 0, 0);
         response = sparseGameManager.moveCreature(CreatureName.CRAB, 0, -1, 0, 0);
         assertEquals(MoveResponses.MUST_PLACE_BUTTERFLY, response);
@@ -165,9 +177,11 @@ public class HexAroundGameManagerTest {
         gameManager.placeCreature(CreatureName.CRAB, 0, 1);
         gameManager.placeCreature(walkingEffectCreatureName, 0, -1);
         gameManager.placeCreature(CreatureName.CRAB, 1, 1);
+        gameManager.moveCreature(walkingEffectCreatureName, 0, -1, 1, -1);
+        gameManager.moveCreature(CreatureName.CRAB, 1, 1, 0, 2);
+        gameManager.moveCreature(walkingEffectCreatureName, 1, -1, 0, 2);
 
-        gameManager.moveCreature(walkingEffectCreatureName, 0, -1, 1, 1);
-        response = gameManager.moveCreature(CreatureName.CRAB, 1, 1, 0, 2);
+        response = gameManager.moveCreature(CreatureName.CRAB, 0, 2, 1, 1);
         assertEquals(MoveResponses.CREATURE_DOES_NOT_EXIST, response);
     }
 
@@ -183,5 +197,76 @@ public class HexAroundGameManagerTest {
         gameManager.placeCreature(CreatureName.CRAB, 0, 4); // 4
         response = gameManager.moveCreature(CreatureName.CRAB, 0, -4, -1, -3);
         assertEquals(MoveResponses.MUST_PLACE_BUTTERFLY, response);
+    }
+
+    @Test
+    void movingPlayerHasNoPath() {
+        gameManager.placeCreature(CreatureName.CRAB, 0, 0);
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        response = gameManager.moveCreature(CreatureName.CRAB, 0, 0, -1, -3);
+        assertEquals(MoveResponses.NO_PATH, response);
+    }
+
+    @Test
+    void movingPlayerWinsBySurrounding() {
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        gameManager.placeCreature(CreatureName.CRAB, -1, 0);
+        gameManager.placeCreature(CreatureName.CRAB, -1, 2);
+        gameManager.placeCreature(CreatureName.CRAB, 1, -1);
+        gameManager.placeCreature(CreatureName.CRAB, 1, 1);
+        gameManager.moveCreature(CreatureName.CRAB, 1, -1, 0, -1);
+        gameManager.moveCreature(CreatureName.CRAB, -1, 2, -1, 1);
+        gameManager.placeCreature(CreatureName.CRAB, 1, -1);
+        response = gameManager.moveCreature(CreatureName.CRAB, 1, 1, 1, 0);
+        assertEquals(MoveResponses.RED_WON, response);
+    }
+
+    @Test
+    void bothButterfliesSurrounded() {
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        gameManager.placeCreature(CreatureName.CRAB, -1, 0);
+        gameManager.placeCreature(CreatureName.CRAB, -1, 2);
+        gameManager.placeCreature(CreatureName.CRAB, 1, -1);
+        gameManager.placeCreature(CreatureName.CRAB, 1, 1);
+        gameManager.moveCreature(CreatureName.CRAB, 1, -1, 0, -1);
+        gameManager.moveCreature(CreatureName.CRAB, -1, 2, -1, 1);
+        gameManager.placeCreature(CreatureName.CRAB, 1, -1);
+        gameManager.placeCreature(CreatureName.CRAB, -1, 2);
+        gameManager.placeCreature(CreatureName.CRAB, 0, -2);
+        gameManager.placeCreature(CreatureName.CRAB, 0, 2);
+        response = gameManager.moveCreature(CreatureName.CRAB, 0, -2, 1, 0);
+        assertEquals(MoveResponses.DRAW, response);
+    }
+
+    @Test
+    void noMoves() {
+        sparseGameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
+        sparseGameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        sparseGameManager.placeCreature(kamikazeCreatureName, -1, 0);
+        sparseGameManager.moveCreature(CreatureName.BUTTERFLY, 0, 1, -1, 1);
+        response = sparseGameManager.moveCreature(kamikazeCreatureName, -1, 0, -1, 1);
+        assertEquals(MoveResponses.LEGAL_MOVE, response);
+        response = sparseGameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        assertEquals(MoveResponses.BLUE_WON, response);
+    }
+
+    @Test
+    void playerGetsThemselvesStuck() {
+        gameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
+        gameManager.placeCreature(flyingCreatureName, 0, 1);
+        gameManager.placeCreature(CreatureName.CRAB, 0, -1);
+        gameManager.moveCreature(flyingCreatureName, 0, 1, 1, 0);
+        gameManager.placeCreature(CreatureName.CRAB, -1, 0);
+        gameManager.moveCreature(flyingCreatureName, 1, 0, 0, 1);
+        gameManager.placeCreature(CreatureName.CRAB, 1, -1);
+        gameManager.moveCreature(flyingCreatureName, 0, 1, 0, -2);
+        gameManager.placeCreature(CreatureName.CRAB, 1, 0);
+        gameManager.moveCreature(flyingCreatureName, 0, -2, 1, -2);
+        gameManager.moveCreature(CreatureName.BUTTERFLY, 0, 0, 0, 1);
+        gameManager.moveCreature(flyingCreatureName, 1, -2, 1, 1);
+        gameManager.placeCreature(CreatureName.CRAB, -1, 1);
+        response = gameManager.moveCreature(flyingCreatureName, 1, 1, 0, 0);
     }
 }

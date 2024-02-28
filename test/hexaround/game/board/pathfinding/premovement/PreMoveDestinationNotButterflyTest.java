@@ -10,7 +10,8 @@ import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.rules.pre_movement.PreMoveContext;
-import hexaround.game.rules.pre_movement.PreMoveNotPinned;
+import hexaround.game.rules.pre_movement.PreMoveDestinationNotButterfly;
+import hexaround.game.rules.pre_movement.PreMoveNotSurrounded;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,10 +20,12 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PreMoveNotPinnedTest {
-    ICondition<PreMoveContext> preMoveNotPinned = new PreMoveNotPinned();
+public class PreMoveDestinationNotButterflyTest {
+    ICondition<PreMoveContext> preMoveDestinationNotButterfly = new PreMoveDestinationNotButterfly();
     IBoard board;
     ICreature creature;
+
+    ICreature butterfly;
 
     IPoint origin;
 
@@ -30,26 +33,23 @@ public class PreMoveNotPinnedTest {
     void setUpBoard() {
         board = new Board(new HashMap<>());
         creature = new Creature(CreatureName.CRAB, null, 5, null, Collections.singleton(CreatureProperty.WALKING));
+        butterfly = new Creature(CreatureName.BUTTERFLY, null, 5, null, Collections.singleton(CreatureProperty.WALKING));
         origin = new HexPoint(0, 0);
     }
 
     @Test
-    void preMoveNotPinned() {
+    void destinationNotButterfly() {
         board.placeCreature(creature, origin);
-        board.placeCreature(creature, new HexPoint(0, 1));
-        board.placeCreature(creature, new HexPoint(0, -1));
-
-        PreMoveContext context = new PreMoveContext(board, creature, new HexPoint(0, 1), null);
-        assertTrue(preMoveNotPinned.test(context).valid());
+        board.placeCreature(butterfly, new HexPoint(0, 1));
+        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(1, 0));
+        assertTrue(preMoveDestinationNotButterfly.test(context).valid());
     }
 
     @Test
-    void preMovePinned() {
+    void destinationButterfly() {
         board.placeCreature(creature, origin);
-        board.placeCreature(creature, new HexPoint(0, 1));
-        board.placeCreature(creature, new HexPoint(0, -1));
-
-        PreMoveContext context = new PreMoveContext(board, creature, origin, null);
-        assertFalse(preMoveNotPinned.test(context).valid());
+        board.placeCreature(butterfly, new HexPoint(0, 1));
+        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(0, 1));
+        assertFalse(preMoveDestinationNotButterfly.test(context).valid());
     }
 }

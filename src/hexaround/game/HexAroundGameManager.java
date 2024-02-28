@@ -26,6 +26,7 @@ public class HexAroundGameManager implements IHexAroundGameManager {
     protected PlayerName nameOfPlayerWithTurn;
     protected Validator<PlacementContext> placementValidator;
     protected int turnNumber;
+    protected MoveResponse gameResult = null;
 
     /**
      * This is the default constructor, and the only constructor
@@ -73,32 +74,45 @@ public class HexAroundGameManager implements IHexAroundGameManager {
     public MoveResponse placeCreature(CreatureName creature, int x, int y) {
         Player playerWithTurn = players.get(nameOfPlayerWithTurn);
         IPoint point = new HexPoint(x, y);
+        Optional<ICreature> creatureInstance = creatureFactory.makeCreature(creature, nameOfPlayerWithTurn);
+        MoveResponse response = MoveResponses.LEGAL_MOVE;
+
+        if (gameResult == null) {
+            gameResult = checkForStuckPlayers();
+        }
 
         if (!inOpening()) {
             placementValidator = new PostOpeningPlacementValidator();
         }
 
-        if (creature != CreatureName.BUTTERFLY && mustPlaceButterfly()) {
-            return MoveResponses.MUST_PLACE_BUTTERFLY;
+        if (gameResult != null) {
+            response = gameResult;
+        } else if (creature != CreatureName.BUTTERFLY && mustPlaceButterfly()) {
+            response = MoveResponses.MUST_PLACE_BUTTERFLY;
+        } else if (creatureInstance.isEmpty()) {
+            response =  MoveResponses.CREATURE_NOT_DEFINED;
+        } else {
+            PlacementContext placementContext = new PlacementContext(board, playerWithTurn, creature, point);
+            ValidationResult placementValidation = placementValidator.validate(placementContext);
+
+            if (!placementValidation.valid()) {
+                response = new MoveResponse(MoveResult.MOVE_ERROR, placementValidation.message());
+            } else {
+                playerWithTurn.decrementCreature(creature);
+                board.placeCreature(creatureInstance.get(), point);
+                gameResult = checkForGameWon();
+
+                if (gameResult != null) {
+                    response = gameResult;
+                }
+
+                turnNumber++;
+                switchTurn();
+            }
         }
 
-        PlacementContext placementContext = new PlacementContext(board, playerWithTurn, creature, point);
-        ValidationResult placementValidation = placementValidator.validate(placementContext);
-        if (!placementValidation.valid()) {
-            return new MoveResponse(MoveResult.MOVE_ERROR, placementValidation.message());
-        }
-
-        Optional<ICreature> creatureInstance = creatureFactory.makeCreature(creature, nameOfPlayerWithTurn);
-        if (creatureInstance.isEmpty()) {
-            return MoveResponses.CREATURE_NOT_DEFINED;
-        }
-
-        playerWithTurn.decrementCreature(creature);
-        board.placeCreature(creatureInstance.get(), point);
-
-        turnNumber++;
-        switchTurn();
-        return MoveResponses.LEGAL_MOVE;
+        System.out.println(response);
+        return response;
     }
 
     /**
@@ -116,28 +130,36 @@ public class HexAroundGameManager implements IHexAroundGameManager {
         IPoint fromPoint = new HexPoint(fromX, fromY);
         IPoint toPoint = new HexPoint(toX, toY);
         Optional<ICreature> specifiedCreature = board.getCreatureWithNameAndOwner(creature, nameOfPlayerWithTurn, fromPoint);
+        MoveResponse response = MoveResponses.LEGAL_MOVE;
 
-        if (inOpening()) {
-            return MoveResponses.MUST_PLACE_CREATURE_IN_OPENING;
+        if (gameResult == null) {
+            gameResult = checkForStuckPlayers();
         }
 
-        if (mustPlaceButterfly()) {
-            return MoveResponses.MUST_PLACE_BUTTERFLY;
+        if (gameResult != null) {
+            response = gameResult;
+        } else if (inOpening()) {
+            response =  MoveResponses.MUST_PLACE_CREATURE_IN_OPENING;
+        } else if (mustPlaceButterfly()) {
+            response = MoveResponses.MUST_PLACE_BUTTERFLY;
+        } else if (specifiedCreature.isEmpty()) {
+            response = MoveResponses.CREATURE_DOES_NOT_EXIST;
+        } else if (!board.existsPath(specifiedCreature.get(), fromPoint, toPoint)) {
+            response = MoveResponses.NO_PATH;
+        } else {
+            performCreatureMovement(specifiedCreature.get(), fromPoint, toPoint);
+            gameResult = checkForGameWon();
+
+            if (gameResult != null) {
+                response = gameResult;
+            }
+
+            turnNumber++;
+            switchTurn();
         }
 
-        if (specifiedCreature.isEmpty()) {
-            return MoveResponses.CREATURE_DOES_NOT_EXIST;
-        }
-
-        if (!board.existsPath(specifiedCreature.get(), fromPoint, toPoint)) {
-            return MoveResponses.NO_PATH;
-        }
-
-        performCreatureMovement(specifiedCreature.get(), fromPoint, toPoint);
-
-        turnNumber++;
-        switchTurn();
-        return MoveResponses.LEGAL_MOVE;
+        System.out.println(response);
+        return response;
     }
 
     private void switchTurn() {
@@ -157,50 +179,60 @@ public class HexAroundGameManager implements IHexAroundGameManager {
     private void performCreatureMovement(ICreature creature, IPoint fromPoint, IPoint toPoint) {
 
         if (creature.hasProperty(CreatureProperty.KAMIKAZE)) {
-            Optional<ICreature> removedCreature = board.getTopCreature(toPoint);
-
-            if (removedCreature.isPresent()) {
-                board.removeCreature(creature, fromPoint);
-                board.removeCreature(removedCreature.get(), toPoint);
-                returnCreature(removedCreature.get());
-            } else {
-                board.moveCreature(creature, fromPoint, toPoint);
-            }
+            performKamikazeMovement(creature, fromPoint, toPoint);
+        } else if (creature.hasProperty(CreatureProperty.SWAPPING)) {
+            performSwappingMovement(creature, fromPoint, toPoint);
         } else {
-            board.removeCreature(creature, fromPoint);
-            if (creature.hasProperty(CreatureProperty.SWAPPING)) {
-                Optional<ICreature> swappedCreature = board.getTopCreature(toPoint);
-                board.placeCreature(creature, toPoint);
-                if (swappedCreature.isPresent()) {
-                    board.moveCreature(swappedCreature.get(), toPoint, fromPoint);
-                }
-            } else {
-                board.placeCreature(creature, toPoint);
-            }
+            board.moveCreature(creature, fromPoint, toPoint);
         }
     }
 
-    private MoveResult evaluateGameState() {
+    private void performKamikazeMovement(ICreature creature, IPoint fromPoint, IPoint toPoint) {
+        Optional<ICreature> removedCreature = board.getTopCreature(toPoint);
+
+        if (removedCreature.isPresent()) {
+            board.removeCreature(creature, fromPoint);
+            board.removeCreature(removedCreature.get(), toPoint);
+            returnCreature(removedCreature.get());
+        } else {
+            board.moveCreature(creature, fromPoint, toPoint);
+        }
+    }
+
+    private void performSwappingMovement(ICreature creature, IPoint fromPoint, IPoint toPoint) {
+        board.removeCreature(creature, fromPoint);
+        Optional<ICreature> swappedCreature = board.getTopCreature(toPoint);
+        board.placeCreature(creature, toPoint);
+
+        if (swappedCreature.isPresent()) {
+            board.moveCreature(swappedCreature.get(), toPoint, fromPoint);
+        }
+    }
+
+    private MoveResponse checkForStuckPlayers() {
+        boolean bluePlayerStuck = !playerHasMoves(PlayerName.BLUE) && !playerHasPlacements(PlayerName.BLUE);
+        boolean redPlayerStuck = !playerHasMoves(PlayerName.RED) && !playerHasPlacements(PlayerName.RED);
+        return evaluateLossConditions(bluePlayerStuck, redPlayerStuck);
+    }
+
+    private MoveResponse checkForGameWon() {
         boolean blueButterflySurrounded = playersButterflySurrounded(PlayerName.BLUE);
         boolean redButterflySurrounded = playersButterflySurrounded(PlayerName.RED);
+        return evaluateLossConditions(blueButterflySurrounded, redButterflySurrounded);
+    }
 
-        boolean bluePlayerStuck = playerHasMoves(PlayerName.BLUE) || playerHasPlacements(PlayerName.BLUE);
-        boolean redPlayerStuck = playerHasMoves(PlayerName.RED) || playerHasPlacements(PlayerName.RED);
+    private MoveResponse evaluateLossConditions(boolean blueLossCondition, boolean redLossCondition) {
+        MoveResponse response = null;
 
-        boolean blueWon = redButterflySurrounded && !blueButterflySurrounded || redPlayerStuck && !bluePlayerStuck;
-        boolean redWon = blueButterflySurrounded && !redButterflySurrounded || bluePlayerStuck && !redPlayerStuck;
-        boolean draw = blueButterflySurrounded && redButterflySurrounded || bluePlayerStuck && redPlayerStuck;
-
-        MoveResult gameState = null;
-        if (blueWon) {
-            gameState = MoveResult.BLUE_WON;
-        } else if (redWon) {
-            gameState = MoveResult.RED_WON;
-        } else if (draw) {
-            gameState = MoveResult.DRAW;
+        if (!blueLossCondition && redLossCondition) {
+            response = MoveResponses.BLUE_WON;
+        } else if (blueLossCondition && !redLossCondition) {
+            response = MoveResponses.RED_WON;
+        } else if (blueLossCondition && redLossCondition) {
+            response = MoveResponses.DRAW;
         }
 
-        return gameState;
+        return response;
     }
 
     private boolean playersButterflySurrounded(PlayerName playerName) {
@@ -233,6 +265,10 @@ public class HexAroundGameManager implements IHexAroundGameManager {
 
         if (player.outOfCreatures()) {
             return false;
+        }
+
+        if (inOpening()) {
+            return true;
         }
 
         List<CreatureLocation> creatureLocations = board.getOwnersCreaturesAndLocations(playerName);

@@ -26,10 +26,10 @@ public class Player {
     public boolean outOfCreatures() {
         for (int count : creatureCounts.values()) {
             if (count > 0) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public PlayerName getName() {

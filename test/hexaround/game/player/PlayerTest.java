@@ -20,8 +20,8 @@ public class PlayerTest {
         Map<CreatureName, Integer> creatureCounts = new HashMap<>();
 
         creatureCounts.put(CreatureName.BUTTERFLY, 1);
-        creatureCounts.put(CreatureName.GRASSHOPPER, 5);
-        creatureCounts.put(CreatureName.CRAB, 6);
+        creatureCounts.put(CreatureName.GRASSHOPPER, 2);
+        creatureCounts.put(CreatureName.CRAB, 2);
 
         player = new TestPlayer(PlayerName.RED, creatureCounts);
     }
@@ -42,7 +42,27 @@ public class PlayerTest {
         Map<CreatureName, Integer> creatureCounts = player.getCreatureCounts();
 
         player.decrementCreature(CreatureName.CRAB);
-        assertEquals(5, creatureCounts.get(CreatureName.CRAB));
+        assertEquals(1, creatureCounts.get(CreatureName.CRAB));
         player.decrementCreature(CreatureName.CRAB);
-        assertEquals(4, creatureCounts.get(CreatureName.CRAB));    }
+        assertEquals(0, creatureCounts.get(CreatureName.CRAB));
+    }
+
+    @Test
+    void outOfCreatures() {
+        player.decrementCreature(CreatureName.BUTTERFLY);
+        player.decrementCreature(CreatureName.GRASSHOPPER);
+        player.decrementCreature(CreatureName.GRASSHOPPER);
+        player.decrementCreature(CreatureName.CRAB);
+        player.decrementCreature(CreatureName.CRAB);
+        assertTrue(player.outOfCreatures());
+    }
+
+    @Test
+    void notOutOfCreatures() {
+        player.decrementCreature(CreatureName.BUTTERFLY);
+        player.decrementCreature(CreatureName.GRASSHOPPER);
+        player.decrementCreature(CreatureName.GRASSHOPPER);
+        player.decrementCreature(CreatureName.CRAB);
+        assertFalse(player.outOfCreatures());
+    }
 }

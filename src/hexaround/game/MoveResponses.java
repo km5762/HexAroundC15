@@ -13,5 +13,7 @@ public class MoveResponses {
     static MoveResponse PLACEMENT_NOT_NEXT_TO_ALLY = new MoveResponse(MoveResult.MOVE_ERROR, "That placement is not next to an ally creature");
     static MoveResponse PLACEMENT_MISSING_CREATURE = new MoveResponse(MoveResult.MOVE_ERROR, "That player does not have that creature");
     static MoveResponse MUST_PLACE_BUTTERFLY = new MoveResponse(MoveResult.MOVE_ERROR, "That player has a butterfly they must place");
-
+    static MoveResponse RED_WON = new MoveResponse(MoveResult.RED_WON, "Red has won");
+    static MoveResponse BLUE_WON = new MoveResponse(MoveResult.BLUE_WON, "Blue has won");
+    static MoveResponse DRAW = new MoveResponse(MoveResult.DRAW, "The game is a draw");
 }

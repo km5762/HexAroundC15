@@ -42,7 +42,7 @@ public class PreMoveNotSurroundedTest {
             board.placeCreature(creature, neighbors.get(i));
         }
 
-        PreMoveContext context = new PreMoveContext(board, creature, origin);
+        PreMoveContext context = new PreMoveContext(board, creature, origin, null);
         assertTrue(preMoveNotSurrounded.test(context).valid());
     }
 
@@ -55,7 +55,7 @@ public class PreMoveNotSurroundedTest {
             board.placeCreature(creature, neighbors.get(i));
         }
 
-        PreMoveContext context = new PreMoveContext(board, creature, origin);
+        PreMoveContext context = new PreMoveContext(board, creature, origin, null);
         assertFalse(preMoveNotSurrounded.test(context).valid());
     }
 }
