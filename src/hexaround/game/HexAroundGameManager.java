@@ -144,18 +144,22 @@ public class HexAroundGameManager implements IHexAroundGameManager {
             response = MoveResponses.MUST_PLACE_BUTTERFLY;
         } else if (specifiedCreature.isEmpty()) {
             response = MoveResponses.CREATURE_DOES_NOT_EXIST;
-        } else if (!board.existsPath(specifiedCreature.get(), fromPoint, toPoint)) {
-            response = MoveResponses.NO_PATH;
         } else {
-            performCreatureMovement(specifiedCreature.get(), fromPoint, toPoint);
-            gameResult = checkForGameWon();
+            ValidationResult validation = board.existsPath(specifiedCreature.get(), fromPoint, toPoint);
 
-            if (gameResult != null) {
-                response = gameResult;
+            if (!validation.valid()) {
+                response = new MoveResponse(MoveResult.MOVE_ERROR, validation.message());
+            } else {
+                performCreatureMovement(specifiedCreature.get(), fromPoint, toPoint);
+                gameResult = checkForGameWon();
+
+                if (gameResult != null) {
+                    response = gameResult;
+                }
+
+                turnNumber++;
+                switchTurn();
             }
-
-            turnNumber++;
-            switchTurn();
         }
 
         System.out.println(response);

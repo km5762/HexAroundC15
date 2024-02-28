@@ -68,35 +68,35 @@ public class BoardMovementTest {
     void walkingExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3)};
         BoardTestingUtils.placeCreatures(walkingCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(1, 0)));
+        assertTrue(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(1, 0)).valid());
     }
 
     @Test
     void walkingPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3)};
         BoardTestingUtils.placeCreatures(walkingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(1, 1)));
+        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(1, 1)).valid());
     }
 
     @Test
     void walkingPathOccupied() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3)};
         BoardTestingUtils.placeCreatures(walkingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(0, 1)));
+        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(0, 1)).valid());
     }
 
     @Test
     void walkingPathBlocked() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(1, 0)};
         BoardTestingUtils.placeCreatures(walkingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(0, 1)));
+        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(0, 1)).valid());
     }
 
     @Test
     void walkingPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(1, 0)};
         BoardTestingUtils.placeCreatures(walkingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(-1, 1)));
+        assertFalse(board.existsPath(walkingCreature, new HexPoint(0, 0), new HexPoint(-1, 1)).valid());
     }
 
 
@@ -118,21 +118,21 @@ public class BoardMovementTest {
     void walkingIntrudingExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(walkingIntrudingCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 3)));
+        assertTrue(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 3)).valid());
     }
 
     @Test
     void walkingIntrudingPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3)};
         BoardTestingUtils.placeCreatures(walkingIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 4)));
+        assertFalse(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 4)).valid());
     }
 
     @Test
     void walkingIntrudingPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3)};
         BoardTestingUtils.placeCreatures(walkingIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(2, 0)));
+        assertFalse(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(2, 0)).valid());
     }
 
     @Test
@@ -146,28 +146,28 @@ public class BoardMovementTest {
     void walkingEffectExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(walkingEffectCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(walkingEffectCreature, new HexPoint(0, 0), new HexPoint(0, 2)));
+        assertTrue(board.existsPath(walkingEffectCreature, new HexPoint(0, 0), new HexPoint(0, 2)).valid());
     }
 
     @Test
     void walkingEffectPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3)};
         BoardTestingUtils.placeCreatures(walkingEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 0), new HexPoint(0, 3)));
+        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 0), new HexPoint(0, 3)).valid());
     }
 
     @Test
     void walkingEffectPathBlocked() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(1, 0)};
         BoardTestingUtils.placeCreatures(walkingEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 0), new HexPoint(0, 1)));
+        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 0), new HexPoint(0, 1)).valid());
     }
 
     @Test
     void walkingEffectPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(walkingEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 0), new HexPoint(1, -1)));
+        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 0), new HexPoint(1, -1)).valid());
     }
 
     @Test
@@ -188,42 +188,42 @@ public class BoardMovementTest {
     void runningExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(1, 2)));
+        assertTrue(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(1, 2)).valid());
     }
 
     @Test
     void runningPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(0, 3)));
+        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(0, 3)).valid());
     }
 
     @Test
     void runningPathOccupied() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(0, 2)));
+        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(0, 2)).valid());
     }
 
     @Test
     void runningPathTooSmall() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(1, 1)));
+        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(1, 1)).valid());
     }
 
     @Test
     void runningPathBlocked() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3), new HexPoint(1, 3), new HexPoint(2, 2), new HexPoint(2, 1)};
         BoardTestingUtils.placeCreatures(runningCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(1, 2)));
+        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(1, 2)).valid());
     }
 
     @Test
     void runningPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(1, 0)};
         BoardTestingUtils.placeCreatures(runningCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(-1, 1)));
+        assertFalse(board.existsPath(runningCreature, new HexPoint(0, 0), new HexPoint(-1, 1)).valid());
     }
 
 
@@ -253,28 +253,28 @@ public class BoardMovementTest {
     void runningIntrudingExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningIntrudingCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 3)));
+        assertTrue(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 3)).valid());
     }
 
     @Test
     void runningIntrudingPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3), new HexPoint(0, 4)};
         BoardTestingUtils.placeCreatures(runningIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 4)));
+        assertFalse(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 4)).valid());
     }
 
     @Test
     void runningIntrudingPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 5)));
+        assertFalse(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 5)).valid());
     }
 
     @Test
     void runningIntrudingNoMovesNoPathLongEnough() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(-1, 0), new HexPoint(1, 0), new HexPoint(1, -1)};
         BoardTestingUtils.placeCreatures(runningIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 1)));
+        assertFalse(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 1)).valid());
     }
 
     @Test
@@ -288,28 +288,28 @@ public class BoardMovementTest {
     void runningEffectExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningEffectCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 2)));
+        assertTrue(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 2)).valid());
     }
 
     @Test
     void runningEffectPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3)};
         BoardTestingUtils.placeCreatures(runningEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningEffectCreature, new HexPoint(0, 0), new HexPoint(0, 3)));
+        assertFalse(board.existsPath(runningEffectCreature, new HexPoint(0, 0), new HexPoint(0, 3)).valid());
     }
 
     @Test
     void runningEffectPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 5)));
+        assertFalse(board.existsPath(runningIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 5)).valid());
     }
 
     @Test
     void runningEffectPathTooSmall() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2)};
         BoardTestingUtils.placeCreatures(runningEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(runningEffectCreature, new HexPoint(0, 0), new HexPoint(1, 1)));
+        assertFalse(board.existsPath(runningEffectCreature, new HexPoint(0, 0), new HexPoint(1, 1)).valid());
     }
 
     @Test
@@ -323,28 +323,28 @@ public class BoardMovementTest {
     void flyingExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(-2, 2), new HexPoint(-2, 3), new HexPoint(-1, 3), new HexPoint(0, 3), new HexPoint(1, 2), new HexPoint(2, 1)};
         BoardTestingUtils.placeCreatures(flyingCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(flyingCreature, new HexPoint(0, 0), new HexPoint(3, 0)));
+        assertTrue(board.existsPath(flyingCreature, new HexPoint(0, 0), new HexPoint(3, 0)).valid());
     }
 
     @Test
     void flyingPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(-2, 2), new HexPoint(-2, 3), new HexPoint(-1, 3), new HexPoint(0, 3), new HexPoint(1, 2), new HexPoint(2, 1)};
         BoardTestingUtils.placeCreatures(flyingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(flyingCreature, new HexPoint(0, 0), new HexPoint(3, 1)));
+        assertFalse(board.existsPath(flyingCreature, new HexPoint(0, 0), new HexPoint(3, 1)).valid());
     }
 
     @Test
     void flyingPathOccupied() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(flyingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(flyingCreature, new HexPoint(0, 0), new HexPoint(0, 1)));
+        assertFalse(board.existsPath(flyingCreature, new HexPoint(0, 0), new HexPoint(0, 1)).valid());
     }
 
     @Test
     void flyingPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(flyingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(flyingCreature, new HexPoint(0, 0), new HexPoint(0, -1)));
+        assertFalse(board.existsPath(flyingCreature, new HexPoint(0, 0), new HexPoint(0, -1)).valid());
     }
 
     @Test
@@ -358,21 +358,21 @@ public class BoardMovementTest {
     void flyingIntrudingExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(-2, 2), new HexPoint(-2, 3), new HexPoint(-1, 3), new HexPoint(0, 3), new HexPoint(1, 2), new HexPoint(2, 1)};
         BoardTestingUtils.placeCreatures(flyingIntrudingCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(flyingIntrudingCreature, new HexPoint(0, 0), new HexPoint(2, 1)));
+        assertTrue(board.existsPath(flyingIntrudingCreature, new HexPoint(0, 0), new HexPoint(2, 1)).valid());
     }
 
     @Test
     void flyingIntrudingPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(-2, 2), new HexPoint(-2, 3), new HexPoint(-1, 3), new HexPoint(0, 3), new HexPoint(1, 2), new HexPoint(2, 1), new HexPoint(2, 2)};
         BoardTestingUtils.placeCreatures(flyingIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(flyingIntrudingCreature, new HexPoint(0, 0), new HexPoint(2, 2)));
+        assertFalse(board.existsPath(flyingIntrudingCreature, new HexPoint(0, 0), new HexPoint(2, 2)).valid());
     }
 
     @Test
     void flyingIntrudingPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(flyingIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(flyingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, -1)));
+        assertFalse(board.existsPath(flyingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, -1)).valid());
     }
 
     @Test
@@ -386,21 +386,21 @@ public class BoardMovementTest {
     void flyingEffectExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(-2, 2), new HexPoint(-2, 3), new HexPoint(-1, 3), new HexPoint(0, 3), new HexPoint(1, 2), new HexPoint(2, 1)};
         BoardTestingUtils.placeCreatures(flyingEffectCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(flyingEffectCreature, new HexPoint(0, 0), new HexPoint(2, 1)));
+        assertTrue(board.existsPath(flyingEffectCreature, new HexPoint(0, 0), new HexPoint(2, 1)).valid());
     }
 
     @Test
     void flyingEffectPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(-2, 2), new HexPoint(-2, 3), new HexPoint(-1, 3), new HexPoint(0, 3), new HexPoint(1, 2), new HexPoint(2, 1), new HexPoint(2, 2)};
         BoardTestingUtils.placeCreatures(flyingEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(flyingEffectCreature, new HexPoint(0, 0), new HexPoint(2, 2)));
+        assertFalse(board.existsPath(flyingEffectCreature, new HexPoint(0, 0), new HexPoint(2, 2)).valid());
     }
 
     @Test
     void flyingEffectPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(flyingEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(flyingEffectCreature, new HexPoint(0, 0), new HexPoint(0, -1)));
+        assertFalse(board.existsPath(flyingEffectCreature, new HexPoint(0, 0), new HexPoint(0, -1)).valid());
     }
 
     @Test
@@ -414,35 +414,35 @@ public class BoardMovementTest {
     void jumpingExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1)};
         BoardTestingUtils.placeCreatures(jumpingCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(-3, 0)));
+        assertTrue(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(-3, 0)).valid());
     }
 
     @Test
     void jumpingPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1), new HexPoint(-3, 0)};
         BoardTestingUtils.placeCreatures(jumpingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(-4, 0)));
+        assertFalse(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(-4, 0)).valid());
     }
 
     @Test
     void jumpingPathOccupied() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(jumpingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(0, 1)));
+        assertFalse(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(0, 1)).valid());
     }
 
     @Test
     void jumpingPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(jumpingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(0, -1)));
+        assertFalse(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(0, -1)).valid());
     }
 
     @Test
     void jumpingPathNotInline() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1)};
         BoardTestingUtils.placeCreatures(jumpingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(1, 1)));
+        assertFalse(board.existsPath(jumpingCreature, new HexPoint(0, 0), new HexPoint(1, 1)).valid());
     }
 
     @Test
@@ -456,28 +456,28 @@ public class BoardMovementTest {
     void jumpingIntrudingExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1)};
         BoardTestingUtils.placeCreatures(jumpingIntrudingCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(jumpingIntrudingCreature, new HexPoint(0, 0), new HexPoint(-2, 0)));
+        assertTrue(board.existsPath(jumpingIntrudingCreature, new HexPoint(0, 0), new HexPoint(-2, 0)).valid());
     }
 
     @Test
     void jumpingIntrudingPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1), new HexPoint(-3, 0)};
         BoardTestingUtils.placeCreatures(jumpingIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingIntrudingCreature, new HexPoint(0, 0), new HexPoint(-4, 0)));
+        assertFalse(board.existsPath(jumpingIntrudingCreature, new HexPoint(0, 0), new HexPoint(-4, 0)).valid());
     }
 
     @Test
     void jumpingIntrudingPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(jumpingIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, -1)));
+        assertFalse(board.existsPath(jumpingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, -1)).valid());
     }
 
     @Test
     void jumpingIntrudingPathNotInline() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1)};
         BoardTestingUtils.placeCreatures(jumpingIntrudingCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingIntrudingCreature, new HexPoint(0, 0), new HexPoint(1, 1)));
+        assertFalse(board.existsPath(jumpingIntrudingCreature, new HexPoint(0, 0), new HexPoint(1, 1)).valid());
     }
 
     @Test
@@ -491,28 +491,28 @@ public class BoardMovementTest {
     void jumpingEffectExistsPath() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1)};
         BoardTestingUtils.placeCreatures(jumpingEffectCreature, occupiedPoints, board);
-        assertTrue(board.existsPath(jumpingEffectCreature, new HexPoint(0, 0), new HexPoint(-2, 0)));
+        assertTrue(board.existsPath(jumpingEffectCreature, new HexPoint(0, 0), new HexPoint(-2, 0)).valid());
     }
 
     @Test
     void jumpingEffectPathOutOfRange() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1), new HexPoint(-3, 0)};
         BoardTestingUtils.placeCreatures(jumpingEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingEffectCreature, new HexPoint(0, 0), new HexPoint(-4, 0)));
+        assertFalse(board.existsPath(jumpingEffectCreature, new HexPoint(0, 0), new HexPoint(-4, 0)).valid());
     }
 
     @Test
     void jumpingEffectPathNotConnected() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(jumpingEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingEffectCreature, new HexPoint(0, 0), new HexPoint(0, -1)));
+        assertFalse(board.existsPath(jumpingEffectCreature, new HexPoint(0, 0), new HexPoint(0, -1)).valid());
     }
 
     @Test
     void jumpingEffectPathNotInline() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(-1, 1), new HexPoint(0, 1), new HexPoint(1, 0), new HexPoint(1, -1), new HexPoint(0, -1), new HexPoint(-1, 0), new HexPoint(-2, 0), new HexPoint(-1, -1)};
         BoardTestingUtils.placeCreatures(jumpingEffectCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(jumpingEffectCreature, new HexPoint(0, 0), new HexPoint(1, 1)));
+        assertFalse(board.existsPath(jumpingEffectCreature, new HexPoint(0, 0), new HexPoint(1, 1)).valid());
     }
 
     @Test
@@ -538,7 +538,7 @@ public class BoardMovementTest {
     void pathDestinationNotRemovable() {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1), new HexPoint(0, 2), new HexPoint(0, 3)};
         BoardTestingUtils.placeCreatures(kamikazeCreature, occupiedPoints, board);
-        assertFalse(board.existsPath(kamikazeCreature, new HexPoint(0, 0), new HexPoint(0, 2)));
+        assertFalse(board.existsPath(kamikazeCreature, new HexPoint(0, 0), new HexPoint(0, 2)).valid());
     }
 
     @Test
@@ -546,13 +546,13 @@ public class BoardMovementTest {
         IPoint[] occupiedPoints = {new HexPoint(0, 0), new HexPoint(0, 1)};
         BoardTestingUtils.placeCreatures(walkingIntrudingCreature, occupiedPoints, board);
         board.placeCreature(walkingIntrudingCreature, new HexPoint(0, 1));
-        assertFalse(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 1)));
+        assertFalse(board.existsPath(walkingIntrudingCreature, new HexPoint(0, 0), new HexPoint(0, 1)).valid());
     }
 
     @Test
     void cantSwapButterfly() {
         board.placeCreature(walkingCreature, new HexPoint(0, 0));
         board.placeCreature(walkingEffectCreature, new HexPoint(0, 1));
-        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 1), new HexPoint(0, 0)));
+        assertFalse(board.existsPath(walkingEffectCreature, new HexPoint(0, 1), new HexPoint(0, 0)).valid());
     }
 }
