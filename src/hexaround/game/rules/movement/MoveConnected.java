@@ -7,6 +7,12 @@ import hexaround.game.creature.ICreature;
 import hexaround.game.rules.ValidationResult;
 
 public class MoveConnected implements ICondition<MoveContext> {
+    /**
+     * Used to determine if the given move will disconnect the colony
+     * @param context a MovementContext describing the context of the situation
+     * @return a ValidationResult with "valid" set to true if the move will not disconnect the colony,
+     * otherwise "valid" will be set to false with a message describing the error.
+     */
     public ValidationResult test(MoveContext context) {
         IBoard board = context.board();
         ICreature creature = context.creature();

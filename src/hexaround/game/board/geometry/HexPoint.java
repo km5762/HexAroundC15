@@ -31,11 +31,11 @@ public record HexPoint(int x, int y) implements IPoint {
                 + Math.abs(y + x - toPoint.getY() - toPoint.getX())
                 + Math.abs(x - toPoint.getX())) / 2;
     }
-    
+
     public int getX() {
         return x;
     }
-    
+
     public int getY() {
         return y;
     }
@@ -49,12 +49,24 @@ public record HexPoint(int x, int y) implements IPoint {
     public IPoint clone() {
         return new HexPoint(x, y);
     }
-    
+
+    /**
+     * Returns true if the other IPoint has the same x and y value as this one
+     *
+     * @param other another instance of IPoint
+     * @return true if the other IPoint has the same x and y values, false otherwise
+     */
     @Override
     public boolean equals(IPoint other) {
         return x == other.getX() && y == other.getY();
     }
 
+    /**
+     * Returns true if the other IPoint is inline to this one
+     *
+     * @param toPoint another instance of IPoint
+     * @return true if the toPoint is inline to this point (on the same x file, y file, or diagonal), false otherwise
+     */
     @Override
     public boolean inlineTo(IPoint toPoint) {
         return x == toPoint.getX() || y == toPoint.getY() || -y - x == -toPoint.getX() - toPoint.getY();

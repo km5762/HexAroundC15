@@ -10,6 +10,13 @@ import java.util.List;
 public class MoveSlideable implements ICondition<MoveContext> {
     protected static ICondition<MoveContext> pointEmpty = new MoveEmpty();
 
+    /**
+     * Used to determine if the given move is slideable, meaning that it a creature may be dragged to it unblocked
+     *
+     * @param context a MovementContext describing the context of the situation
+     * @return a ValidationResult with "valid" set to true if the creature can be dragged to the point,
+     * otherwise "valid" will be set to false with a message describing the error.
+     */
     public ValidationResult test(MoveContext context) {
         ValidationResult result = new ValidationResult(true, null);
 

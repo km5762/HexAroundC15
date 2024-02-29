@@ -1,5 +1,8 @@
 package hexaround.game;
 
+/**
+ * Contains several commonly used responses
+ */
 public class MoveResponses {
     static MoveResponse NO_PATH = new MoveResponse(MoveResult.MOVE_ERROR, "No legal path exists to that point");
     static MoveResponse MOVE_OUT_OF_RANGE = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is out of range");

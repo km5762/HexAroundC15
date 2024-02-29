@@ -9,6 +9,7 @@
 | T  |  X   | Return instance of ICreature with correct maxDistance on call to CreatureFactory.make()                                                             |
 | R  |  X   | Change creature factory to use map instead of list for lookup - intention is that each CreatureName only maps to one definition                     |
 | T  |  X   | Return instance of ICreature with correct properties on call to CreatureFactory.make()                                                              | 
+| R  |  X   | Move non trivial builder setup into helper functions                                                                                                | 
 | T  |  X   | isOccupied when location is not occupied                                                                                                            | 
 | T  |  X   | isOccupied when location is occupied                                                                                                                |
 | T  |  X   | getCreatureAt when board space is not occupied                                                                                                      | 
@@ -225,7 +226,8 @@
 | T  |  X   | GameManager game end by no available moves or placements                                                                                            |
 | T  |  X   | PreMoveDestinationNotButterfly.test when destination is not butterfly                                                                               |
 | T  |  X   | PreMoveDestinationNotButterfly.test when destination is butterfly                                                                                   |
-| T | X | GameManager.moveCreature when movement 
+| T  |  X   | GameManager.moveCreature when movement                                                                                                              
+
 # Design Patterns
 
 ## Factory Pattern

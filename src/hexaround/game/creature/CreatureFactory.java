@@ -24,11 +24,10 @@ public class CreatureFactory {
     }
 
     /**
-     * Makes an instance of Creature with name belonging to player with ownerName and fields as specified in that Creature's CreatureDefinition
-     *
-     * @param name the CreatureName of the creature
-     * @param ownerName the PlayerName of the owner
-     * @return an instance of Creature with fields configured according to CreatureName belonging to ownerName
+     * Makes an instance of ICreature belonging to owner with PlayerName and with properties according to their corresponding CreatureDefinition
+     * @param creatureName the CreatureName of the creature to make
+     * @param ownerName the PlayerName of the creature's owner
+     * @return an Optional containing either the constructed ICreature, or empty if the ICreature has not been defined
      */
     public Optional<ICreature> makeCreature(CreatureName creatureName, PlayerName ownerName) {
         if (!creatureDefinitions.containsKey(creatureName)) {

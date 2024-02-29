@@ -9,6 +9,13 @@ import java.util.List;
 
 public class PathDestinationNotStack implements ICondition<PathContext> {
 
+    /**
+     * Used to determine if the paths destination is not a stack
+     *
+     * @param context a PathContext describing the context of the situation
+     * @return a ValidationResult with "valid" set to true if the path's destination is not a stack
+     * (contains more than 1 creature) otherwise "valid" will be set to false with a message describing the error.
+     */
     @Override
     public ValidationResult test(PathContext context) {
         IBoard board = context.board();

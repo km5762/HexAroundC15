@@ -49,15 +49,10 @@ public class HexAroundGameBuilder {
         GameConfiguration configuration = configurationMaker.makeConfiguration();
         HexAroundGameManager gameManager = new HexAroundGameManager();    // an empty game manager
 
-        Collection<PlayerConfiguration> playerConfigurations = configuration.players();
-        Map<PlayerName, Player> players = constructPlayers(playerConfigurations);
+        Map<PlayerName, Player> players = constructPlayers(configuration.players());
         gameManager.setPlayers(players);
 
-        Map<CreatureName, CreatureDefinition> creatureDefinitions = new HashMap<>();
-        for (CreatureDefinition creatureDefinition : configuration.creatures()) {
-            creatureDefinitions.put(creatureDefinition.name(), creatureDefinition);
-        }
-        CreatureFactory creatureFactory = new CreatureFactory(creatureDefinitions);
+        CreatureFactory creatureFactory = constructCreatureFactory(configuration.creatures());
         gameManager.setCreatureFactory(creatureFactory);
 
         IBoard board = new Board(new HashMap<>());
@@ -71,6 +66,16 @@ public class HexAroundGameBuilder {
         gameManager.setTurnNumber(0);
 
         return gameManager;
+    }
+
+    private static CreatureFactory constructCreatureFactory(Collection<CreatureDefinition> creatureDefinitions) {
+        Map<CreatureName, CreatureDefinition> creatureDefinitionsMap = new HashMap<>();
+
+        for (CreatureDefinition creatureDefinition : creatureDefinitions) {
+            creatureDefinitionsMap.put(creatureDefinition.name(), creatureDefinition);
+        }
+
+        return new CreatureFactory(creatureDefinitionsMap);
     }
 
     private static Map<PlayerName, Player> constructPlayers(Collection<PlayerConfiguration> playerConfigurations) {

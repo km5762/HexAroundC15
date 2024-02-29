@@ -16,6 +16,7 @@ public class Creature implements ICreature {
      * Constructs an instance of Creature
      * @param name the Creature's name. Must be of type CreatureName
      * @param maxDistance the maximum range of the creature's movement.
+     * @param movementRules an instance of MovementRules which describes the creatures movement constraints
      * @param properties the properties the Creature possesses. Must be of type CreatureProperty.
      */
     public Creature(CreatureName name, PlayerName ownerName, int maxDistance, MovementRules movementRules, Collection<CreatureProperty> properties) {

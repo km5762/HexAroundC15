@@ -11,19 +11,23 @@ import hexaround.game.creature.ICreature;
 import java.util.List;
 
 public class PathDestinationEmpty implements ICondition<PathContext> {
-    ICondition<MoveContext> pointEmpty = new MoveEmpty();
 
+    /**
+     * Used to determine if the paths destination is empty
+     *
+     * @param context a PathContext describing the context of the situation
+     * @return a ValidationResult with "valid" set to true if the path's destination is empty,
+     * otherwise "valid" will be set to false with a message describing the error.
+     */
     @Override
     public ValidationResult test(PathContext context) {
         List<IPoint> path = context.path();
         IBoard board = context.board();
-        ICreature creature = context.creature();
         IPoint lastPoint = path.get(path.size() - 1);
-        MoveContext moveContext = new MoveContext(board, creature, null, null, lastPoint);
         ValidationResult result = new ValidationResult(true, null);
 
-        if (!pointEmpty.test(moveContext).valid()) {
-            result = new ValidationResult(false, "This destination of this path is not empty");
+        if (board.pointIsOccupied(lastPoint)) {
+            result = new ValidationResult(false, "The destination of this path is not empty");
         }
 
         return result;

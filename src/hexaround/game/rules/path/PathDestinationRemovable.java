@@ -10,6 +10,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class PathDestinationRemovable implements ICondition<PathContext> {
+
+    /**
+     * Used to determine if removing the paths destination would disconnect the colony
+     *
+     * @param context a PathContext describing the context of the situation
+     * @return a ValidationResult with "valid" set to true if removing the path's destination would not
+     * disconnect the colony, otherwise "valid" will be set to false with a message describing the error.
+     */
     @Override
     public ValidationResult test(PathContext context) {
         IBoard board = context.board();

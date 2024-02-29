@@ -13,6 +13,13 @@ import java.util.List;
 public class PathUpToDestinationEmpty implements ICondition<PathContext> {
     ICondition<MoveContext> pointEmpty = new MoveEmpty();
 
+    /**
+     * Used to determine the every point up to the destination of a path is empty
+     *
+     * @param context a PathContext describing the context of the situation
+     * @return a ValidationResult with "valid" set to true if every point up to the destination is empty,
+     * otherwise "valid" will be set to false with a message describing the error.
+     */
     @Override
     public ValidationResult test(PathContext context) {
         IBoard board = context.board();

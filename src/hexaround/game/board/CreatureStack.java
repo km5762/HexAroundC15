@@ -23,7 +23,7 @@ public class CreatureStack implements Iterable<ICreature> {
      * Add an ICreature to the CreatureStack
      *
      * @param creature an instance of ICreature to add
-     * @return this CreatureStack instance
+     * @return this CreatureStack instance to allow for method chaining
      */
     public CreatureStack addCreature(ICreature creature) {
         creatureStack.add(creature);
@@ -31,11 +31,10 @@ public class CreatureStack implements Iterable<ICreature> {
     }
 
     /**
-     * Remove an ICreature with CreatureName from the CreatureStack
-     * Source: https://stackoverflow.com/questions/72735225/remove-first-element-satisfying-condition-in-java-list
+     * Remove an instance of ICreature from the creature stack
      *
-     * @param creatureName the CreatureName of the creature to remove
-     * @return this CreatureStack instance
+     * @param creature the ICreature instance to remove
+     * @return this CreatureStack instance to allow for method chaining
      */
     public CreatureStack removeCreature(ICreature creature) {
         creatureStack.remove(creature);
@@ -45,7 +44,7 @@ public class CreatureStack implements Iterable<ICreature> {
     /**
      * Get the ICreature on the top of the CreatureStack
      *
-     * @return the topmost ICreature, or an empty Optional if the CreatureStack is empty
+     * @return an Optional containing the top creature, or empty if none exist
      */
     public Optional<ICreature> getTopCreature() {
         if (!creatureStack.isEmpty()) {
@@ -57,10 +56,10 @@ public class CreatureStack implements Iterable<ICreature> {
     }
 
     /**
-     * Get an instance of ICreature with CreatureName from the CreatureStack
+     * Get an instance of ICreature with CreatureName and owner with PlayerName from the stack
      *
      * @param creatureName the CreatureName of the specified creature
-     * @return the ICreature with CreatureName, or an empty Optional if there is no match or the CreatureStack is empty
+     * @return an Optional containing the creature with CreatureName and PlayerName as owner, or empty if no match
      */
     public Optional<ICreature> getCreatureWithNameAndOwner(CreatureName creatureName, PlayerName ownerName) {
         for (ICreature creature : creatureStack) {

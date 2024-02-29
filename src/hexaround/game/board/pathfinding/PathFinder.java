@@ -13,6 +13,19 @@ import hexaround.game.creature.ICreature;
 import java.util.*;
 
 public class PathFinder implements IPathFinder {
+
+    /**
+     * Finds if there is a valid path from one point to another according to a set of an ICreature's MovementRules
+     *
+     * @param board         the IBoard instance on which to path find
+     * @param creature      the ICreature that is being moved
+     * @param fromPoint     the IPoint the ICreature is starting from
+     * @param toPoint       the IPoint the ICreature is moving to
+     * @param movementRules the ICreature's set of MovementRules
+     * @return a ValidationResult describing the outcome of the pathfinding attempt. The "valid" field of the result
+     * will be set to true if a valid path was found, otherwise it will be set to false and the message will be set
+     * describing the issue.
+     */
     @Override
     public ValidationResult findPath(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint, MovementRules movementRules) {
         Validator<PreMoveContext> preMoveValidator = movementRules.preMoveValidator();
@@ -55,6 +68,17 @@ public class PathFinder implements IPathFinder {
         return new ValidationResult(false, "No legal path exists to that point");
     }
 
+    /**
+     * Finds if there is any valid path from one point according to a set of an ICreature's MovementRules
+     *
+     * @param board         the IBoard instance on which to path find
+     * @param creature      the ICreature that is being moved
+     * @param fromPoint     the IPoint the ICreature is starting from
+     * @param movementRules the ICreature's set of MovementRules
+     * @return a ValidationResult describing the outcome of the pathfinding attempt. The "valid" field of the result
+     * will be set to true if a valid path was found, otherwise it will be set to false and the message will be set
+     * describing the issue.
+     */
     @Override
     public ValidationResult findPath(IBoard board, ICreature creature, IPoint fromPoint, MovementRules movementRules) {
         return findPath(board, creature, fromPoint, null, movementRules);
