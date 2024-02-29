@@ -67,6 +67,7 @@ public class CreatureFactory {
 
         if (kamikaze) {
             pathConditions.add(new PathDestinationRemovable());
+            preMoveConditions.add(new PreMoveDestinationRemovable());
         }
 
         if (running) {

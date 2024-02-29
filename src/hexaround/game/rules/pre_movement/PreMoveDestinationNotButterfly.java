@@ -18,13 +18,14 @@ public class PreMoveDestinationNotButterfly implements ICondition<PreMoveContext
         IPoint toPoint = context.toPoint();
         ValidationResult result = new ValidationResult(true, null);
 
-        Optional<ICreature> destinationCreature = board.getTopCreature(toPoint);
+        if (toPoint != null) {
+            Optional<ICreature> destinationCreature = board.getTopCreature(toPoint);
+            if (destinationCreature.isPresent()) {
+                CreatureName creatureName = destinationCreature.get().getName();
 
-        if (destinationCreature.isPresent()) {
-            CreatureName creatureName = destinationCreature.get().getName();
-
-            if (creatureName.equals(CreatureName.BUTTERFLY)) {
-                result = new ValidationResult(false, "The target of this creatures move may not be a butterfly");
+                if (creatureName.equals(CreatureName.BUTTERFLY)) {
+                    result = new ValidationResult(false, "The target of this creatures move may not be a butterfly");
+                }
             }
         }
 

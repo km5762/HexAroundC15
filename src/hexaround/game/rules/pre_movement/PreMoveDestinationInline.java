@@ -1,18 +1,17 @@
-package hexaround.game.rules.movement;
+package hexaround.game.rules.pre_movement;
 
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.rules.ICondition;
 import hexaround.game.rules.ValidationResult;
 
-public class MoveInline implements ICondition<MoveContext> {
-
+public class PreMoveDestinationInline implements ICondition<PreMoveContext> {
     @Override
-    public ValidationResult test(MoveContext context) {
-        IPoint originPoint = context.originPoint();
+    public ValidationResult test(PreMoveContext context) {
+        IPoint fromPoint = context.fromPoint();
         IPoint toPoint = context.toPoint();
         ValidationResult result = new ValidationResult(true, null);
 
-        if (!originPoint.inlineTo(toPoint)) {
+        if (toPoint != null && !fromPoint.inlineTo(toPoint)) {
             result = new ValidationResult(false, "That destination is not inline");
         }
 

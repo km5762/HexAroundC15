@@ -14,7 +14,7 @@ public class MoveSlideable implements ICondition<MoveContext> {
         ValidationResult result = new ValidationResult(true, null);
 
         if (!creatureCanSlide(context)) {
-            result = new ValidationResult(false, "This move is blocked");
+            result = new ValidationResult(false, "That destination is blocked");
         }
 
         return result;

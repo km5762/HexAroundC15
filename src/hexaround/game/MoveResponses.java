@@ -4,7 +4,7 @@ public class MoveResponses {
     static MoveResponse NO_PATH = new MoveResponse(MoveResult.MOVE_ERROR, "No legal path exists to that point");
     static MoveResponse MOVE_OUT_OF_RANGE = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is out of range");
     static MoveResponse MOVE_OCCUPIED = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is occupied");
-    static MoveResponse MOVE_NOT_INLINE = new MoveResponse(MoveResult.MOVE_ERROR, "That move is not inline");
+    static MoveResponse MOVE_NOT_INLINE = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is not inline");
     static MoveResponse MOVE_BUTTERFLY = new MoveResponse(MoveResult.MOVE_ERROR, "The target of this creatures move may not be a butterfly");
     static MoveResponse MOVE_DISCONNECTED = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is disconnected");
     static MoveResponse MOVE_PINNED = new MoveResponse(MoveResult.MOVE_ERROR, "This creature cannot move without disconnecting the colony");

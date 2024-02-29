@@ -15,7 +15,7 @@ public class MoveConnected implements ICondition<MoveContext> {
         ValidationResult result = new ValidationResult(true, null);
 
         if (!moveIsConnected(board, creature, fromPoint, toPoint)) {
-            result = new ValidationResult(false, "This move is not connected");
+            result = new ValidationResult(false, "That destination is disconnected");
         }
 
         return result;
