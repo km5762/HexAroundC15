@@ -3,6 +3,7 @@ package hexaround.game.board.pathfinding;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.rules.MovementRules;
+import hexaround.game.rules.ValidationResult;
 import hexaround.game.rules.Validator;
 import hexaround.game.rules.movement.MoveContext;
 import hexaround.game.rules.path.PathContext;
@@ -13,7 +14,7 @@ import java.util.*;
 
 public class PathFinder implements IPathFinder {
     @Override
-    public Optional<List<IPoint>> findPath(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint, MovementRules movementRules) {
+    public ValidationResult findPath(IBoard board, ICreature creature, IPoint fromPoint, IPoint toPoint, MovementRules movementRules) {
         Validator<PreMoveContext> preMoveValidator = movementRules.preMoveValidator();
         Validator<MoveContext> moveValidator = movementRules.moveValidator();
         Validator<PathContext> pathValidator = movementRules.pathValidator();
@@ -23,17 +24,22 @@ public class PathFinder implements IPathFinder {
         pathQueue.add(startPath);
 
         PreMoveContext preMoveContext = new PreMoveContext(board, creature, fromPoint, toPoint);
-        boolean preMoveValidated = preMoveValidator.validate(preMoveContext).valid();
+        ValidationResult preMoveValidation = preMoveValidator.validate(preMoveContext);
 
-        while (!pathQueue.isEmpty() && preMoveValidated) {
+        if (!preMoveValidation.valid()) {
+            return preMoveValidation;
+        }
+
+        while (!pathQueue.isEmpty()) {
             List<IPoint> currentPath = pathQueue.poll();
             IPoint lastPoint = currentPath.get(currentPath.size() - 1);
             IBoard boardSimulation = board.clone();
             boardSimulation.moveCreature(creature, fromPoint, lastPoint);
 
             PathContext pathContext = new PathContext(currentPath, board, creature);
-            if (pathValidator.validate(pathContext).valid() && (toPoint == null || lastPoint.equals(toPoint)) && currentPath.size() > 1) {
-                return Optional.of(currentPath);
+            ValidationResult pathValidation = pathValidator.validate(pathContext);
+            if (pathValidation.valid() && (toPoint == null || lastPoint.equals(toPoint)) && currentPath.size() > 1) {
+                return pathValidation;
             }
 
             for (IPoint neighboringPoint : lastPoint.getNeighboringPoints()) {
@@ -46,11 +52,11 @@ public class PathFinder implements IPathFinder {
             }
         }
 
-        return Optional.empty();
+        return new ValidationResult(false, "No legal path exists to that point");
     }
 
     @Override
-    public Optional<List<IPoint>> findPath(IBoard board, ICreature creature, IPoint fromPoint, MovementRules movementRules) {
+    public ValidationResult findPath(IBoard board, ICreature creature, IPoint fromPoint, MovementRules movementRules) {
         return findPath(board, creature, fromPoint, null, movementRules);
     }
 

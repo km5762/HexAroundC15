@@ -183,26 +183,12 @@ public class Board implements IBoard {
 
     public ValidationResult existsPath(ICreature creature, IPoint fromPoint, IPoint toPoint) {
         MovementRules movementRules = creature.getMovementRules();
-        PreMoveContext preMoveContext = new PreMoveContext(this, creature, fromPoint, toPoint);
-        ValidationResult preMoveValidation = movementRules.preMoveValidator().validate(preMoveContext);
-        ValidationResult result = new ValidationResult(true, null);
-
-        if (!preMoveValidation.valid()) {
-            result = preMoveValidation;
-        } else {
-            Optional<List<IPoint>> path = pathFinder.findPath(this, creature, fromPoint, toPoint, movementRules);
-
-            if (!path.isPresent()) {
-                result = new ValidationResult(false, "No legal path exists to that point");
-            }
-        }
-
-        return result;
+        return pathFinder.findPath(this, creature, fromPoint, toPoint, movementRules);
     }
 
-    public boolean existsPath(ICreature creature, IPoint fromPoint) {
+    public ValidationResult existsPath(ICreature creature, IPoint fromPoint) {
         MovementRules movementRules = creature.getMovementRules();
-        return pathFinder.findPath(this, creature, fromPoint, movementRules).isPresent();
+        return pathFinder.findPath(this, creature, fromPoint, movementRules);
     }
 
     public Optional<IPoint> findCreature(CreatureName creatureName, PlayerName ownerName) {

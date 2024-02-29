@@ -257,7 +257,7 @@ public class HexAroundGameManager implements IHexAroundGameManager {
             ICreature creature = creatureLocation.creature();
             IPoint point = creatureLocation.point();
 
-            if (board.existsPath(creature, point)) {
+            if (board.existsPath(creature, point).valid()) {
                 return true;
             }
         }

@@ -34,7 +34,7 @@ public interface IBoard {
 
     ValidationResult existsPath(ICreature creature, IPoint fromPoint, IPoint toPoint);
 
-    boolean existsPath(ICreature creature, IPoint fromPoint);
+    ValidationResult existsPath(ICreature creature, IPoint fromPoint);
 
     Optional<IPoint> findCreature(CreatureName creatureName, PlayerName ownerName);
 
