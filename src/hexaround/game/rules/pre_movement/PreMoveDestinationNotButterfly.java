@@ -12,6 +12,13 @@ import java.util.Optional;
 
 public class PreMoveDestinationNotButterfly implements ICondition<PreMoveContext> {
 
+    /**
+     * Used to determine prior to pathfinding if the destination is not a butterfly
+     *
+     * @param context a PreMoveContext describing the context of the situation
+     * @return a ValidationResult with "valid" set to true if there is no butterfly at the destination,
+     * otherwise "valid" will be set to false with a message describing the error.
+     */
     @Override
     public ValidationResult test(PreMoveContext context) {
         IBoard board = context.board();

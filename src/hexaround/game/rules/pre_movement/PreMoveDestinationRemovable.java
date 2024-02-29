@@ -11,6 +11,14 @@ import java.util.List;
 import java.util.Optional;
 
 public class PreMoveDestinationRemovable implements ICondition<PreMoveContext> {
+
+    /**
+     * Used to determine prior to pathfinding if removing the destination would disconnect the colony
+     *
+     * @param context a PreMoveContext describing the context of the situation
+     * @return a ValidationResult with "valid" set to true if the destination can be removed
+     * without disconnecting the colony, otherwise "valid" will be set to false with a message describing the error.
+     */
     @Override
     public ValidationResult test(PreMoveContext context) {
         IBoard board = context.board();
