@@ -1,5 +1,6 @@
 package hexaround.game.rules.movement;
 
+import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
 import hexaround.game.rules.ICondition;
 import hexaround.game.rules.ValidationResult;
@@ -27,16 +28,20 @@ public class MoveSlideable implements ICondition<MoveContext> {
         return result;
     }
 
-    public boolean creatureCanSlide(MoveContext context) {
+    private boolean creatureCanSlide(MoveContext context) {
+        IBoard board = context.board();
         IPoint fromPoint = context.fromPoint();
         IPoint toPoint = context.toPoint();
+        List<IPoint> fromNeighboringPoints = fromPoint.getNeighboringPoints();
+        List<IPoint> toNeighboringPoints = toPoint.getNeighboringPoints();
 
-        List<IPoint> fromOccupiedNeighboringPoints = getOccupiedNeighboringPoints(context, fromPoint);
-        List<IPoint> toOccupiedNeighboringPoints = getOccupiedNeighboringPoints(context, toPoint);
         int commonNeighborsCount = 0;
 
-        for (IPoint fromOccupiedNeighboringPoint : fromOccupiedNeighboringPoints) {
-            if (toOccupiedNeighboringPoints.contains(fromOccupiedNeighboringPoint)) {
+        for (IPoint fromNeighboringPoint : fromNeighboringPoints) {
+            boolean commonNeighbor = toNeighboringPoints.contains(fromNeighboringPoint);
+            boolean occupied = board.pointIsOccupied(fromNeighboringPoint);
+
+            if (commonNeighbor && occupied) {
                 commonNeighborsCount++;
 
                 if (commonNeighborsCount == 2) {
@@ -45,18 +50,5 @@ public class MoveSlideable implements ICondition<MoveContext> {
             }
         }
         return true;
-    }
-
-    public List<IPoint> getOccupiedNeighboringPoints(MoveContext context, IPoint point) {
-        List<IPoint> occupiedNeighboringPoints = new ArrayList<>();
-
-        for (IPoint neighboringPoint : point.getNeighboringPoints()) {
-            MoveContext moveContext = new MoveContext(context.board(), context.creature(), context.originPoint(), context.fromPoint(), neighboringPoint);
-            if (!pointEmpty.test(moveContext).valid()) {
-                occupiedNeighboringPoints.add(neighboringPoint);
-            }
-        }
-
-        return occupiedNeighboringPoints;
     }
 }

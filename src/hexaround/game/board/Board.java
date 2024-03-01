@@ -126,9 +126,7 @@ public class Board implements IBoard {
      * @return true if the board is connected, false otherwise
      */
     public boolean isConnected() {
-        if (board.isEmpty()) {
-            return true;
-        } else if (board.keySet().size() == 1) {
+        if (board.isEmpty() || board.keySet().size() == 1) {
             return true;
         }
 

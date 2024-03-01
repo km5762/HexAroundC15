@@ -37,7 +37,7 @@ public class PreMoveDestinationRemovable implements ICondition<PreMoveContext> {
             }
 
             if (!boardSimulation.isConnected()) {
-                result = new ValidationResult(false, "Removing the destination of this path would disconnect the colony.");
+                result = new ValidationResult(false, "Removing the destination of this path would disconnect the colony");
             }
         }
 

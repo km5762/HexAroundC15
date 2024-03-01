@@ -98,7 +98,6 @@ public class CreatureStack implements Iterable<ICreature> {
         CreatureStack copiedCreatureStack = new CreatureStack();
 
         for (ICreature creature : creatureStack) {
-            /// ICreature does not need to be cloned - not mutated
             copiedCreatureStack.addCreature(creature);
         }
 

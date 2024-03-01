@@ -27,6 +27,7 @@ public class PreMoveDestinationNotButterfly implements ICondition<PreMoveContext
 
         if (toPoint != null) {
             Optional<ICreature> destinationCreature = board.getTopCreature(toPoint);
+
             if (destinationCreature.isPresent()) {
                 CreatureName creatureName = destinationCreature.get().getName();
 

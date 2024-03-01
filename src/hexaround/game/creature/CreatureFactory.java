@@ -46,16 +46,28 @@ public class CreatureFactory {
         List<ICondition<MoveContext>> moveConditions = new ArrayList<>();
         List<ICondition<PathContext>> pathConditions = new ArrayList<>();
 
-        boolean walking = creatureProperties.contains(CreatureProperty.WALKING);
-        boolean running = creatureProperties.contains(CreatureProperty.RUNNING);
-        boolean jumping = creatureProperties.contains(CreatureProperty.JUMPING);
-        boolean intruding = creatureProperties.contains(CreatureProperty.INTRUDING);
-        boolean trapping = creatureProperties.contains(CreatureProperty.TRAPPING);
-        boolean swapping = creatureProperties.contains(CreatureProperty.SWAPPING);
-        boolean kamikaze = creatureProperties.contains(CreatureProperty.KAMIKAZE);
+        addInvariantConditions(creatureProperties, preMoveConditions, pathConditions);
 
-        boolean hasMovementEffect = trapping || swapping || kamikaze;
-        boolean isGroundCreature = walking || running;
+        if (isGroundCreature(creatureProperties)) {
+            addGroundCreatureConditions(creatureProperties, preMoveConditions, moveConditions, pathConditions);
+        } else {
+            addFlyingCreatureConditions(creatureProperties, preMoveConditions, moveConditions, pathConditions);
+        }
+
+        Validator<PreMoveContext> preMoveValidator = new Validator<>(preMoveConditions);
+        Validator<MoveContext> moveValidator = new Validator<>(moveConditions);
+        Validator<PathContext> pathValidator = new Validator<>(pathConditions);
+
+        return new MovementRules(preMoveValidator, moveValidator, pathValidator);
+    }
+
+    private void addInvariantConditions(Collection<CreatureProperty> creatureProperties,
+                                        List<ICondition<PreMoveContext>> preMoveConditions,
+                                        List<ICondition<PathContext>> pathConditions) {
+        boolean kamikaze = creatureProperties.contains(CreatureProperty.KAMIKAZE);
+        boolean running = creatureProperties.contains(CreatureProperty.RUNNING);
+        boolean swapping = creatureProperties.contains(CreatureProperty.SWAPPING);
+        boolean intruding = creatureProperties.contains(CreatureProperty.INTRUDING);
 
         preMoveConditions.add(new PreMoveNotPinned());
         preMoveConditions.add(new PreMoveInRange());
@@ -78,64 +90,57 @@ public class CreatureFactory {
             preMoveConditions.add(new PreMoveDestinationNotButterfly());
             pathConditions.add(new PathDestinationNotButterfly());
         }
-
-        if (isGroundCreature) {
-            moveConditions.add(new MoveConnected());
-
-            if (!intruding) {
-                moveConditions.add(new MoveSlideable());
-                if (hasMovementEffect) {
-                    pathConditions.add(new PathUpToDestinationEmpty());
-                } else {
-                    preMoveConditions.add(new PreMoveDestinationEmpty());
-                    moveConditions.add(new MoveEmpty());
-                }
-            }
-        } else {
-            pathConditions.add(new PathDestinationConnected());
-
-            if (jumping) {
-                moveConditions.add(new MoveInline());
-                preMoveConditions.add(new PreMoveDestinationInline());
-            } else {
-                preMoveConditions.add(new PreMoveNotSurrounded());
-            }
-
-            if (!(intruding || hasMovementEffect)) {
-                preMoveConditions.add(new PreMoveDestinationEmpty());
-                pathConditions.add(new PathDestinationEmpty());
-            }
-        }
-
-        Validator<PreMoveContext> preMoveValidator = new Validator<>(preMoveConditions);
-        Validator<MoveContext> moveValidator = new Validator<>(moveConditions);
-        Validator<PathContext> pathValidator = new Validator<>(pathConditions);
-
-        return new MovementRules(preMoveValidator, moveValidator, pathValidator);
     }
 
-    private void addInvariantConditions(Collection<CreatureProperty> creatureProperties, List<ICondition<PreMoveContext>> preMoveConditions, List<ICondition<PathContext>> pathConditions) {
-        boolean kamikaze = creatureProperties.contains(CreatureProperty.KAMIKAZE);
-        boolean running = creatureProperties.contains(CreatureProperty.RUNNING);
-        boolean swapping = creatureProperties.contains(CreatureProperty.SWAPPING);
+    private void addGroundCreatureConditions(Collection<CreatureProperty> creatureProperties,
+                                             List<ICondition<PreMoveContext>> preMoveConditions,
+                                             List<ICondition<MoveContext>> moveConditions,
+                                             List<ICondition<PathContext>> pathConditions) {
         boolean intruding = creatureProperties.contains(CreatureProperty.INTRUDING);
 
-        if (kamikaze) {
-            pathConditions.add(new PathDestinationRemovable());
-            preMoveConditions.add(new PreMoveDestinationRemovable());
+        moveConditions.add(new MoveConnected());
+
+        if (!intruding) {
+            moveConditions.add(new MoveSlideable());
+            if (hasMovementEffect(creatureProperties)) {
+                pathConditions.add(new PathUpToDestinationEmpty());
+            } else {
+                preMoveConditions.add(new PreMoveDestinationEmpty());
+                moveConditions.add(new MoveEmpty());
+            }
+        }
+    }
+
+    private void addFlyingCreatureConditions(Collection<CreatureProperty> creatureProperties,
+                                             List<ICondition<PreMoveContext>> preMoveConditions,
+                                             List<ICondition<MoveContext>> moveConditions,
+                                             List<ICondition<PathContext>> pathConditions) {
+        boolean jumping = creatureProperties.contains(CreatureProperty.JUMPING);
+        boolean intruding = creatureProperties.contains(CreatureProperty.INTRUDING);
+
+        pathConditions.add(new PathDestinationConnected());
+
+        if (jumping) {
+            moveConditions.add(new MoveInline());
+            preMoveConditions.add(new PreMoveDestinationInline());
+        } else {
+            preMoveConditions.add(new PreMoveNotSurrounded());
         }
 
-        if (running) {
-            pathConditions.add(new PathAtRange());
+        if (!(intruding || hasMovementEffect(creatureProperties))) {
+            preMoveConditions.add(new PreMoveDestinationEmpty());
+            pathConditions.add(new PathDestinationEmpty());
         }
+    }
 
-        if (intruding && !kamikaze) {
-            pathConditions.add(new PathDestinationNotStack());
-        }
+    private boolean hasMovementEffect(Collection<CreatureProperty> creatureProperties) {
+        return creatureProperties.contains(CreatureProperty.KAMIKAZE)
+                || creatureProperties.contains(CreatureProperty.SWAPPING)
+                || creatureProperties.contains(CreatureProperty.TRAPPING);
+    }
 
-        if (swapping) {
-            preMoveConditions.add(new PreMoveDestinationNotButterfly());
-            pathConditions.add(new PathDestinationNotButterfly());
-        }
+    private boolean isGroundCreature(Collection<CreatureProperty> creatureProperties) {
+        return creatureProperties.contains(CreatureProperty.WALKING)
+                || creatureProperties.contains(CreatureProperty.RUNNING);
     }
 }

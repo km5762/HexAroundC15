@@ -10,6 +10,7 @@ public class MoveResponses {
     static MoveResponse MOVE_NOT_INLINE = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is not inline");
     static MoveResponse MOVE_BUTTERFLY = new MoveResponse(MoveResult.MOVE_ERROR, "The target of this creatures move may not be a butterfly");
     static MoveResponse MOVE_DISCONNECTED = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is disconnected");
+    static MoveResponse MOVE_NOT_REMOVABLE = new MoveResponse(MoveResult.MOVE_ERROR, "Removing the destination of this path would disconnect the colony");
     static MoveResponse MOVE_PINNED = new MoveResponse(MoveResult.MOVE_ERROR, "This creature cannot move without disconnecting the colony");
     static MoveResponse MOVE_SURROUNDED = new MoveResponse(MoveResult.MOVE_ERROR, "This creature cannot move while surrounded");
     static MoveResponse ILLEGAL_PLACEMENT = new MoveResponse(MoveResult.MOVE_ERROR, "This placement is not legal");

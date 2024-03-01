@@ -303,4 +303,15 @@ public class HexAroundGameManagerTest {
         response = gameManager.moveCreature(walkingEffectCreatureName, 0, 0, -1, 1);
         assertEquals(MoveResponses.MOVE_BUTTERFLY, response);
     }
+
+    @Test
+    void moveDestinationNotRemovable() {
+        sparseGameManager.placeCreature(CreatureName.BUTTERFLY, 0, 0);
+        sparseGameManager.placeCreature(CreatureName.BUTTERFLY, 0, 1);
+        sparseGameManager.placeCreature(CreatureName.CRAB, 0, -1);
+        sparseGameManager.placeCreature(kamikazeCreatureName, 0, 2);
+        sparseGameManager.placeCreature(CreatureName.CRAB, 0, -2);
+        response = sparseGameManager.moveCreature(kamikazeCreatureName, 0, 2, 0, 0);
+        assertEquals(MoveResponses.MOVE_NOT_REMOVABLE, response);
+    }
 }

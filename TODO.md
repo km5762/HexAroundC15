@@ -43,6 +43,7 @@
 | T  |  X   | board.placementIsDisconnecting when placement is the first in the game                                                                              |
 | T  |  X   | board.placementISDisconnecting when placement is disconnecting                                                                                      |
 | T  |  X   | board.isConnected when board is empty                                                                                                               |
+| R  |  X   | Move both checks for the guard clause into one or condition at the start of isConnected                                                             |
 | T  |  X   | board.isConnected when board is connected                                                                                                           |
 | T  |  X   | board.isConnected when board is disconnected                                                                                                        |
 | T  |  X   | board.clone properly returns deep copy                                                                                                              |
@@ -88,17 +89,21 @@
 | T  |  X   | MoveConnected.test when moving generates 1 stack on the board                                                                                       |
 | T  |  X   | MoveConnected.test when moving to a disconnected point                                                                                              |
 | T  |  X   | MoveConnected.test when moving splits the colony in two                                                                                             |
+| R  |  X   | Extract move connection testing into private helper                                                                                                 |
 | T  |  X   | MoveEmpty.test when neighboring tile is not empty                                                                                                   |
 | T  |  X   | MoveEmpty.test when neighboring tile is empty                                                                                                       |
 | T  |  X   | MoveSlideable.test when moving on an empty board                                                                                                    |
 | T  |  X   | MoveSlideable.test when moving to a tile with 1 adjacent piece                                                                                      |
 | T  |  X   | MoveSlideable.test when moving to a tile with 2 adjacent pieces                                                                                     |
+| R  |  X   | Extract move slideability testing into private helper                                                                                               | 
+| R  |  X   | Move non obvious boolean checks into named variables (commonNeighbor)                                                                               | 
 | T  |  X   | MoveInline.test when moving a tile with the same X coordinate                                                                                       |
 | T  |  X   | MoveInline.test when moving a tile with the same Y coordinate                                                                                       |
 | T  |  X   | MoveInline.test when moving a tile on the same diagonal                                                                                             |
 | T  |  X   | PathAtRange.test when path is equal to the creatures max range                                                                                      |
 | T  |  X   | PathAtRange.test when path is not equal to creatures max range (less than)                                                                          |
 | T  |  X   | PathAtRange.test when path is not equal to creatures max range (greater than)                                                                       |
+| R  |  X   | Add helper methods to CreatureFactory when setting MovementRules to clearly denote categories                                                       | 
 | T  |  X   | PathDestinationEmpty.test when path destination is empty                                                                                            |
 | T  |  X   | PathDestinationEmpty.test when path destination is not empty                                                                                        | 
 | T  |  X   | PathDestinationConnected.test when path destination is connected                                                                                    | 
@@ -107,7 +112,8 @@
 | T  |  X   | PathUpToDestinationEmpty.test when the path is entirely empty                                                                                       | 
 | T  |  X   | PathUpToDestinationEmpty.test when only the destination is occupied                                                                                 | 
 | T  |  X   | PathUpToDestinationEmpty.test when the path contains occupied points                                                                                | 
-| R  |  X   | Make all conditions implement the same generic interface rather than one for each type of condition                                                 |
+| R  |  X   | Make all types of conditions implement the same generic interface with a paramaterized type rather than one for each type of condition              |
+| R  |  X   | Pass validators as named MovementRules record instead of individually                                                                               | 
 | T  |  X   | Board.existsPath for walking creature                                                                                                               | 
 | T  |  X   | Board.existsPath when walking path out of range                                                                                                     | 
 | T  |  X   | Board.existsPath when walking path destination occupied                                                                                             | 
@@ -219,6 +225,7 @@
 | T  |  X   | GameManager.moveCreature properly kamikazes creatures                                                                                               |
 | T  |  X   | GameManager.moveCreature properly handles kamikaze to empty location                                                                                |
 | T  |  X   | GameManager.moveCreature player must place butterfly after being kamikazed                                                                          |
+| R  |  X   | Extract butterfly placement conditions into mustPlaceButterfly helper                                                                               | 
 | T  |  X   | GameManager.moveCreature properly swaps creatures                                                                                                   |
 | R  |  X   | Refactor moveCreature to avoid multiple returns                                                                                                     | 
 | T  |  X   | GameManager game end by surrounding butterfly                                                                                                       |
@@ -226,7 +233,11 @@
 | T  |  X   | GameManager game end by no available moves or placements                                                                                            |
 | T  |  X   | PreMoveDestinationNotButterfly.test when destination is not butterfly                                                                               |
 | T  |  X   | PreMoveDestinationNotButterfly.test when destination is butterfly                                                                                   |
-| T  |  X   | GameManager.moveCreature when movement                                                                                                              
+| T  |  X   | GameManager.moveCreature when destination is disconnected                                                                                           |
+| T  |  X   | GameManager.moveCreature when destination is occupied                                                                                               |
+| T  |  X   | GameManager.moveCreature when destination is not inline to origin                                                                                   |
+| T  |  X   | GameManager.moveCreature when destination of a swap is a butterfly                                                                                  |
+| T  |  X   | GameManager.moveCreature when destination is not removable for a kamikaze                                                                           |
 
 # Design Patterns
 
@@ -247,6 +258,28 @@ The process of creating an instance of a HexAroundGameManager from a configurati
 requires I/O operations and interacting with a configuration parser. Because HexAroundGameManager is a complex object,
 and building it from a configuration is a complex task, it makes sense to delegate this responsibility to a
 Builder pattern.
+
+## Strategy Pattern
+
+### ICondition, Validator, and Pathfinder
+
+The strategy pattern is employed to create a generic pathfinder that can find paths under a variety of movement
+constraints.
+Because there are so many movement combinations it does not make sense to create a pathfinder for each one, rather
+create
+one pathfinder that accepts different movement condition algorithms. Therefore, IConditions are created for each
+movement
+constraint, and checked via a Validator,
+
+## State Pattern
+
+### HexAroundGameManager, Opening and PostOpening PlacementValidator
+
+A state pattern similar to the example given in the textbook is used in HexAroundGameManager to manage placement
+validation.
+The state pattern is appropriate because the specific rules for validating a given placement changes over the lifetime
+of the game.
+Therefore, two distinct PlacementValidators are created and set from the game manager based upon the stage of the game.
 
 
 
