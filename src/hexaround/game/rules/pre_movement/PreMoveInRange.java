@@ -22,8 +22,8 @@ public class PreMoveInRange implements ICondition<PreMoveContext> {
         ValidationResult result = new ValidationResult(true, null);
 
         if (toPoint != null ) {
-
             int distance = fromPoint.calculateDistanceTo(toPoint);
+
             if (distance > creature.getMaxDistance()) {
                 result = new ValidationResult(false, "That destination is out of range");
             }

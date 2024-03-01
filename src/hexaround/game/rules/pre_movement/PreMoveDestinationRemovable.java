@@ -31,6 +31,7 @@ public class PreMoveDestinationRemovable implements ICondition<PreMoveContext> {
 
         if (toPoint != null) {
             boardSimulation.removeCreature(creature, fromPoint);
+
             if (removedCreature.isPresent()) {
                 boardSimulation.removeCreature(removedCreature.get(), toPoint);
             }

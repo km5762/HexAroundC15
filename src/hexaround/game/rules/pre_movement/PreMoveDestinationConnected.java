@@ -30,6 +30,7 @@ public class PreMoveDestinationConnected implements ICondition<PreMoveContext> {
         if (toPoint != null) {
             result = moveConnected.test(moveContext);
         }
+
         return result;
     }
 }

@@ -25,8 +25,9 @@ public class CreatureFactory {
 
     /**
      * Makes an instance of ICreature belonging to owner with PlayerName and with properties according to their corresponding CreatureDefinition
+     *
      * @param creatureName the CreatureName of the creature to make
-     * @param ownerName the PlayerName of the creature's owner
+     * @param ownerName    the PlayerName of the creature's owner
      * @return an Optional containing either the constructed ICreature, or empty if the ICreature has not been defined
      */
     public Optional<ICreature> makeCreature(CreatureName creatureName, PlayerName ownerName) {
@@ -37,11 +38,7 @@ public class CreatureFactory {
         CreatureDefinition creatureDefinition = creatureDefinitions.get(creatureName);
         MovementRules movementRules = makeMovementRules(creatureDefinition.properties());
 
-        return Optional.of(new Creature(creatureName,
-                ownerName,
-                creatureDefinition.maxDistance(),
-                movementRules,
-                creatureDefinition.properties()));
+        return Optional.of(new Creature(creatureName, ownerName, creatureDefinition.maxDistance(), movementRules, creatureDefinition.properties()));
     }
 
     private MovementRules makeMovementRules(Collection<CreatureProperty> creatureProperties) {
@@ -73,7 +70,7 @@ public class CreatureFactory {
             pathConditions.add(new PathAtRange());
         }
 
-        if (intruding) {
+        if (intruding && !kamikaze) {
             pathConditions.add(new PathDestinationNotStack());
         }
 
@@ -115,5 +112,30 @@ public class CreatureFactory {
         Validator<PathContext> pathValidator = new Validator<>(pathConditions);
 
         return new MovementRules(preMoveValidator, moveValidator, pathValidator);
+    }
+
+    private void addInvariantConditions(Collection<CreatureProperty> creatureProperties, List<ICondition<PreMoveContext>> preMoveConditions, List<ICondition<PathContext>> pathConditions) {
+        boolean kamikaze = creatureProperties.contains(CreatureProperty.KAMIKAZE);
+        boolean running = creatureProperties.contains(CreatureProperty.RUNNING);
+        boolean swapping = creatureProperties.contains(CreatureProperty.SWAPPING);
+        boolean intruding = creatureProperties.contains(CreatureProperty.INTRUDING);
+
+        if (kamikaze) {
+            pathConditions.add(new PathDestinationRemovable());
+            preMoveConditions.add(new PreMoveDestinationRemovable());
+        }
+
+        if (running) {
+            pathConditions.add(new PathAtRange());
+        }
+
+        if (intruding && !kamikaze) {
+            pathConditions.add(new PathDestinationNotStack());
+        }
+
+        if (swapping) {
+            preMoveConditions.add(new PreMoveDestinationNotButterfly());
+            pathConditions.add(new PathDestinationNotButterfly());
+        }
     }
 }
