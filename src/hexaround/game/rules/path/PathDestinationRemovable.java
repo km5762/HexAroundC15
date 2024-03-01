@@ -5,11 +5,14 @@ import hexaround.game.board.geometry.IPoint;
 import hexaround.game.rules.ICondition;
 import hexaround.game.creature.ICreature;
 import hexaround.game.rules.ValidationResult;
+import hexaround.game.rules.pre_movement.PreMoveContext;
+import hexaround.game.rules.pre_movement.PreMoveDestinationRemovable;
 
 import java.util.List;
 import java.util.Optional;
 
 public class PathDestinationRemovable implements ICondition<PathContext> {
+    protected ICondition<PreMoveContext> preMoveDestinationRemovable = new PreMoveDestinationRemovable();
 
     /**
      * Used to determine if removing the paths destination would disconnect the colony
@@ -23,23 +26,10 @@ public class PathDestinationRemovable implements ICondition<PathContext> {
         IBoard board = context.board();
         List<IPoint> path = context.path();
         ICreature creature = context.creature();
-        IBoard boardSimulation = board.clone();
-        IPoint firstPoint = path.get(0);
-        IPoint lastPoint = path.get(path.size() - 1);
-        Optional<ICreature> removedCreature = boardSimulation.getTopCreature(lastPoint);
-        ValidationResult result;
+        IPoint fromPoint = path.get(0);
+        IPoint toPoint = path.get(path.size() - 1);
+        PreMoveContext preMoveContext = new PreMoveContext(board, creature, fromPoint, toPoint);
 
-        boardSimulation.removeCreature(creature, firstPoint);
-        if (removedCreature.isPresent()) {
-            boardSimulation.removeCreature(removedCreature.get(), lastPoint);
-        }
-
-        if (removedCreature.isEmpty() || boardSimulation.isConnected()) {
-            result = new ValidationResult(true, null);
-        } else {
-            result = new ValidationResult(false, "Removing the destination of this path would disconnect the colony.");
-        }
-
-        return result;
+        return preMoveDestinationRemovable.test(preMoveContext);
     }
 }
