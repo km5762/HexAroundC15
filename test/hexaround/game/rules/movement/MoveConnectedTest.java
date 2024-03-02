@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.movement;
+package hexaround.game.rules.movement;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;

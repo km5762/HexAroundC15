@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.path;
+package hexaround.game.rules.path;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
@@ -9,8 +9,6 @@ import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.creature.ICreature;
-import hexaround.game.rules.path.PathAtRange;
-import hexaround.game.rules.path.PathContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

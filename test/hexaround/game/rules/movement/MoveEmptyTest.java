@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.placement;
+package hexaround.game.rules.movement;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
@@ -11,8 +11,6 @@ import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.rules.movement.MoveContext;
 import hexaround.game.rules.movement.MoveEmpty;
-import hexaround.game.rules.placement.PlacementContext;
-import hexaround.game.rules.placement.PlacementEmpty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +20,8 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PlacementEmptyTest {
-    ICondition<PlacementContext> placementEmpty = new PlacementEmpty();
+public class MoveEmptyTest {
+    ICondition<MoveContext> moveEmpty = new MoveEmpty();
     IBoard board;
     ICreature creature;
 
@@ -37,15 +35,17 @@ public class PlacementEmptyTest {
     }
 
     @Test
-    void placementEmpty() {
-        PlacementContext context = new PlacementContext(board, null, null, origin);
-        assertTrue(placementEmpty.test(context).valid());
+    void moveNotEmpty() {
+        board.placeCreature(creature, origin);
+        board.placeCreature(creature, new HexPoint(0, 1));
+        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
+        assertFalse(moveEmpty.test(context).valid());
     }
 
     @Test
-    void placementNotEmpty() {
+    void moveEmpty() {
         board.placeCreature(creature, origin);
-        PlacementContext context = new PlacementContext(board, null, null, origin);
-        assertFalse(placementEmpty.test(context).valid());
+        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
+        assertTrue(moveEmpty.test(context).valid());
     }
 }

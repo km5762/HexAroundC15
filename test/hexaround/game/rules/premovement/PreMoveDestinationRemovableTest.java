@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.premovement;
+package hexaround.game.rules.premovement;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;

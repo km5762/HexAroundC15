@@ -16,6 +16,7 @@ public class PathFinder implements IPathFinder {
 
     /**
      * Finds if there is a valid path from one point to another according to a set of an ICreature's MovementRules
+     * Adapted from: https://www.geeksforgeeks.org/print-paths-given-source-destination-using-bfs/
      *
      * @param board         the IBoard instance on which to path find
      * @param creature      the ICreature that is being moved

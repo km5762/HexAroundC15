@@ -282,7 +282,7 @@ public class Board implements IBoard {
     /**
      * Returns true if the board is empty, false otherwise
      *
-     * @return true if the board is empty (no creatures have been placed on the board), false otherwise
+     * @return true if the board is empty (no creatures are on the board), false otherwise
      */
     public boolean isEmpty() {
         return board.isEmpty();

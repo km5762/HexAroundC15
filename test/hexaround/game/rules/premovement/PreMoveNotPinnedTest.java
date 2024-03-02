@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.movement;
+package hexaround.game.rules.premovement;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
@@ -9,19 +9,18 @@ import hexaround.game.creature.ICreature;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
-import hexaround.game.rules.movement.MoveContext;
-import hexaround.game.rules.movement.MoveEmpty;
+import hexaround.game.rules.pre_movement.PreMoveContext;
+import hexaround.game.rules.pre_movement.PreMoveNotPinned;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MoveEmptyTest {
-    ICondition<MoveContext> moveEmpty = new MoveEmpty();
+public class PreMoveNotPinnedTest {
+    ICondition<PreMoveContext> preMoveNotPinned = new PreMoveNotPinned();
     IBoard board;
     ICreature creature;
 
@@ -35,17 +34,22 @@ public class MoveEmptyTest {
     }
 
     @Test
-    void moveNotEmpty() {
+    void preMoveNotPinned() {
         board.placeCreature(creature, origin);
         board.placeCreature(creature, new HexPoint(0, 1));
-        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
-        assertFalse(moveEmpty.test(context).valid());
+        board.placeCreature(creature, new HexPoint(0, -1));
+
+        PreMoveContext context = new PreMoveContext(board, creature, new HexPoint(0, 1), null);
+        assertTrue(preMoveNotPinned.test(context).valid());
     }
 
     @Test
-    void moveEmpty() {
+    void preMovePinned() {
         board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, null, origin, new HexPoint(0, 1));
-        assertTrue(moveEmpty.test(context).valid());
+        board.placeCreature(creature, new HexPoint(0, 1));
+        board.placeCreature(creature, new HexPoint(0, -1));
+
+        PreMoveContext context = new PreMoveContext(board, creature, origin, null);
+        assertFalse(preMoveNotPinned.test(context).valid());
     }
 }

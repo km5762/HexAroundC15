@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.movement;
+package hexaround.game.rules.placement;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
@@ -10,7 +10,9 @@ import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.rules.movement.MoveContext;
-import hexaround.game.rules.movement.MoveInline;
+import hexaround.game.rules.movement.MoveEmpty;
+import hexaround.game.rules.placement.PlacementContext;
+import hexaround.game.rules.placement.PlacementEmpty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,8 +22,8 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MoveInlineTest {
-    ICondition<MoveContext> moveInline = new MoveInline();
+public class PlacementEmptyTest {
+    ICondition<PlacementContext> placementEmpty = new PlacementEmpty();
     IBoard board;
     ICreature creature;
 
@@ -35,26 +37,15 @@ public class MoveInlineTest {
     }
 
     @Test
-    void moveInlineWhenXEqual() {
-        board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(0, 1));
-
-        assertTrue(moveInline.test(context).valid());
+    void placementEmpty() {
+        PlacementContext context = new PlacementContext(board, null, null, origin);
+        assertTrue(placementEmpty.test(context).valid());
     }
 
     @Test
-    void moveInlineWhenYEqual() {
+    void placementNotEmpty() {
         board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(1, 0));
-
-        assertTrue(moveInline.test(context).valid());
-    }
-
-    @Test
-    void moveInlineWhenOnDiagonal() {
-        board.placeCreature(creature, origin);
-        MoveContext context = new MoveContext(board, creature, origin, origin, new HexPoint(-1, 1));
-
-        assertTrue(moveInline.test(context).valid());
+        PlacementContext context = new PlacementContext(board, null, null, origin);
+        assertFalse(placementEmpty.test(context).valid());
     }
 }

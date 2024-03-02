@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.path;
+package hexaround.game.rules.path;
 
 import hexaround.game.board.geometry.IPoint;
 

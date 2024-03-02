@@ -20,7 +20,7 @@ public class PreMoveNotSurrounded implements ICondition<PreMoveContext> {
         ValidationResult result = new ValidationResult(true, null);
 
         if (board.isSurrounded(fromPoint)) {
-            result = new ValidationResult(false, "This creature is surrounded");
+            result = new ValidationResult(false, "This creature cannot move while surrounded");
         }
 
         return result;

@@ -12,10 +12,11 @@ public class MoveResponses {
     static MoveResponse MOVE_DISCONNECTED = new MoveResponse(MoveResult.MOVE_ERROR, "That destination is disconnected");
     static MoveResponse MOVE_NOT_REMOVABLE = new MoveResponse(MoveResult.MOVE_ERROR, "Removing the destination of this path would disconnect the colony");
     static MoveResponse MOVE_PINNED = new MoveResponse(MoveResult.MOVE_ERROR, "This creature cannot move without disconnecting the colony");
+    static MoveResponse MOVE_TO_STACK = new MoveResponse(MoveResult.MOVE_ERROR, "The destination of this path has too many creatures");
     static MoveResponse MOVE_SURROUNDED = new MoveResponse(MoveResult.MOVE_ERROR, "This creature cannot move while surrounded");
     static MoveResponse ILLEGAL_PLACEMENT = new MoveResponse(MoveResult.MOVE_ERROR, "This placement is not legal");
     static MoveResponse LEGAL_MOVE = new MoveResponse(MoveResult.OK, "Legal move");
-    static MoveResponse CREATURE_DOES_NOT_EXIST = new MoveResponse(MoveResult.MOVE_ERROR, "A creature does not exist at that point with that name");
+    static MoveResponse CREATURE_DOES_NOT_EXIST = new MoveResponse(MoveResult.MOVE_ERROR, "A creature does not exist at that point with that name belonging to this player");
     static MoveResponse CREATURE_NOT_DEFINED = new MoveResponse(MoveResult.MOVE_ERROR, "A creature with that name has not been defined in the configuration");
     static MoveResponse MUST_PLACE_CREATURE_IN_OPENING = new MoveResponse(MoveResult.MOVE_ERROR, "Only placements may be made in the opening");
     static MoveResponse PLACEMENT_NOT_CONNECTED = new MoveResponse(MoveResult.MOVE_ERROR, "That placement is not connected");

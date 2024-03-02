@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.premovement;
+package hexaround.game.rules.premovement;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
@@ -10,8 +10,8 @@ import hexaround.game.creature.CreatureProperty;
 import hexaround.game.creature.ICreature;
 import hexaround.game.rules.ICondition;
 import hexaround.game.rules.pre_movement.PreMoveContext;
-import hexaround.game.rules.pre_movement.PreMoveDestinationConnected;
-import hexaround.game.rules.pre_movement.PreMoveDestinationInline;
+import hexaround.game.rules.pre_movement.PreMoveDestinationEmpty;
+import hexaround.game.rules.pre_movement.PreMoveDestinationNotButterfly;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +21,8 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PreMoveDestinationInlineTest {
-    ICondition<PreMoveContext> preMoveDestinationInline = new PreMoveDestinationInline();
+public class PreMoveDestinationEmptyTest {
+    ICondition<PreMoveContext> preMoveDestinationEmpty = new PreMoveDestinationEmpty();
     IBoard board;
     ICreature creature;
 
@@ -39,16 +39,18 @@ public class PreMoveDestinationInlineTest {
     }
 
     @Test
-    void destinationNotInline() {
+    void destinationNotEmpty() {
         board.placeCreature(creature, origin);
-        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(1, -2));
-        assertFalse(preMoveDestinationInline.test(context).valid());
+        board.placeCreature(butterfly, new HexPoint(0, 1));
+        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(0, 1));
+        assertFalse(preMoveDestinationEmpty.test(context).valid());
     }
 
     @Test
-    void destinationInline() {
+    void destinationEmpty() {
         board.placeCreature(creature, origin);
-        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(2, -2));
-        assertTrue(preMoveDestinationInline.test(context).valid());
+        board.placeCreature(butterfly, new HexPoint(0, 1));
+        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(0, 2));
+        assertTrue(preMoveDestinationEmpty.test(context).valid());
     }
 }

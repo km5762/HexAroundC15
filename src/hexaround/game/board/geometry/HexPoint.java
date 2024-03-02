@@ -22,6 +22,7 @@ public record HexPoint(int x, int y) implements IPoint {
 
     /**
      * Calculates the distance to another HexPoint
+     * Adapted from: https://www.redblobgames.com/grids/hexagons/#distances
      *
      * @param toPoint another HexPoint
      * @return the distance between the two HexPoints

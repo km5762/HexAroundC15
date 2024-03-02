@@ -84,6 +84,7 @@ public class CreatureFactory {
 
         if (intruding && !kamikaze) {
             pathConditions.add(new PathDestinationNotStack());
+            preMoveConditions.add(new PreMoveDestinationNotStack());
         }
 
         if (swapping) {

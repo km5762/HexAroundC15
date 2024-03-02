@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.premovement;
+package hexaround.game.rules.premovement;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
@@ -10,7 +10,7 @@ import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.rules.pre_movement.PreMoveContext;
-import hexaround.game.rules.pre_movement.PreMoveNotPinned;
+import hexaround.game.rules.pre_movement.PreMoveNotSurrounded;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +19,8 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PreMoveNotPinnedTest {
-    ICondition<PreMoveContext> preMoveNotPinned = new PreMoveNotPinned();
+public class PreMoveNotSurroundedTest {
+    ICondition<PreMoveContext> preMoveNotSurrounded = new PreMoveNotSurrounded();
     IBoard board;
     ICreature creature;
 
@@ -34,22 +34,28 @@ public class PreMoveNotPinnedTest {
     }
 
     @Test
-    void preMoveNotPinned() {
+    void preMoveNotSurrounded() {
         board.placeCreature(creature, origin);
-        board.placeCreature(creature, new HexPoint(0, 1));
-        board.placeCreature(creature, new HexPoint(0, -1));
+        List<IPoint> neighbors = origin.getNeighboringPoints();
 
-        PreMoveContext context = new PreMoveContext(board, creature, new HexPoint(0, 1), null);
-        assertTrue(preMoveNotPinned.test(context).valid());
+        for (int i = 1; i < neighbors.size(); i++) {
+            board.placeCreature(creature, neighbors.get(i));
+        }
+
+        PreMoveContext context = new PreMoveContext(board, creature, origin, null);
+        assertTrue(preMoveNotSurrounded.test(context).valid());
     }
 
     @Test
-    void preMovePinned() {
+    void preMoveSurrounded() {
         board.placeCreature(creature, origin);
-        board.placeCreature(creature, new HexPoint(0, 1));
-        board.placeCreature(creature, new HexPoint(0, -1));
+        List<IPoint> neighbors = origin.getNeighboringPoints();
+
+        for (int i = 0; i < neighbors.size(); i++) {
+            board.placeCreature(creature, neighbors.get(i));
+        }
 
         PreMoveContext context = new PreMoveContext(board, creature, origin, null);
-        assertFalse(preMoveNotPinned.test(context).valid());
+        assertFalse(preMoveNotSurrounded.test(context).valid());
     }
 }

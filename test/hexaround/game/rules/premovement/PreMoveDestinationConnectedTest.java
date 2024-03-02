@@ -1,4 +1,4 @@
-package hexaround.game.board.pathfinding.premovement;
+package hexaround.game.rules.premovement;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
@@ -10,6 +10,8 @@ import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.rules.pre_movement.PreMoveContext;
+import hexaround.game.rules.pre_movement.PreMoveDestinationConnected;
+import hexaround.game.rules.pre_movement.PreMoveDestinationNotButterfly;
 import hexaround.game.rules.pre_movement.PreMoveNotSurrounded;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,10 +21,12 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PreMoveNotSurroundedTest {
-    ICondition<PreMoveContext> preMoveNotSurrounded = new PreMoveNotSurrounded();
+public class PreMoveDestinationConnectedTest {
+    ICondition<PreMoveContext> preMoveDestinationConnected = new PreMoveDestinationConnected();
     IBoard board;
     ICreature creature;
+
+    ICreature butterfly;
 
     IPoint origin;
 
@@ -30,32 +34,23 @@ public class PreMoveNotSurroundedTest {
     void setUpBoard() {
         board = new Board(new HashMap<>());
         creature = new Creature(CreatureName.CRAB, null, 5, null, Collections.singleton(CreatureProperty.WALKING));
+        butterfly = new Creature(CreatureName.BUTTERFLY, null, 5, null, Collections.singleton(CreatureProperty.WALKING));
         origin = new HexPoint(0, 0);
     }
 
     @Test
-    void preMoveNotSurrounded() {
+    void destinationNotConnected() {
         board.placeCreature(creature, origin);
-        List<IPoint> neighbors = origin.getNeighboringPoints();
-
-        for (int i = 1; i < neighbors.size(); i++) {
-            board.placeCreature(creature, neighbors.get(i));
-        }
-
-        PreMoveContext context = new PreMoveContext(board, creature, origin, null);
-        assertTrue(preMoveNotSurrounded.test(context).valid());
+        board.placeCreature(butterfly, new HexPoint(0, 1));
+        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(0, -1));
+        assertFalse(preMoveDestinationConnected.test(context).valid());
     }
 
     @Test
-    void preMoveSurrounded() {
+    void destinationConnected() {
         board.placeCreature(creature, origin);
-        List<IPoint> neighbors = origin.getNeighboringPoints();
-
-        for (int i = 0; i < neighbors.size(); i++) {
-            board.placeCreature(creature, neighbors.get(i));
-        }
-
-        PreMoveContext context = new PreMoveContext(board, creature, origin, null);
-        assertFalse(preMoveNotSurrounded.test(context).valid());
+        board.placeCreature(butterfly, new HexPoint(0, 1));
+        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(0, 2));
+        assertTrue(preMoveDestinationConnected.test(context).valid());
     }
 }

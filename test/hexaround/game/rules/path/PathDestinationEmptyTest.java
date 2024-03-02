@@ -1,31 +1,30 @@
-package hexaround.game.board.pathfinding.premovement;
+package hexaround.game.rules.path;
 
 import hexaround.game.board.Board;
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.HexPoint;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.rules.ICondition;
 import hexaround.game.creature.Creature;
 import hexaround.game.creature.CreatureName;
 import hexaround.game.creature.CreatureProperty;
 import hexaround.game.creature.ICreature;
-import hexaround.game.rules.ICondition;
-import hexaround.game.rules.pre_movement.PreMoveContext;
-import hexaround.game.rules.pre_movement.PreMoveInRange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PreMoveInRangeTest {
-    ICondition<PreMoveContext> preMoveInRange = new PreMoveInRange();
+public class PathDestinationEmptyTest {
+    ICondition<PathContext> pathDestinationEmpty = new PathDestinationEmpty();
+
+    List<IPoint> path;
     IBoard board;
     ICreature creature;
-
-    ICreature butterfly;
 
     IPoint origin;
 
@@ -33,21 +32,24 @@ public class PreMoveInRangeTest {
     void setUpBoard() {
         board = new Board(new HashMap<>());
         creature = new Creature(CreatureName.CRAB, null, 5, null, Collections.singleton(CreatureProperty.WALKING));
-        butterfly = new Creature(CreatureName.BUTTERFLY, null, 5, null, Collections.singleton(CreatureProperty.WALKING));
         origin = new HexPoint(0, 0);
+        path = PathTestingUtils.constructPath(new IPoint[]{origin, new HexPoint(0, 1)});
     }
 
     @Test
-    void notInRange() {
+    void pathDestinationEmpty() {
         board.placeCreature(creature, origin);
-        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(0, 6));
-        assertFalse(preMoveInRange.test(context).valid());
+        PathContext context = new PathContext(path, board, creature);
+
+        assertTrue(pathDestinationEmpty.test(context).valid());
     }
 
     @Test
-    void inRange() {
+    void pathDestinationNotEmpty() {
         board.placeCreature(creature, origin);
-        PreMoveContext context = new PreMoveContext(board, creature, origin, new HexPoint(0, 5));
-        assertTrue(preMoveInRange.test(context).valid());
+        board.placeCreature(creature, new HexPoint(0, 1));
+        PathContext context = new PathContext(path, board, creature);
+
+        assertFalse(pathDestinationEmpty.test(context).valid());
     }
 }

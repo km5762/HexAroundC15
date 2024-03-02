@@ -233,11 +233,25 @@
 | T  |  X   | GameManager game end by no available moves or placements                                                                                            |
 | T  |  X   | PreMoveDestinationNotButterfly.test when destination is not butterfly                                                                               |
 | T  |  X   | PreMoveDestinationNotButterfly.test when destination is butterfly                                                                                   |
+| T  |  X   | PreMoveDestinationConnected.test when destination is connected                                                                                      | 
+| T  |  X   | PreMoveDestinationConnected.test when destination is disconnected                                                                                   | 
+| T  |  X   | PreMoveDestinationInline.test when destination is not inline                                                                                        | 
+| T  |  X   | PreMoveDestinationInline.test when destination is inline                                                                                            | 
+| T  |  X   | PreMoveDestinationEmpty.test when destination is occupied                                                                                           | 
+| T  |  X   | PreMoveDestinationEmpty.test when destination is empty                                                                                              | 
+| T  |  X   | PreMoveDestinationRemovable.test when destination is removable                                                                                      | 
+| T  |  X   | PreMoveDestinationRemovable.test when destination is not removable                                                                                  | 
+| T  |  X   | PreMoveInRange.test when not in range                                                                                                               | 
+| T  |  X   | PreMoveInRange.test when in range                                                                                                                   | 
+| T  |  X   | PreMoveNotStack.test when destination is a stack                                                                                                    | 
+| T  |  X   | PreMoveNotStack.test when destination is not a stack                                                                                                |
 | T  |  X   | GameManager.moveCreature when destination is disconnected                                                                                           |
 | T  |  X   | GameManager.moveCreature when destination is occupied                                                                                               |
 | T  |  X   | GameManager.moveCreature when destination is not inline to origin                                                                                   |
 | T  |  X   | GameManager.moveCreature when destination of a swap is a butterfly                                                                                  |
 | T  |  X   | GameManager.moveCreature when destination is not removable for a kamikaze                                                                           |
+| T  |  X   | GameManager.moveCreature when destination is a stack and creature is intruding                                                                      |
+| T  |  X   | GameManager.moveCreature when flying creature surrounded                                                                                            |
 
 # Design Patterns
 
@@ -281,5 +295,10 @@ The state pattern is appropriate because the specific rules for validating a giv
 of the game.
 Therefore, two distinct PlacementValidators are created and set from the game manager based upon the stage of the game.
 
+# Sources
 
+Hexagonal coordinates distance algorithm used in HexPoint: https://www.redblobgames.com/grids/hexagons/#distances
+BFS Pathfinding algorithm used in
+PathFinder: https://www.geeksforgeeks.org/print-paths-given-source-destination-using-bfs/
+Overriding equality operator used in CreatureStack: https://www.geeksforgeeks.org/overriding-equals-method-in-java/
 

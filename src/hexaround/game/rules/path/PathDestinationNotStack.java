@@ -2,12 +2,16 @@ package hexaround.game.rules.path;
 
 import hexaround.game.board.IBoard;
 import hexaround.game.board.geometry.IPoint;
+import hexaround.game.creature.ICreature;
 import hexaround.game.rules.ICondition;
 import hexaround.game.rules.ValidationResult;
+import hexaround.game.rules.pre_movement.PreMoveContext;
+import hexaround.game.rules.pre_movement.PreMoveDestinationNotStack;
 
 import java.util.List;
 
 public class PathDestinationNotStack implements ICondition<PathContext> {
+    protected ICondition<PreMoveContext> preMoveDestinationNotStack = new PreMoveDestinationNotStack();
 
     /**
      * Used to determine if the paths destination is not a stack
@@ -19,14 +23,12 @@ public class PathDestinationNotStack implements ICondition<PathContext> {
     @Override
     public ValidationResult test(PathContext context) {
         IBoard board = context.board();
+        ICreature creature = context.creature();
         List<IPoint> path = context.path();
-        IPoint lastPoint = path.get(path.size() - 1);
-        ValidationResult result = new ValidationResult(true, null);
+        IPoint fromPoint = path.get(0);
+        IPoint toPoint = path.get(path.size() - 1);
+        PreMoveContext preMoveContext = new PreMoveContext(board, creature, fromPoint, toPoint);
 
-        if (board.getAllCreatures(lastPoint).getSize() > 1) {
-            result = new ValidationResult(false, "The destination of this path has too many creatures");
-        }
-
-        return result;
+        return preMoveDestinationNotStack.test(preMoveContext);
     }
 }
